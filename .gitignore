@@ -1,0 +1,11 @@
+# Logs and temp files
+*.log
+npm-debug.log*
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Large reference media (uncheck if you wish to host on Git LFS)
+*.mp4
+*.pdf

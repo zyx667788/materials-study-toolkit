@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta id="themeColorMeta" name="theme-color" content="#f5f6f8" />
+    <title>材料考研专业课综合工具箱</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/app-logo.svg" />
+    <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
+    <script src="./vendor/katex/katex.min.js"></script>
+    <script>
+      (() => {
+        const storageKey = "mstool.theme.v1";
+        try {
+          const savedTheme = localStorage.getItem(storageKey);
+          const theme = savedTheme === "light" || savedTheme === "dark"
+            ? savedTheme
+            : window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          document.documentElement.dataset.theme = theme;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="./src/styles.css?v=20261008-phase-audit-motion" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three/three.module.js",
+          "three/addons/": "./vendor/three/addons/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img class="brand-logo" src="./assets/app-logo.svg" alt="材料考研" />
+          <div>
+            <h1>材料考研专业课综合工具箱</h1>
+            <p>材料科学基础 · 金属学与热处理 · 专业课高效备考</p>
+            <p id="visitOrdinalText" class="visit-ordinal">你是第 -- 位研友访问</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换到暗色模式" aria-pressed="false">
+            <span id="themeToggleIcon" aria-hidden="true">☾</span>
+          </button>
+        </div>
+
+        <nav class="module-nav" aria-label="功能模块">
+          <button class="module-tab is-active" type="button" data-module="crystal">晶面 / 晶向</button>
+          <button class="module-tab" type="button" data-module="stereographic">极射投影</button>
+          <button class="module-tab" type="button" data-module="iron-carbon">铁碳相图</button>
+          <button class="module-tab" type="button" data-module="typical-structures">典型结构</button>
+          <button class="module-tab" type="button" data-module="interstitial">点阵 / 间隙</button>
+          <button class="module-tab" type="button" data-module="dislocation">位错交割</button>
+          <button class="module-tab" type="button" data-module="ternary-phase">三元相图</button>
+          <button class="module-tab" type="button" data-module="memory-cards">记忆卡片</button>
+          <button class="module-tab" type="button" data-module="flashcards">考研题库</button>
+          <button class="module-tab" type="button" data-module="redemption">资料交流</button>
+        </nav>
+      </header>
+
+      <div id="updateNotice" class="update-notice" role="status" hidden>
+        <span>有新版本可用</span>
+        <button id="applyUpdateButton" class="ghost-button" type="button">刷新更新</button>
+      </div>
+
+      <section id="crystalModule" class="module-view crystal-module" data-module-panel="crystal">
+        <div class="workspace">
+          <aside class="control-panel" aria-label="晶体绘图与识图训练控制">
+            <section class="control-section crystal-workflow-section">
+              <label class="control-label">学习方式</label>
+              <div class="segmented workflow-segmented" role="group" aria-label="学习方式">
+                <button class="segment is-active" type="button" data-crystal-workflow="draw" aria-pressed="true">自由绘图</button>
+                <button class="segment" type="button" data-crystal-workflow="training" aria-pressed="false">识图训练</button>
+              </div>
+            </section>
+
+            <section class="control-section mode-section">
+              <label class="control-label">对象</label>
+              <div class="segmented mode-segmented" role="group" aria-label="对象">
+                <button class="segment is-active" type="button" data-mode="plane">晶面</button>
+                <button class="segment" type="button" data-mode="direction">晶向</button>
+              </div>
+            </section>
+
+            <section class="control-section system-section">
+              <label class="control-label">晶系</label>
+              <div class="segmented" role="group" aria-label="晶系">
+                <button class="segment is-active" type="button" data-system="cubic">立方</button>
+                <button class="segment" type="button" data-system="hex">六方</button>
+              </div>
+            </section>
+
+            <section id="crystalTrainingSection" class="training-section is-hidden" aria-live="polite">
+              <div class="training-head">
+                <div class="training-question">
+                  <span id="trainingQuestionNumber">第 1 题</span>
+                  <strong id="trainingPrompt">写出图中立方晶面的指数</strong>
+                </div>
+                <div class="training-score" aria-label="训练成绩">
+                  <strong id="trainingScoreText">0 / 0</strong>
+                  <span id="trainingStreakText">连对 0</span>
+                </div>
+              </div>
+
+              <label class="control-label" for="trainingAnswerInput">你的答案</label>
+              <div class="input-row training-input-row">
+                <input
+                  id="trainingAnswerInput"
+                  class="index-input"
+                  type="text"
+                  placeholder="例如 1 1 1"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button id="trainingSubmitButton" class="primary-button" type="button">提交</button>
+              </div>
+              <p id="trainingHint" class="input-hint">按 h k l 顺序输入，使用空格分隔</p>
+              <p id="trainingCoordinateText" class="training-coordinate is-hidden"></p>
+              <p id="trainingFeedback" class="training-feedback" data-state="idle">尚未作答</p>
+              <div class="training-actions">
+                <button id="trainingNextButton" class="ghost-button" type="button">换一题</button>
+                <button id="trainingResetButton" class="ghost-button" type="button">清空成绩</button>
+              </div>
+            </section>
+
+            <section class="control-section index-section">
+              <label class="control-label" for="indexInput">指数（空格分隔）</label>
+              <div class="input-row">
+                <input
+                  id="indexInput"
+                  class="index-input"
+                  type="text"
+                  value="1 1 1"
+                  placeholder="例如 1 1 1"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button id="drawButton" class="primary-button" type="button">重绘</button>
+              </div>
+              <p id="indexHint" class="input-hint">立方晶面：h k l，例如 1 1 1</p>
+              <div id="exampleChips" class="chip-row" aria-label="示例指数"></div>
+            </section>
+
+            <section id="planeLayerSection" class="control-section compact-section layer-section">
+              <label class="control-label" for="layerInput">层位</label>
+              <div class="input-row">
+                <input id="layerInput" class="small-input" type="number" step="1" value="1" />
+                <button id="autoLayerButton" class="ghost-button" type="button">自动</button>
+              </div>
+            </section>
+
+            <section class="readout-panel" aria-live="polite">
+              <div class="status-row">
+                <span id="statusDot" class="status-dot"></span>
+                <span id="statusText">已绘制晶面 (1 1 1)</span>
+              </div>
+              <dl class="metric-list">
+                <div>
+                  <dt id="metricOneLabel">层位</dt>
+                  <dd id="metricOneValue">1</dd>
+                </div>
+                <div>
+                  <dt id="metricTwoLabel">间距</dt>
+                  <dd id="metricTwoValue">0.577 a</dd>
+                </div>
+                <div>
+                  <dt id="metricThreeLabel">顶点</dt>
+                  <dd id="metricThreeValue">3</dd>
+                </div>
+              </dl>
+            </section>
+
+            <section class="control-section tool-section">
+              <button id="resetButton" class="ghost-button" type="button">复位视角</button>
+              <button id="exportButton" class="ghost-button" type="button">导出 PNG</button>
+            </section>
+          </aside>
+
+          <section class="viewer-panel" aria-label="三维晶胞视图">
+            <div id="sceneHost" class="scene-host"></div>
+            <div class="legend" aria-label="颜色图例">
+              <span><i class="swatch swatch-cell"></i>晶胞</span>
+              <span><i class="swatch swatch-plane"></i>晶面</span>
+              <span><i class="swatch swatch-direction"></i>晶向</span>
+            </div>
+          </section>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <section id="stereographicModule" class="module-view stereo-module is-hidden" data-module-panel="stereographic">
+        <div class="stereo-workspace">
+          <aside class="stereo-control-panel" aria-label="极射投影控制">
+            <section class="stereo-card stereo-head-card">
+              <span class="fe-kicker">极射赤面投影</span>
+              <h2>立方晶系标准投影</h2>
+              <p>[001] 标准取向 · 圆面低指数标准投影 · 晶面极点与晶带大圆</p>
+            </section>
+
+            <section class="stereo-card stereo-density-card">
+              <label class="control-label">指数密度</label>
+              <div class="segmented stereo-density" role="group" aria-label="指数密度">
+                <button class="segment" type="button" data-stereo-order="1" aria-pressed="false">基础</button>
+                <button class="segment is-active" type="button" data-stereo-order="2" aria-pressed="true">常用</button>
+                <button class="segment" type="button" data-stereo-order="3" aria-pressed="false">密集</button>
+              </div>
+            </section>
+
+            <section class="stereo-card stereo-display-card">
+              <label class="control-label">显示</label>
+              <div class="stereo-toggle-grid">
+                <label class="stereo-check">
+                  <input type="checkbox" data-stereo-toggle="showPoles" checked />
+                  <span>极点</span>
+                </label>
+                <label class="stereo-check">
+                  <input type="checkbox" data-stereo-toggle="showLabels" checked />
+                  <span>指数</span>
+                </label>
+                <label class="stereo-check">
+                  <input type="checkbox" data-stereo-toggle="showZones" checked />
+                  <span>晶带线</span>
+                </label>
+                <label class="stereo-check">
+                  <input type="checkbox" data-stereo-toggle="showPlane" checked />
+                  <span>投影面</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="stereo-card stereo-status-card" aria-live="polite">
+              <span class="fe-kicker">当前极点</span>
+              <strong id="stereoCenterReadout">(1 1 1)</strong>
+              <span id="stereoPoleReadout">三重对称轴 · 投影半径 0.518 R</span>
+            </section>
+
+            <section class="stereo-card stereo-tools-card">
+              <button id="stereoResetButton" class="ghost-button" type="button">复位取向</button>
+              <button id="stereoExportButton" class="ghost-button" type="button">导出 PNG</button>
+            </section>
+          </aside>
+
+          <section class="stereo-view-panel" aria-label="可旋转的立方晶系极射投影">
+            <div id="stereoViewerHost" class="stereo-viewer-host" role="img" aria-label="立方晶系球面极射投影三维模型"></div>
+            <div class="stereo-view-badge" aria-live="polite">
+              <strong>立方晶系</strong>
+              <span id="stereoViewerCenter">[0 0 1] 标准取向</span>
+            </div>
+            <div class="stereo-legend" aria-label="极射投影图例">
+              <span><i class="stereo-symmetry-symbol is-fourfold"></i>四重</span>
+              <span><i class="stereo-symmetry-symbol is-threefold"></i>三重</span>
+              <span><i class="stereo-symmetry-symbol is-twofold"></i>二重</span>
+              <span><i class="stereo-symmetry-symbol is-general"></i>一般</span>
+              <span><i class="stereo-legend-zone"></i>晶带大圆</span>
+              <span><i class="stereo-legend-ray"></i>投影射线</span>
+            </div>
+          </section>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <section id="ironCarbonModule" class="module-view iron-carbon-module is-hidden" data-module-panel="iron-carbon">
+        <div class="fe-workspace">
+          <section class="fe-chart-panel" aria-label="铁碳相图">
+            <div class="fe-panel-head">
+              <div>
+                <h2>铁碳相图</h2>
+                <p>Fe-Fe<sub>3</sub>C · 质量分数 w<sub>C</sub>%</p>
+              </div>
+              <div class="fe-panel-actions">
+                <label class="fe-carbon-field" for="carbonInput">
+                  <span>w<sub>C</sub>%</span>
+                  <input id="carbonInput" type="number" min="0" max="6.69" step="0.0001" value="0.77" inputmode="decimal" />
+                </label>
+                <button id="feExportButton" class="ghost-button" type="button">导出 PNG</button>
+              </div>
+            </div>
+
+            <div class="fe-chart-shell">
+              <div id="feChartHost" class="fe-chart-host"></div>
+            </div>
+
+            <div class="fe-composition-strip" aria-live="polite">
+              <div>
+                <span class="fe-kicker">选定成分</span>
+                <strong id="carbonReadout">0.77% C</strong>
+              </div>
+              <div>
+                <span class="fe-kicker">合金类型</span>
+                <strong id="alloyClassReadout">共析钢</strong>
+              </div>
+              <div class="fe-mobile-region">
+                <span class="fe-kicker">相图区</span>
+                <strong id="feMobileRegionReadout">奥氏体 γ</strong>
+              </div>
+              <input id="carbonRange" class="fe-carbon-range" type="range" min="0" max="6.69" step="0.01" value="0.77" />
+            </div>
+          </section>
+
+          <aside class="fe-info-panel" aria-label="铁碳相图信息">
+            <section class="fe-card fe-region-card">
+              <div class="fe-card-title">
+                <span class="fe-kicker">相图区域</span>
+                <h3 id="regionTitle">奥氏体 γ</h3>
+              </div>
+              <dl class="fe-detail-list">
+                <div>
+                  <dt>相组成</dt>
+                  <dd id="regionPhases">γ</dd>
+                </div>
+                <div>
+                  <dt>组织组成</dt>
+                  <dd id="regionStructure">单相奥氏体</dd>
+                </div>
+              </dl>
+              <p id="regionNote" class="fe-note">奥氏体是碳溶于 γ-Fe 中形成的间隙固溶体。</p>
+            </section>
+
+            <section class="fe-card fe-room-card">
+              <div class="fe-card-title">
+                <span class="fe-kicker">室温相与组织含量计算</span>
+                <h3 id="roomTitle">共析钢 · 0.77% C</h3>
+              </div>
+              <p class="fe-room-method">室温相按 α + Fe<sub>3</sub>C 杠杆定律计算，组织按合金类型分段计算</p>
+              <div class="fe-quantity-section fe-phase-quantity">
+                <div class="fe-quantity-heading">
+                  <strong>相含量</strong>
+                  <span>α + Fe<sub>3</sub>C</span>
+                </div>
+                <div class="fe-bar-list">
+                  <div>
+                    <div class="fe-bar-label">
+                      <span id="phaseAlphaLabel">铁素体 α</span>
+                      <strong id="phaseAlphaValue">88.5%</strong>
+                    </div>
+                    <i id="phaseAlphaBar" class="fe-bar-fill fe-bar-alpha"></i>
+                  </div>
+                  <div>
+                    <div class="fe-bar-label">
+                      <span id="phaseCementiteLabel">渗碳体 Fe<sub>3</sub>C</span>
+                      <strong id="phaseCementiteValue">11.5%</strong>
+                    </div>
+                    <i id="phaseCementiteBar" class="fe-bar-fill fe-bar-cementite"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="fe-quantity-section fe-structure-quantity">
+                <div class="fe-quantity-heading">
+                  <strong>组织含量</strong>
+                  <span>按合金类型分段</span>
+                </div>
+                <div id="structureBreakdown" class="fe-breakdown"></div>
+              </div>
+            </section>
+          </aside>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <section id="typicalStructuresModule" class="module-view structure-module is-hidden" data-module-panel="typical-structures">
+        <div class="structure-workspace">
+          <aside class="structure-control-panel" aria-label="典型结构控制">
+            <section class="structure-card structure-head-card">
+              <span class="fe-kicker">典型结构</span>
+              <h2>原子结构 / 离子结构</h2>
+              <p>选择结构后可拖动旋转、滚轮缩放，查看晶胞、碳材料骨架与近邻连接。</p>
+            </section>
+
+            <section class="structure-card structure-filter-card">
+              <label class="control-label">结构类型</label>
+              <div class="segmented structure-filter" role="group" aria-label="结构类型">
+                <button class="segment is-active" type="button" data-structure-filter="atomic">原子</button>
+                <button class="segment" type="button" data-structure-filter="ionic">离子</button>
+              </div>
+            </section>
+
+            <section class="structure-card structure-list-card">
+              <label class="control-label">结构库</label>
+              <select id="structureSelect" class="structure-select" aria-label="选择典型结构"></select>
+              <div id="structureList" class="structure-list" aria-label="典型结构列表"></div>
+            </section>
+
+            <section class="structure-card structure-display-card">
+              <label class="control-label">显示</label>
+              <div class="structure-tools">
+                <button id="structureRepeatButton" class="ghost-button is-active" type="button" data-repeat="2" aria-pressed="true">2×2×2</button>
+                <button id="structureBondButton" class="ghost-button is-active" type="button">近邻连接</button>
+                <button id="structureExportButton" class="ghost-button" type="button">导出 PNG</button>
+              </div>
+              <label class="structure-slider">
+                <span>原子半径</span>
+                <input id="atomScaleRange" type="range" min="0.65" max="1.35" step="0.05" value="1" />
+              </label>
+            </section>
+
+            <section class="structure-card structure-info-card">
+              <div class="structure-info-title">
+                <span class="fe-kicker">当前结构</span>
+                <h3 id="structureTitle">体心立方 α-Fe</h3>
+              </div>
+              <dl class="structure-meta">
+                <div>
+                  <dt>类型</dt>
+                  <dd id="structureKind">原子结构</dd>
+                </div>
+                <div>
+                  <dt>空间群</dt>
+                  <dd id="structureSpaceGroup">Im-3m</dd>
+                </div>
+                <div>
+                  <dt>配位</dt>
+                  <dd id="structureCoordination">8</dd>
+                </div>
+              </dl>
+              <p id="structureDescription" class="fe-note"></p>
+              <a id="structureMpLink" class="structure-link" href="#" target="_blank" rel="noreferrer">打开 Materials Project</a>
+            </section>
+          </aside>
+
+          <section class="structure-view-panel" aria-label="典型结构三维视图">
+            <div id="structureViewerHost" class="structure-viewer-host"></div>
+            <div class="structure-view-badge" aria-live="polite">
+              <strong id="structureViewerTitle">体心立方 α-Fe</strong>
+              <span id="structureViewerMeta">Im-3m · 配位 8</span>
+            </div>
+            <div id="structureLegend" class="structure-legend" aria-label="元素图例"></div>
+          </section>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <section id="interstitialModule" class="module-view interstitial-module is-hidden" data-module-panel="interstitial">
+        <div class="interstitial-workspace">
+          <aside class="interstitial-control-panel" aria-label="点阵与间隙控制">
+            <section class="interstitial-card interstitial-head-card">
+              <span class="fe-kicker">点阵与间隙</span>
+              <h2>BCC · FCC · HCP</h2>
+              <p>查看点阵原子、八面体与四面体间隙。各类轮廓和填隙原子可独立显示。</p>
+            </section>
+
+            <section class="interstitial-card interstitial-lattice-card">
+              <label class="control-label">点阵类型</label>
+              <div class="segmented interstitial-lattice-tabs" role="group" aria-label="点阵类型">
+                <button class="segment is-active" type="button" data-interstitial-lattice="bcc">BCC</button>
+                <button class="segment" type="button" data-interstitial-lattice="fcc">FCC</button>
+                <button class="segment" type="button" data-interstitial-lattice="hcp">HCP</button>
+              </div>
+            </section>
+
+            <section class="interstitial-card interstitial-radius-card">
+              <label class="interstitial-slider" for="interstitialAtomRadius">
+                <span>原子显示半径</span>
+                <output id="interstitialAtomRadiusValue" for="interstitialAtomRadius">0.34</output>
+              </label>
+              <input id="interstitialAtomRadius" class="interstitial-range" type="range" min="0.26" max="0.48" step="0.01" value="0.34" />
+            </section>
+
+            <section class="interstitial-card interstitial-switch-card">
+              <label class="control-label">显示</label>
+              <div class="interstitial-switch-grid">
+                <button class="interstitial-switch is-active is-lattice" type="button" data-interstitial-toggle="vertices" aria-pressed="true">
+                  <strong>点阵</strong>
+                  <span>顶点原子</span>
+                </button>
+                <button class="interstitial-switch is-active is-center" type="button" data-interstitial-toggle="centers" aria-pressed="true">
+                  <strong>点阵</strong>
+                  <span id="interstitialCenterLabel">体心原子</span>
+                </button>
+                <button class="interstitial-switch is-active is-octa" type="button" data-interstitial-toggle="octaOutline" aria-pressed="true">
+                  <strong>八面体</strong>
+                  <span>间隙轮廓</span>
+                </button>
+                <button class="interstitial-switch is-octa" type="button" data-interstitial-toggle="octaAtoms" aria-pressed="false">
+                  <strong>八面体</strong>
+                  <span>填隙原子</span>
+                </button>
+                <button class="interstitial-switch is-active is-tetra" type="button" data-interstitial-toggle="tetraOutline" aria-pressed="true">
+                  <strong>四面体</strong>
+                  <span>间隙轮廓</span>
+                </button>
+                <button class="interstitial-switch is-tetra" type="button" data-interstitial-toggle="tetraAtoms" aria-pressed="false">
+                  <strong>四面体</strong>
+                  <span>填隙原子</span>
+                </button>
+                <button class="interstitial-switch is-packing-plane" type="button" data-interstitial-toggle="closePlane" aria-pressed="false">
+                  <strong>密排面</strong>
+                  <span id="interstitialClosePlaneLabel">{110}</span>
+                </button>
+                <button class="interstitial-switch is-packing-direction" type="button" data-interstitial-toggle="closeDirection" aria-pressed="false">
+                  <strong>密排方向</strong>
+                  <span id="interstitialCloseDirectionLabel">⟨111⟩</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="interstitial-card interstitial-info-card">
+              <div class="structure-info-title">
+                <span class="fe-kicker">当前点阵</span>
+                <h3 id="interstitialTitle">体心立方 BCC</h3>
+              </div>
+              <dl class="interstitial-meta">
+                <div>
+                  <dt>晶胞原子数</dt>
+                  <dd id="interstitialAtomCount">2</dd>
+                </div>
+                <div>
+                  <dt>配位数</dt>
+                  <dd id="interstitialCoordination">8</dd>
+                </div>
+                <div>
+                  <dt>八面体位</dt>
+                  <dd id="interstitialOctaCount">6</dd>
+                </div>
+                <div>
+                  <dt>四面体位</dt>
+                  <dd id="interstitialTetraCount">12</dd>
+                </div>
+              </dl>
+              <dl class="interstitial-packing-meta">
+                <div>
+                  <dt>密排面</dt>
+                  <dd id="interstitialClosePlaneReadout">{110}</dd>
+                </div>
+                <div>
+                  <dt>密排方向</dt>
+                  <dd id="interstitialCloseDirectionReadout">⟨111⟩</dd>
+                </div>
+              </dl>
+              <p id="interstitialNote" class="fe-note">BCC 中两类间隙均为畸变配位多面体；轮廓显示代表位点，填隙原子显示晶胞内全部等价位置。</p>
+            </section>
+          </aside>
+
+          <section class="interstitial-view-panel" aria-label="点阵与间隙三维视图">
+            <div id="interstitialViewerHost" class="interstitial-viewer-host"></div>
+            <div class="interstitial-view-actions">
+              <button id="interstitialResetButton" class="viewer-icon-button" type="button" aria-label="复位视角">↺</button>
+              <button id="interstitialExportButton" class="viewer-icon-button" type="button" aria-label="导出 PNG">⇩</button>
+            </div>
+            <div class="interstitial-view-badge" aria-live="polite">
+              <strong id="interstitialViewerCode">BCC</strong>
+              <span id="interstitialViewerName">体心立方</span>
+              <small id="interstitialViewerStats">2 原子 · O 6 · T 12</small>
+            </div>
+            <div class="interstitial-legend" aria-label="点阵和间隙颜色图例">
+              <span><i class="interstitial-swatch swatch-lattice"></i>点阵原子</span>
+              <span><i class="interstitial-swatch swatch-octa"></i>八面体间隙</span>
+              <span><i class="interstitial-swatch swatch-tetra"></i>四面体间隙</span>
+              <span><i class="interstitial-swatch swatch-packing-plane"></i>密排面</span>
+              <span><i class="interstitial-swatch swatch-packing-direction"></i>密排方向</span>
+            </div>
+          </section>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <section id="dislocationModule" class="module-view dislocation-module is-hidden" data-module-panel="dislocation">
+        <div class="dislocation-workspace">
+          <aside class="dislocation-control-panel" aria-label="位错交割参数设置">
+            <section class="dislocation-card dislocation-head-card">
+              <span class="fe-kicker">位错交割</span>
+              <h2>割阶与扭折</h2>
+              <p>位错线 ξ · 柏氏矢量 b · 滑移面 Π</p>
+            </section>
+
+            <section class="dislocation-card dislocation-preset-card">
+              <label class="control-label" for="dislocationPresetSelect">教材情形</label>
+              <select id="dislocationPresetSelect" class="dislocation-select" aria-label="选择位错交割预设">
+                <option value="edge-edge-kink">刃型 × 刃型 · A 扭折 / B 扭折</option>
+                <option value="edge-edge-jog">刃型 × 刃型 · A 不变 / B 割阶</option>
+                <option value="edge-screw" selected>刃型 × 螺型 · A 割阶 / B 扭折</option>
+                <option value="screw-screw">螺型 × 螺型 · A 割阶 / B 扭折</option>
+                <option value="mixed-edge">混合型 × 刃型 · A 扭折 / B 割阶</option>
+                <option value="custom">自定义矢量</option>
+              </select>
+              <p class="dislocation-relative-note">动画中位错 A 运动；按相对运动原理，两条位错所得台阶段的判定不变。本模型适用于两个不同且相交滑移面上的位错交割。</p>
+            </section>
+
+            <section class="dislocation-card dislocation-vector-card is-a">
+              <div class="dislocation-vector-head">
+                <span class="dislocation-line-mark" aria-hidden="true"></span>
+                <div>
+                  <span>位错 A</span>
+                  <strong>运动位错</strong>
+                </div>
+                <select id="dislocationAType" class="dislocation-type-select" aria-label="位错 A 类型">
+                  <option value="edge">刃型</option>
+                  <option value="screw">螺型</option>
+                  <option value="mixed">混合型</option>
+                </select>
+              </div>
+              <div class="dislocation-vector-fields">
+                <label>
+                  <span>位错线 ξ<sub>1</sub> [u v w]</span>
+                  <input id="dislocationALine" type="text" inputmode="text" value="0 1 0" spellcheck="false" />
+                </label>
+                <label>
+                  <span>柏氏矢量 b<sub>1</sub> [u v w]</span>
+                  <input id="dislocationABurgers" type="text" inputmode="text" value="1 0 0" spellcheck="false" />
+                </label>
+                <label>
+                  <span>滑移面法向 n<sub>1</sub></span>
+                  <input id="dislocationAPlane" type="text" inputmode="text" value="0 0 1" spellcheck="false" />
+                  <small id="dislocationAPlaneHint">已由 ξ × b 自动得到。</small>
+                </label>
+              </div>
+            </section>
+
+            <section class="dislocation-card dislocation-vector-card is-b">
+              <div class="dislocation-vector-head">
+                <span class="dislocation-line-mark" aria-hidden="true"></span>
+                <div>
+                  <span>位错 B</span>
+                  <strong>被交割位错</strong>
+                </div>
+                <select id="dislocationBType" class="dislocation-type-select" aria-label="位错 B 类型">
+                  <option value="edge">刃型</option>
+                  <option value="screw" selected>螺型</option>
+                  <option value="mixed">混合型</option>
+                </select>
+              </div>
+              <div class="dislocation-vector-fields">
+                <label>
+                  <span>位错线 ξ<sub>2</sub> [u v w]</span>
+                  <input id="dislocationBLine" type="text" inputmode="text" value="0 0 1" spellcheck="false" />
+                </label>
+                <label>
+                  <span>柏氏矢量 b<sub>2</sub> [u v w]</span>
+                  <input id="dislocationBBurgers" type="text" inputmode="text" value="0 0 1" spellcheck="false" />
+                </label>
+                <label>
+                  <span>滑移面法向 n<sub>2</sub></span>
+                  <input id="dislocationBPlane" type="text" inputmode="text" value="0 1 0" spellcheck="false" />
+                  <small id="dislocationBPlaneHint">螺型位错的滑移面不唯一，可修改 n。</small>
+                </label>
+              </div>
+            </section>
+            <p id="dislocationInputStatus" class="dislocation-input-status" data-state="ok" aria-live="polite">矢量关系已更新。</p>
+          </aside>
+
+          <section class="dislocation-view-panel" aria-label="位错交割三维动画">
+            <div id="dislocationViewerHost" class="dislocation-viewer-host"></div>
+            <div class="dislocation-view-actions">
+              <button id="dislocationResetButton" class="viewer-icon-button" type="button" aria-label="复位视角" title="复位视角"><img class="tool-icon" src="./assets/icons/rotate-ccw.svg" alt="" /></button>
+              <button id="dislocationExportButton" class="viewer-icon-button" type="button" aria-label="导出 PNG" title="导出 PNG"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
+            </div>
+            <div class="dislocation-view-badge" aria-live="polite">
+              <strong id="dislocationViewerStage">初始位置</strong>
+              <span id="dislocationViewerCaption">A 沿 v 方向滑移，B 固定。</span>
+            </div>
+            <div class="dislocation-legend" aria-label="位错颜色图例">
+              <span><i class="dislocation-swatch swatch-a"></i>位错 A</span>
+              <span><i class="dislocation-swatch swatch-b"></i>位错 B</span>
+              <span title="v 位于 A 的滑移面内，并垂直于位错线；动画选取 n₁ × ξ₁ 的正方向"><i class="dislocation-swatch swatch-motion"></i>v · A 的运动方向</span>
+              <span><i class="dislocation-swatch swatch-kink"></i>扭折</span>
+              <span><i class="dislocation-swatch swatch-jog"></i>割阶</span>
+            </div>
+            <div class="dislocation-timeline" aria-label="位错交割播放控制">
+              <div class="segmented dislocation-stage-tabs" role="group" aria-label="交割阶段">
+                <button class="segment is-active" type="button" data-dislocation-stage="initial" aria-pressed="true">初始</button>
+                <button class="segment" type="button" data-dislocation-stage="approach" aria-pressed="false">接近</button>
+                <button class="segment" type="button" data-dislocation-stage="cross" aria-pressed="false">交割</button>
+                <button class="segment" type="button" data-dislocation-stage="result" aria-pressed="false">结果</button>
+              </div>
+              <input id="dislocationProgress" class="dislocation-progress" type="range" min="0" max="1" step="0.001" value="0" aria-label="交割动画进度" />
+              <div class="dislocation-playback-actions">
+                <button id="dislocationPlayButton" class="primary-button" type="button"><span aria-hidden="true">▶</span> 播放交割</button>
+                <button id="dislocationInitialButton" class="ghost-button" type="button">回到初始</button>
+              </div>
+            </div>
+          </section>
+
+          <aside class="dislocation-analysis-panel" aria-label="位错交割结果分析">
+            <section class="dislocation-card dislocation-summary-card">
+              <span class="fe-kicker">交割结论</span>
+              <h3 id="dislocationSummary">A：割阶 · B：扭折</h3>
+              <p>位错 A 上的台阶段平行于 b₂；位错 B 上的台阶段平行于 b₁。</p>
+              <p id="dislocationWarning" class="dislocation-warning" hidden></p>
+            </section>
+
+            <section id="dislocationAResultCard" class="dislocation-card dislocation-result-card" data-result="jog">
+              <div class="dislocation-result-head">
+                <span>A</span>
+                <div>
+                  <small>位错 A 形成</small>
+                  <strong id="dislocationAResult">割阶</strong>
+                </div>
+              </div>
+              <dl class="dislocation-result-meta">
+                <div><dt>原位错</dt><dd id="dislocationAActualType">刃型</dd></div>
+                 <div><dt>台阶段方向</dt><dd id="dislocationAStep">∥ b₂ = [0 0 1]</dd></div>
+                <div><dt>台阶段性质</dt><dd id="dislocationAStepType">刃型台阶段</dd></div>
+              </dl>
+              <p id="dislocationARelation" class="dislocation-relation">n₁ · b₂ ≠ 0，台阶段离开原滑移面。</p>
+              <p id="dislocationAMobility" class="dislocation-mobility">基本割阶通常可随刃型位错一道移动。</p>
+            </section>
+
+            <section id="dislocationBResultCard" class="dislocation-card dislocation-result-card" data-result="kink">
+              <div class="dislocation-result-head">
+                <span>B</span>
+                <div>
+                  <small>位错 B 形成</small>
+                  <strong id="dislocationBResult">扭折</strong>
+                </div>
+              </div>
+              <dl class="dislocation-result-meta">
+                <div><dt>原位错</dt><dd id="dislocationBActualType">螺型</dd></div>
+                 <div><dt>台阶段方向</dt><dd id="dislocationBStep">∥ b₁ = [1 0 0]</dd></div>
+                <div><dt>台阶段性质</dt><dd id="dislocationBStepType">刃型台阶段</dd></div>
+              </dl>
+              <p id="dislocationBRelation" class="dislocation-relation">n₂ · b₁ = 0，台阶段仍在原滑移面内。</p>
+              <p id="dislocationBMobility" class="dislocation-mobility">扭折通常可在线张力作用下移动或消失。</p>
+            </section>
+
+            <p class="dislocation-rule-note"><strong>判定：</strong>台阶段在原滑移面内为扭折；离开原滑移面为割阶。若台阶段与原位错线重合，则线形不变。台阶段属于原位错，其柏氏矢量仍为原位错的 b。</p>
+          </aside>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <section id="ternaryPhaseModule" class="module-view ternary-module is-hidden" data-module-panel="ternary-phase">
+        <div class="ternary-workspace">
+          <aside class="ternary-control-panel" aria-label="三元相图空间相区控制">
+            <section class="ternary-card ternary-head-card">
+              <span class="fe-kicker">三元相图</span>
+              <h2>空间相区查看</h2>
+              <p>A-B-C 成分三角形 · 归一化温度 · 教材示意模型</p>
+            </section>
+
+            <section class="ternary-card ternary-diagram-card">
+              <label class="control-label" for="ternaryDiagramSelect">相图类型</label>
+              <select id="ternaryDiagramSelect" class="ternary-select" aria-label="选择三元相图类型"></select>
+              <p id="ternaryDiagramSummary" class="ternary-diagram-summary"></p>
+            </section>
+
+            <section class="ternary-card ternary-list-card">
+              <label class="control-label" for="ternaryRegionSelect">相区</label>
+              <select id="ternaryRegionSelect" class="ternary-select" aria-label="选择三元相区"></select>
+              <div id="ternaryRegionList" class="ternary-region-list" aria-label="三元相区列表"></div>
+            </section>
+
+            <section class="ternary-card ternary-display-card">
+              <label class="control-label">显示</label>
+              <div class="ternary-tools">
+                <button id="ternaryOnlyButton" class="ghost-button" type="button" aria-pressed="false" aria-label="仅选中相区" title="仅选中相区"><img class="tool-icon" src="./assets/icons/scan.svg" alt="" /></button>
+                <button id="ternaryDragRegionButton" class="ghost-button" type="button" aria-pressed="false" aria-label="拖动相区" title="拖动相区"><img class="tool-icon" src="./assets/icons/move.svg" alt="" /></button>
+                <button id="ternaryResetRegionsButton" class="ghost-button" type="button" aria-label="相区归位" title="相区归位"><img class="tool-icon" src="./assets/icons/layers.svg" alt="" /></button>
+                <button id="ternaryResetButton" class="ghost-button" type="button" aria-label="复位视角" title="复位视角"><img class="tool-icon" src="./assets/icons/rotate-ccw.svg" alt="" /></button>
+                <button id="ternaryMobileSectionToggle" class="ghost-button ternary-mobile-section-toggle" type="button" aria-expanded="false" aria-label="截面设置" title="截面设置"><img class="tool-icon" src="./assets/icons/square-split-horizontal.svg" alt="" /></button>
+                <button id="ternaryExportButton" class="ghost-button" type="button" aria-label="导出 PNG" title="导出 PNG"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
+              </div>
+            </section>
+
+            <section class="ternary-card ternary-section-card">
+              <label class="control-label">截面</label>
+              <div class="segmented ternary-section-mode" role="group" aria-label="截面类型">
+                <button class="segment is-active" type="button" data-ternary-section-mode="horizontal">水平</button>
+                <button class="segment" type="button" data-ternary-section-mode="vertical">垂直</button>
+              </div>
+
+              <div id="ternaryHorizontalSection" class="ternary-section-fields">
+                <label class="ternary-field">
+                  <span>归一化温度 T</span>
+                  <input id="ternarySectionTemp" type="number" min="0.04" max="1.02" step="0.01" value="0.42" />
+                </label>
+              </div>
+
+              <div id="ternarySectionPresets" class="ternary-section-presets" role="group" aria-label="教材关键温度截面"></div>
+
+              <div id="ternaryVerticalSection" class="ternary-section-fields is-hidden">
+                <div class="ternary-point-grid" aria-label="垂直截面成分点">
+                  <span></span>
+                  <span>A%</span>
+                  <span>B%</span>
+                  <span>C%</span>
+                  <strong>P1</strong>
+                  <input id="ternaryPoint1A" type="number" min="0" max="100" step="1" value="100" />
+                  <input id="ternaryPoint1B" type="number" min="0" max="100" step="1" value="0" />
+                  <input id="ternaryPoint1C" type="number" min="0" max="100" step="1" value="0" />
+                  <strong>P2</strong>
+                  <input id="ternaryPoint2A" type="number" min="0" max="100" step="1" value="0" />
+                  <input id="ternaryPoint2B" type="number" min="0" max="100" step="1" value="100" />
+                  <input id="ternaryPoint2C" type="number" min="0" max="100" step="1" value="0" />
+                </div>
+              </div>
+
+              <div class="ternary-section-actions">
+                <button id="ternaryApplySectionButton" class="primary-button" type="button">获得截面</button>
+                <button id="ternaryStandaloneSectionButton" class="ghost-button" type="button" disabled>独立查看</button>
+                <button id="ternaryClearSectionButton" class="ghost-button" type="button">清除</button>
+              </div>
+              <p id="ternarySectionStatus" class="input-hint">水平截面：输入温度 T 后获得该温度下的相区交线。</p>
+            </section>
+
+            <section class="ternary-card ternary-info-card">
+              <div class="structure-info-title">
+                <span class="fe-kicker">当前相区</span>
+                <h3 id="ternaryRegionTitle">L + α</h3>
+              </div>
+              <dl class="ternary-meta">
+                <div>
+                  <dt>相组成</dt>
+                  <dd id="ternaryPhaseReadout">L + α</dd>
+                </div>
+                <div>
+                  <dt>类型</dt>
+                  <dd id="ternaryKindReadout">液固两相区</dd>
+                </div>
+                <div>
+                  <dt>温度范围</dt>
+                  <dd id="ternaryTemperatureReadout">液相面以下至 TE 附近</dd>
+                </div>
+                <div>
+                  <dt>成分范围</dt>
+                  <dd id="ternaryCompositionReadout">从 A 角向三元共晶点收敛</dd>
+                </div>
+                <div>
+                  <dt>空间形状</dt>
+                  <dd id="ternaryShapeReadout">靠近 A 端的初晶 α 液固两相楔形区</dd>
+                </div>
+              </dl>
+              <p id="ternaryNote" class="fe-note"></p>
+            </section>
+          </aside>
+
+          <section class="ternary-view-panel" aria-label="三元相图空间相区视图">
+            <div id="ternaryViewerHost" class="ternary-viewer-host"></div>
+            <div class="ternary-view-mode-badge" aria-live="polite">
+              <strong id="ternaryViewModeTitle">空间相图</strong>
+              <span id="ternaryViewModeMeta">当前相区 · L + α</span>
+            </div>
+            <button id="ternaryReturnSpaceButton" class="ternary-return-space ghost-button" type="button" hidden>← 空间相图</button>
+            <div id="ternaryLegend" class="ternary-legend" aria-label="三元相区颜色图例"></div>
+          </section>
+        </div>
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      
+      <!-- 记忆卡片模块 -->
+      <section id="memoryCardsModule" class="module-view memory-module is-hidden" data-module-panel="memory-cards">
+        <div class="mem-workspace">
+          <div class="mem-filter-card">
+            <div class="mem-cat-tabs">
+              <button class="mem-cat-tab is-active" data-category="全部" type="button">全部</button>
+              <button class="mem-cat-tab" data-category="名词解释" type="button">名词解释</button>
+              <button class="mem-cat-tab" data-category="简答" type="button">简答题</button>
+              <button class="mem-cat-tab" data-category="公式" type="button">核心公式</button>
+            </div>
+            <div class="mem-controls-row">
+              <select id="memFreqSelect" class="mem-select" aria-label="考频筛选">
+                <option value="all">全部考频</option>
+                <option value="高频">高频考点</option>
+                <option value="中频">中频考点</option>
+                <option value="低频">低频考点</option>
+              </select>
+              <select id="memStatusSelect" class="mem-select" aria-label="复习状态筛选">
+                <option value="all">全部状态</option>
+                <option value="weak">薄弱/错题</option>
+                <option value="known">已掌握</option>
+                <option value="favorite">已收藏</option>
+                <option value="new">未学</option>
+              </select>
+              <input id="memSearchInput" class="mem-search" type="search" placeholder="搜索卡片关键词..." />
+              <button id="memRandomBtn" class="ghost-button" type="button">⇄ 随机</button>
+              <button id="memResetBtn" class="ghost-button" type="button">重置</button>
+            </div>
+          </div>
+
+          <div class="mem-main-layout">
+            <aside class="mem-sidebar">
+              <div class="mem-sidebar-head">
+                <span id="memCountBadge">卡片列表</span>
+              </div>
+              <div id="memCardList" class="mem-card-list"></div>
+            </aside>
+
+            <div class="mem-card-container">
+              <div id="memEmptyView" class="mem-card-display" hidden style="justify-content:center;align-items:center;text-align:center;">
+                <h3>暂无符合筛选条件的卡片</h3>
+                <p style="color:var(--muted);font-size:14px;">请尝试切换分类或点击“重置”按钮。</p>
+              </div>
+
+              <div id="memCardWrapper" class="mem-card-display">
+                <header class="mem-card-head">
+                  <div>
+                    <div class="mem-card-meta">
+                      <span id="memType" class="mem-badge">名词解释</span>
+                      <span id="memFreq" class="mem-badge badge-高频">高频考点</span>
+                      <span id="memScope" class="mem-badge" hidden>立方晶系</span>
+                    </div>
+                    <h2 id="memTitle" class="mem-card-title">能量最低原理</h2>
+                  </div>
+                  <div>
+                    <button id="memFavBtn" class="ghost-button" type="button">☆ 收藏</button>
+                  </div>
+                </header>
+
+                <div id="memFrontHint" class="mem-card-front-hint">
+                  💡 记忆线索：电子在基态排布时...
+                </div>
+
+                <div style="display:flex;justify-content:center;">
+                  <button id="memRevealBtn" class="primary-button" type="button" style="min-width:180px;">展开答案 (空格/回车)</button>
+                </div>
+
+                <div id="memAnswerPanel" class="mem-answer-panel" hidden>
+                  <div id="memAnswerText"></div>
+                  <div id="memDiagramContainer" class="mem-diagram-container"></div>
+                </div>
+
+                <div class="mem-rate-group">
+                  <button class="mem-rate-btn" data-rate="forgot" type="button">1. 不会 (1)</button>
+                  <button class="mem-rate-btn" data-rate="uncertain" type="button">2. 记不清 (2)</button>
+                  <button class="mem-rate-btn" data-rate="known" type="button">3. 熟练掌握 (3)</button>
+                </div>
+
+                <footer class="mem-card-footer">
+                  <button id="memPrevBtn" class="ghost-button" type="button">← 上一张</button>
+                  <span id="memProgressText" style="font-size:13px;color:var(--muted);font-weight:600;">1 / 50</span>
+                  <button id="memNextBtn" class="ghost-button" type="button">下一张 →</button>
+                </footer>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <!-- 考研真题题库模块 -->
+      <section id="flashcardsModule" class="module-view flashcards-module is-hidden" data-module-panel="flashcards">
+        <div class="fc-workspace">
+          <div class="fc-filter-card">
+            <div class="fc-subj-tabs">
+              <button class="fc-subj-tab is-active" data-subject="caikeji" type="button">材料科学基础 (1060题)</button>
+              <button class="fc-subj-tab" data-subject="metallurgy" type="button">金属学与热处理 (257题)</button>
+            </div>
+            <div class="fc-controls-row">
+              <select id="fcChapterSelect" class="fc-select" aria-label="章节筛选">
+                <option value="全部">全部章节</option>
+              </select>
+              <select id="fcTypeSelect" class="fc-select" aria-label="题型筛选">
+                <option value="全部">全部题型</option>
+              </select>
+              <select id="fcStatusSelect" class="fc-select" aria-label="刷题状态">
+                <option value="all">全部题目</option>
+                <option value="unanswered">未做题目</option>
+                <option value="weak">错题本</option>
+                <option value="favorite">收藏夹</option>
+              </select>
+              <input id="fcSearchInput" class="fc-search" type="search" placeholder="搜索题目/考点关键词..." />
+              <button id="fcRandomBtn" class="ghost-button" type="button">🎲 随机抽题</button>
+            </div>
+          </div>
+
+          <div style="font-size:12px;color:var(--muted);padding:0 4px;">
+            <span id="fcStatsBadge">加载题库统计中...</span>
+          </div>
+
+          <div class="fc-card-container">
+            <div id="fcEmptyBox" class="fc-card-display" hidden style="justify-content:center;align-items:center;text-align:center;">
+              <h3>暂无符合筛选条件的题目</h3>
+              <p style="color:var(--muted);font-size:14px;">请尝试更换章节或题型选项。</p>
+            </div>
+
+            <div id="fcQuestionCard" class="fc-card-display">
+              <header class="fc-card-head">
+                <div>
+                  <div class="fc-card-meta">
+                    <span id="fcChapterBadge" class="fc-badge">第一章 晶体结构</span>
+                    <span id="fcTypeBadge" class="fc-badge" style="background:var(--accent);color:#fff;">选择题</span>
+                    <span id="fcIndexText" style="font-size:12px;color:var(--muted);font-weight:600;">第 1 / 1060 题</span>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button id="fcWeakBtn" class="ghost-button" type="button">📌 加入错题本</button>
+                  <button id="fcFavBtn" class="ghost-button" type="button">☆ 收藏</button>
+                </div>
+              </header>
+
+              <div id="fcQuestionText" style="font-size:17px;font-weight:600;line-height:1.6;color:var(--ink);"></div>
+              <div id="fcOptionsContainer" class="fc-options-grid" hidden></div>
+
+              <div style="display:flex;justify-content:center;margin:10px 0;">
+                <button id="fcRevealBtn" class="primary-button" type="button" style="min-width:200px;">查看参考答案与解析</button>
+              </div>
+
+              <div id="fcAnswerBox" class="fc-answer-panel" hidden>
+                <div id="fcCorrectAnswer" style="font-size:15px;color:var(--ink);font-weight:600;line-height:1.6;"></div>
+                <div id="fcAnalysisText" class="fc-analysis"></div>
+              </div>
+
+              <footer class="fc-card-footer">
+                <button id="fcPrevBtn" class="ghost-button" type="button">← 上一题</button>
+                <button id="fcNextBtn" class="ghost-button" type="button">下一题 →</button>
+              </footer>
+            </div>
+          </div>
+        </div>
+
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+
+      <!-- 资料交流模块 -->
+      <section id="redemptionModule" class="module-view redemption-module is-hidden" data-module-panel="redemption">
+        <div class="redemption-workspace">
+          <div class="redemption-surface">
+            <section class="redemption-main" aria-labelledby="redemptionTitle">
+              <header class="redemption-heading">
+                <div class="redemption-title-row">
+                  <img src="./assets/app-logo.svg" alt="" style="width:44px;height:44px;" />
+                  <div>
+                    <span class="redemption-kicker">备考资源与研友交流</span>
+                    <h2 id="redemptionTitle">备考资料站</h2>
+                  </div>
+                </div>
+                <p>
+                  聚力材料学科考研，汇集专业课优质复习资料、大纲题型与考研同仁经验分享。
+                  <span>欢迎扫码加入材料考研研友交流圈，获取最新考纲解读与专业课真题资料。</span>
+                </p>
+              </header>
+
+              <div class="study-hub-grid">
+                <div class="study-hub-card">
+                  <h3>📚 核心专业课推荐教材</h3>
+                  <ul class="study-hub-list">
+                    <li>《材料科学基础》胡赓祥 / 蔡珣（上海交通大学出版社）</li>
+                    <li>《材料科学基础》刘智恩（西北工业大学出版社）</li>
+                    <li>《材料科学基础》石德珂（机械工业出版社）</li>
+                    <li>《金属学与热处理》崔忠圻（机械工业出版社）</li>
+                  </ul>
+                </div>
+                <div class="study-hub-card">
+                  <h3>🎯 专业课提分复习策略</h3>
+                  <p><strong>第一轮：</strong>对照本工具 3D 晶胞与相图模块，吃透晶面晶向指数标定与 Fe-C 杠杆定律计算；</p>
+                  <p><strong>第二轮：</strong>结合记忆卡片强化名词解释与核心定律记忆，逐章消灭薄弱盲点；</p>
+                  <p><strong>第三轮：</strong>利用考研题库模块进行真题刷题与错题重练，建立知识点网络。</p>
+                </div>
+                <div class="study-hub-card">
+                  <h3>🤝 交流与资料获取</h3>
+                  <div class="study-qr-box">
+                    <img src="./assets/app-qrcode.svg" alt="考研交流群二维码" />
+                    <p style="font-size:12px;color:var(--muted);text-align:center;">扫码获取最新备考笔记、真题解析与考研研友群</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <footer class="module-footer">
+          <div class="module-footer-copy">
+            <strong>材料科学与工程考研研学工具箱</strong>
+            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
+            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+          </div>
+          <figure class="module-footer-qr">
+            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <figcaption>考研资料与交流答疑</figcaption>
+          </figure>
+        </footer>
+      </section>
+</main>
+
+    <script type="module" src="./src/app.js?v=20261008-phase-audit-motion"></script>
+  </body>
+</html>

@@ -1,3 +1,4 @@
+let selectModuleRef = null;
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { createSceneLoop, disposeSceneChildren } from "./scene-loop.js?v=20261008-phase-audit-motion";
@@ -139,6 +140,8 @@ const moduleLoaders = {
   interstitial: () => import('./interstitial-lattice.js?v=20261008-phase-audit-motion').then(m => m.initInterstitialLatticeModule()),
   dislocation: () => import('./dislocation-intersection.js?v=20261008-phase-audit-motion').then(m => m.initDislocationIntersectionModule()),
   'ternary-phase': () => import('./ternary-phase.js?v=20261008-phase-audit-motion').then(m => m.initTernaryPhaseModule()),
+  home: () => import('./home-overview.js').then(m => m.initHomeOverviewModule((req, push) => selectModuleRef?.(req, push))),
+  'binary-phase': () => import('./binary-phase.js').then(m => m.initBinaryPhaseModule()),
   'memory-cards': () => import('./memory-cards.js').then(m => m.initMemoryCardsModule()),
   flashcards: () => import('./flashcards.js').then(m => m.initFlashcardsModule()),
   redemption: () => import('./peripheral-redemption.js?v=20261008-phase-audit-motion').then(m => m.initPeripheralRedemptionModule()),
@@ -163,15 +166,28 @@ createSceneLoop({ host: els.host, controls, render: () => renderer.render(scene,
 function wireModuleNav() {
   const buttons = [...document.querySelectorAll('[data-module]')];
   const panels = [...document.querySelectorAll('[data-module-panel]')];
-  document.querySelector('.module-nav').setAttribute('role', 'tablist');
+  document.querySelector('.sidebar-nav, .module-nav')?.setAttribute('role', 'tablist');
+
+  const sidebar = document.querySelector('#appSidebar');
+  const mobileBtn = document.querySelector('#mobileMenuBtn');
+  if (mobileBtn && sidebar) {
+    mobileBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('is-open');
+    });
+  }
+
   buttons.forEach((button, index) => {
     const panel = panels.find(item => item.dataset.modulePanel === button.dataset.module);
+    if (!panel) return;
     button.id = `tab-${button.dataset.module}`;
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', panel.id);
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', button.id);
-    button.addEventListener('click', () => selectModule(button.dataset.module, true));
+    button.addEventListener('click', () => {
+      sidebar?.classList.remove('is-open');
+      selectModule(button.dataset.module, true);
+    });
     button.addEventListener('keydown', (event) => {
       let next;
       if (event.key === 'ArrowRight') next = (index + 1) % buttons.length;
@@ -187,8 +203,28 @@ function wireModuleNav() {
   window.addEventListener('hashchange', () => selectModule(location.hash.slice(1)));
   selectModule(location.hash.slice(1));
 
+  selectModuleRef = selectModule;
   async function selectModule(requested, push = false) {
-    const name = buttons.some(button => button.dataset.module === requested) ? requested : 'crystal';
+    const name = buttons.some(button => button.dataset.module === requested) ? requested : 'home';
+
+    const TITLES = {
+      home: { title: '首页导航', desc: '选择模块进入对应工具' },
+      'typical-structures': { title: '典型晶体结构', desc: '晶体结构 · 晶胞模型与结构参数' },
+      interstitial: { title: '点阵间隙', desc: '晶体结构 · 间隙位置与半径比' },
+      crystal: { title: '密勒指数', desc: '晶体学 · 晶面、晶向、镜面绘制与识图训练' },
+      'binary-phase': { title: '二元相图', desc: '相图 · 匀晶与共晶相图、杠杆定律计算' },
+      'iron-carbon': { title: '铁碳相图', desc: '相图 · Fe-Fe3C 相图与组织计算' },
+      'ternary-phase': { title: '三元相图', desc: '相图 · 三元匀晶与三元共晶' },
+      stereographic: { title: '极射投影', desc: '投影 · 立方晶系标准投影' },
+      'memory-cards': { title: '记忆卡片', desc: '考研复习 · 核心知识点与公式记忆' },
+      flashcards: { title: '考研题库', desc: '考研复习 · 材科基与金属学真题刷题' },
+      redemption: { title: '资料交流', desc: '备考资源 · 教材推荐与考研交流' },
+    };
+    const meta = TITLES[name] || TITLES.home;
+    const topTitle = document.querySelector('#topbarTitle');
+    const topDesc = document.querySelector('#topbarDesc');
+    if (topTitle) topTitle.textContent = meta.title;
+    if (topDesc) topDesc.textContent = meta.desc;
     for (const button of buttons) {
       const active = button.dataset.module === name;
       button.classList.toggle('is-active', active);

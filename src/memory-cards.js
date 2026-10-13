@@ -139,10 +139,10 @@ export function initMemoryCardsModule() {
     favBtn.textContent = p.favorite ? "★ 已收藏" : "☆ 收藏";
     favBtn.classList.toggle("is-fav", !!p.favorite);
 
-    // Front: hint or prompt
+    // Front: study prompt (线索已按客户要求移除，避免雷同)
     const frontHint = root.querySelector("#memFrontHint");
     if (frontHint) {
-      frontHint.textContent = currentCard.hint ? `💡 记忆线索：${currentCard.hint}` : "点击“展开答案”核对记忆内容";
+      frontHint.textContent = "思考核心概念后，点击“展开答案”核对专业课知识要点";
     }
 
     // Back / Revealed Answer

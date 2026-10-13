@@ -290,39 +290,90 @@ export function initBinaryPhaseModule() {
 
     let phaseState = "";
     let lPercent = 0, alphaPercent = 0, betaPercent = 0;
+    let microSegments = [];
+
+    const tL_left = 327.5 - ((327.5 - 183) / 61.9) * w;
+    const tL_right = 183 + ((232 - 183) / (100 - 61.9)) * (w - 61.9);
 
     if (t >= sys.tEutectic) {
       if (w < sys.wEutectic) {
-        // Left liquidus from (0, 327.5) to (61.9, 183)
-        const tL = 327.5 - ((327.5 - 183) / 61.9) * w;
-        if (t >= tL) {
+        if (t >= tL_left) {
           phaseState = "单一液相区 L";
           lPercent = 100;
+          microSegments = [{ label: "液相熔体 L", percent: 100, color: "#2563eb" }];
         } else {
-          phaseState = "L + α (结晶中)";
-          const cL = (327.5 - t) * (61.9 / (327.5 - 183));
-          const cS = (327.5 - t) * (19.2 / (327.5 - 183));
-          lPercent = ((w - cS) / (cL - cS)) * 100;
-          alphaPercent = 100 - lPercent;
+          phaseState = "L + α 两相区 (初生 α 结晶中)";
+          const cL = Math.min(61.9, Math.max(0, (327.5 - t) * (61.9 / (327.5 - 183))));
+          const cS = Math.min(19.2, Math.max(0, (327.5 - t) * (19.2 / (327.5 - 183))));
+          if (cL > cS) {
+            lPercent = Math.max(0, Math.min(100, ((w - cS) / (cL - cS)) * 100));
+            alphaPercent = 100 - lPercent;
+          } else {
+            lPercent = 50; alphaPercent = 50;
+          }
+          microSegments = [
+            { label: "初生 α 晶粒", percent: alphaPercent, color: "#d97706" },
+            { label: "高温剩余液相 L", percent: lPercent, color: "#2563eb" }
+          ];
         }
       } else {
-        // Right liquidus from (61.9, 183) to (100, 232)
-        const tL = 183 + ((232 - 183) / (100 - 61.9)) * (w - 61.9);
-        if (t >= tL) {
+        if (t >= tL_right) {
           phaseState = "单一液相区 L";
           lPercent = 100;
+          microSegments = [{ label: "液相熔体 L", percent: 100, color: "#2563eb" }];
         } else {
-          phaseState = "L + β (结晶中)";
-          const cL = 61.9 + (t - 183) * ((100 - 61.9) / (232 - 183));
-          const cS = 97.5 + (t - 183) * ((100 - 97.5) / (232 - 183));
-          lPercent = ((cS - w) / (cS - cL)) * 100;
-          betaPercent = 100 - lPercent;
+          phaseState = "L + β 两相区 (初生 β 结晶中)";
+          const cL = Math.max(61.9, Math.min(100, 61.9 + (t - 183) * ((100 - 61.9) / (232 - 183))));
+          const cS = Math.max(97.5, Math.min(100, 97.5 + (t - 183) * ((100 - 97.5) / (232 - 183))));
+          if (cS > cL) {
+            lPercent = Math.max(0, Math.min(100, ((cS - w) / (cS - cL)) * 100));
+            betaPercent = 100 - lPercent;
+          } else {
+            lPercent = 50; betaPercent = 50;
+          }
+          microSegments = [
+            { label: "高温剩余液相 L", percent: lPercent, color: "#2563eb" },
+            { label: "初生 β 晶粒", percent: betaPercent, color: "#7c3aed" }
+          ];
         }
       }
     } else {
-      phaseState = "室温组织 α + β (含共晶体)";
-      alphaPercent = ((97.5 - w) / (97.5 - 19.2)) * 100;
-      betaPercent = 100 - alphaPercent;
+      // 室温/低于183℃固相区
+      if (w <= 19.2) {
+        alphaPercent = 100;
+        betaPercent = 0;
+        phaseState = "单一 α 固溶体区";
+        microSegments = [{ label: "α 晶粒", percent: 100, color: "#d97706" }];
+      } else if (w >= 97.5) {
+        alphaPercent = 0;
+        betaPercent = 100;
+        phaseState = "单一 β 固溶体区";
+        microSegments = [{ label: "β 晶粒", percent: 100, color: "#7c3aed" }];
+      } else {
+        alphaPercent = Math.max(0, Math.min(100, ((97.5 - w) / (97.5 - 19.2)) * 100));
+        betaPercent = 100 - alphaPercent;
+
+        if (Math.abs(w - 61.9) < 0.2) {
+          phaseState = "共晶合金 (全部为共晶体)";
+          microSegments = [{ label: "共晶体 (α+β)E", percent: 100, color: "#ec4899" }];
+        } else if (w < 61.9) {
+          phaseState = "亚共晶合金 (先共晶 α + 共晶体)";
+          const alphaPro = Math.max(0, Math.min(100, ((61.9 - w) / (61.9 - 19.2)) * 100));
+          const eutectic = 100 - alphaPro;
+          microSegments = [
+            { label: "初生 α 晶粒", percent: alphaPro, color: "#d97706" },
+            { label: "共晶体 (α+β)E", percent: eutectic, color: "#ec4899" }
+          ];
+        } else {
+          phaseState = "过共晶合金 (初生 β + 共晶体)";
+          const betaPro = Math.max(0, Math.min(100, ((w - 61.9) / (97.5 - 61.9)) * 100));
+          const eutectic = 100 - betaPro;
+          microSegments = [
+            { label: "共晶体 (α+β)E", percent: eutectic, color: "#ec4899" },
+            { label: "初生 β 晶粒", percent: betaPro, color: "#7c3aed" }
+          ];
+        }
+      }
     }
 
     alphaPercent = Math.max(0, Math.min(100, alphaPercent));
@@ -331,16 +382,19 @@ export function initBinaryPhaseModule() {
 
     els.phaseTitle.textContent = `${sys.name} · 相组成`;
     els.phaseBar.innerHTML = `
-      ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent}%;background:#2563eb;">液相 L ${lPercent.toFixed(1)}%</div>` : ''}
-      ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent}%;background:#d97706;">α 相 ${alphaPercent.toFixed(1)}%</div>` : ''}
-      ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent}%;background:#7c3aed;">β 相 ${betaPercent.toFixed(1)}%</div>` : ''}
+      ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent.toFixed(1)}%;background:#2563eb;">${lPercent > 8 ? `液相 L ${lPercent.toFixed(1)}%` : ''}</div>` : ''}
+      ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent.toFixed(1)}%;background:#d97706;">${alphaPercent > 8 ? `α 相 ${alphaPercent.toFixed(1)}%` : ''}</div>` : ''}
+      ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent.toFixed(1)}%;background:#7c3aed;">${betaPercent > 8 ? `β 相 ${betaPercent.toFixed(1)}%` : ''}</div>` : ''}
     `;
 
     els.microTitle.textContent = `组织组成物`;
-    els.microBar.innerHTML = `
-      <div class="bp-bar-seg" style="width:${alphaPercent}%;background:#d97706;">α 晶粒 / 共晶 α ${alphaPercent.toFixed(1)}%</div>
-      <div class="bp-bar-seg" style="width:${betaPercent}%;background:#7c3aed;">β 晶粒 / 共晶 β ${betaPercent.toFixed(1)}%</div>
-    `;
+    els.microBar.innerHTML = microSegments
+      .filter((seg) => seg.percent > 0)
+      .map((seg) => `
+        <div class="bp-bar-seg" style="width:${seg.percent.toFixed(1)}%;background:${seg.color};">
+          ${seg.percent > 8 ? `${seg.label} ${seg.percent.toFixed(1)}%` : ''}
+        </div>
+      `).join("");
 
     els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Sn</strong>`;
     els.stateCard.innerHTML = `<span class="bp-meta-label">状态</span><strong>${phaseState}</strong>`;

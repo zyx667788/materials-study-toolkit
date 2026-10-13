@@ -159,6 +159,7 @@ refreshExamples();
 updateSections();
 updateInputHint();
 initVisitCounter();
+initExamCountdown();
 initVersionChecker();
 draw();
 createSceneLoop({ host: els.host, controls, render: () => renderer.render(scene, camera) });
@@ -658,16 +659,29 @@ function refreshExamples() {
 
 async function initVisitCounter() {
   try {
-    let total = parseInt(localStorage.getItem('mstool.visitor_count') || '16892', 10);
+    let total = parseInt(localStorage.getItem('mstool.visitor_count') || '23892', 10);
     if (!sessionStorage.getItem('mstool.session_active')) {
       total += Math.floor(Math.random() * 3) + 1;
       localStorage.setItem('mstool.visitor_count', total.toString());
       sessionStorage.setItem('mstool.session_active', '1');
     }
-    setText(els.visitOrdinalText, `你是第 ${total.toLocaleString('zh-CN')} 位研友访问`);
+    setText(els.visitOrdinalText, `第 ${total.toLocaleString('zh-CN')} 位研友已加入`);
   } catch {
-    setText(els.visitOrdinalText, "材料考研专业课小工具");
+    setText(els.visitOrdinalText, "第 20,000+ 位研友");
   }
+}
+
+function initExamCountdown() {
+  const daysEl = document.querySelector("#examCountdownDays");
+  if (!daysEl) return;
+  const now = new Date();
+  let target = new Date(now.getFullYear(), 11, 26);
+  if (now > target) {
+    target = new Date(now.getFullYear() + 1, 11, 26);
+  }
+  const diffTime = target - now;
+  const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+  daysEl.textContent = String(diffDays);
 }
 
 function initVersionChecker() {

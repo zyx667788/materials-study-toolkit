@@ -130,9 +130,10 @@
             </div>
           </div>
           <div class="topbar-right">
-            <span class="version-badge">v2.1 · Academic Edition</span>
-            <span id="visitOrdinalText" class="visit-ordinal-badge">研乐实验室</span>
-            <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">
+            <span id="examCountdownBadge" class="exam-countdown-badge">🎯 2027考研倒计时: <strong id="examCountdownDays">--</strong>天</span>
+            <span class="version-badge">v5.0 · Academic Edition</span>
+            <span id="visitOrdinalText" class="visit-ordinal-badge">第 20,000+ 位研友</span>
+            <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换模式" aria-pressed="false" title="切换模式（工作/休息）">
               <span id="themeToggleIcon" aria-hidden="true">☾</span>
             </button>
           </div>
@@ -270,7 +271,7 @@
               <div class="structure-tools">
                 <button id="structureRepeatButton" class="ghost-button is-active" type="button" data-repeat="2" aria-pressed="true">2×2×2</button>
                 <button id="structureBondButton" class="ghost-button is-active" type="button">近邻连接</button>
-                <button id="structureExportButton" class="ghost-button" type="button">导出 PNG</button>
+                <button id="structureExportButton" class="ghost-button" type="button">导出图片</button>
               </div>
               <label class="structure-slider">
                 <span>原子半径</span>
@@ -436,7 +437,7 @@
             <div id="interstitialViewerHost" class="interstitial-viewer-host"></div>
             <div class="interstitial-view-actions">
               <button id="interstitialResetButton" class="viewer-icon-button" type="button" aria-label="复位视角">↺</button>
-              <button id="interstitialExportButton" class="viewer-icon-button" type="button" aria-label="导出 PNG">⇩</button>
+              <button id="interstitialExportButton" class="viewer-icon-button" type="button" aria-label="导出图片" title="导出图片">⇩</button>
             </div>
             <div class="interstitial-view-badge" aria-live="polite">
               <strong id="interstitialViewerCode">BCC</strong>
@@ -573,7 +574,7 @@
 
             <section class="control-section tool-section">
               <button id="resetButton" class="ghost-button" type="button">复位视角</button>
-              <button id="exportButton" class="ghost-button" type="button">导出 PNG</button>
+              <button id="exportButton" class="ghost-button" type="button">导出图片</button>
             </section>
           </aside>
 
@@ -697,7 +698,7 @@
                   <span>w<sub>C</sub>%</span>
                   <input id="carbonInput" type="number" min="0" max="6.69" step="0.0001" value="0.77" inputmode="decimal" />
                 </label>
-                <button id="feExportButton" class="ghost-button" type="button">导出 PNG</button>
+                <button id="feExportButton" class="ghost-button" type="button">导出图片</button>
               </div>
             </div>
 
@@ -767,23 +768,30 @@
               <p class="fe-room-method">室温相按 α + Fe<sub>3</sub>C 杠杆定律计算，组织按合金类型分段计算</p>
               <div class="fe-quantity-section fe-phase-quantity">
                 <div class="fe-quantity-heading">
-                  <strong>相含量</strong>
-                  <span>α + Fe<sub>3</sub>C</span>
+                  <strong>室温相组成比例 (总计 100%)</strong>
+                  <span>α + Fe<sub>3</sub>C 杠杆平衡</span>
                 </div>
-                <div class="fe-bar-list">
-                  <div>
-                    <div class="fe-bar-label">
-                      <span id="phaseAlphaLabel">铁素体 α</span>
+                <div class="fe-combined-bar-wrapper">
+                  <div class="fe-combined-legend">
+                    <span class="fe-legend-item fe-legend-alpha">
+                      <i class="fe-legend-dot" style="background:#2563eb;"></i>
+                      <span id="phaseAlphaLabel">铁素体 α</span>:
                       <strong id="phaseAlphaValue">88.5%</strong>
-                    </div>
-                    <i id="phaseAlphaBar" class="fe-bar-fill fe-bar-alpha"></i>
-                  </div>
-                  <div>
-                    <div class="fe-bar-label">
-                      <span id="phaseCementiteLabel">渗碳体 Fe<sub>3</sub>C</span>
+                    </span>
+                    <span class="fe-legend-item fe-legend-cementite">
+                      <i class="fe-legend-dot" style="background:#d97706;"></i>
+                      <span id="phaseCementiteLabel">渗碳体 Fe<sub>3</sub>C</span>:
                       <strong id="phaseCementiteValue">11.5%</strong>
-                    </div>
-                    <i id="phaseCementiteBar" class="fe-bar-fill fe-bar-cementite"></i>
+                    </span>
+                  </div>
+                  <div class="fe-combined-track">
+                    <div id="phaseAlphaBar" class="fe-combined-seg fe-seg-alpha" style="width: 88.5%;"></div>
+                    <div id="phaseCementiteBar" class="fe-combined-seg fe-seg-cementite" style="width: 11.5%;"></div>
+                  </div>
+                  <div class="fe-combined-scale">
+                    <span>0% (纯 Fe)</span>
+                    <span id="phaseRatioScale">杠杆定律平衡分布</span>
+                    <span>100% (6.69% C)</span>
                   </div>
                 </div>
               </div>
@@ -839,7 +847,7 @@
                 <button id="ternaryResetRegionsButton" class="ghost-button" type="button" aria-label="相区归位" title="相区归位"><img class="tool-icon" src="./assets/icons/layers.svg" alt="" /></button>
                 <button id="ternaryResetButton" class="ghost-button" type="button" aria-label="复位视角" title="复位视角"><img class="tool-icon" src="./assets/icons/rotate-ccw.svg" alt="" /></button>
                 <button id="ternaryMobileSectionToggle" class="ghost-button ternary-mobile-section-toggle" type="button" aria-expanded="false" aria-label="截面设置" title="截面设置"><img class="tool-icon" src="./assets/icons/square-split-horizontal.svg" alt="" /></button>
-                <button id="ternaryExportButton" class="ghost-button" type="button" aria-label="导出 PNG" title="导出 PNG"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
+                <button id="ternaryExportButton" class="ghost-button" type="button" aria-label="导出图片" title="导出图片"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
               </div>
             </section>
 
@@ -985,7 +993,7 @@
 
             <section class="stereo-card stereo-tools-card">
               <button id="stereoResetButton" class="ghost-button" type="button">复位取向</button>
-              <button id="stereoExportButton" class="ghost-button" type="button">导出 PNG</button>
+              <button id="stereoExportButton" class="ghost-button" type="button">导出图片</button>
             </section>
           </aside>
 
@@ -1105,7 +1113,7 @@
             <div id="dislocationViewerHost" class="dislocation-viewer-host"></div>
             <div class="dislocation-view-actions">
               <button id="dislocationResetButton" class="viewer-icon-button" type="button" aria-label="复位视角" title="复位视角"><img class="tool-icon" src="./assets/icons/rotate-ccw.svg" alt="" /></button>
-              <button id="dislocationExportButton" class="viewer-icon-button" type="button" aria-label="导出 PNG" title="导出 PNG"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
+              <button id="dislocationExportButton" class="viewer-icon-button" type="button" aria-label="导出图片" title="导出图片"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
             </div>
             <div class="dislocation-view-badge" aria-live="polite">
               <strong id="dislocationViewerStage">初始位置</strong>

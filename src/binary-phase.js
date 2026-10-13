@@ -265,7 +265,8 @@ export function initBinaryPhaseModule() {
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <line x1="70" y1="${curY}" x2="670" y2="${curY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <circle cx="${curX}" cy="${curY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-      <text x="${curX + 8}" y="${curY - 8}" font-size="12" fill="#065f46" font-weight="bold">${w.toFixed(1)}%Ni / ${Math.round(t)}℃</text>
+      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
+      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="#065f46" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Ni / ${Math.round(t)}℃</text>
 
       <!-- Axes Tick Labels -->
       <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">0 (Cu)</text>
@@ -273,7 +274,7 @@ export function initBinaryPhaseModule() {
       <text x="370" y="370" font-size="12" fill="#64748b" text-anchor="middle">50</text>
       <text x="520" y="370" font-size="12" fill="#64748b" text-anchor="middle">75</text>
       <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">100 (Ni)</text>
-      <text x="370" y="390" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Ni) / %</text>
+      <text x="370" y="405" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Ni) / %</text>
 
       <text x="60" y="354" font-size="11" fill="#64748b" text-anchor="end">900</text>
       <text x="60" y="250" font-size="11" fill="#64748b" text-anchor="end">1100</text>
@@ -434,15 +435,17 @@ export function initBinaryPhaseModule() {
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <line x1="70" y1="${curY}" x2="670" y2="${curY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <circle cx="${curX}" cy="${curY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-      <text x="${curX + 8}" y="${curY - 8}" font-size="12" fill="#065f46" font-weight="bold">${w.toFixed(1)}%Sn / ${Math.round(t)}℃</text>
+      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
+      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="#065f46" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Sn / ${Math.round(t)}℃</text>
 
       <!-- Labels -->
       <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">0 (Pb)</text>
       <text x="${mapX(19.2)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">19.2</text>
       <text x="${mapX(61.9)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">61.9</text>
-      <text x="${mapX(97.5)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">97.5</text>
+      <line x1="${mapX(97.5)}" y1="350" x2="${mapX(97.5)}" y2="382" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 2"/>
+      <text x="${mapX(97.5)}" y="394" font-size="10" fill="#64748b" text-anchor="middle">97.5</text>
       <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">100 (Sn)</text>
-      <text x="370" y="390" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Sn) / %</text>
+      <text x="370" y="405" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Sn) / %</text>
     `;
   }
 
@@ -491,7 +494,8 @@ export function initBinaryPhaseModule() {
       <!-- Peritectic Line at 1186 -->
       <line x1="${mapX(10.5)}" y1="${mapY(1186)}" x2="${mapX(66.3)}" y2="${mapY(1186)}" stroke="#dc2626" stroke-width="2.5"/>
       <circle cx="${mapX(42.5)}" cy="${mapY(1186)}" r="4" fill="#dc2626" />
-      <text x="${mapX(42.5)}" y="${mapY(1186) + 18}" font-size="11" fill="#dc2626" font-weight="bold" text-anchor="middle">包晶线 1186℃: L(66.3%) + α(10.5%) → β(42.5%)</text>
+      <rect x="${mapX(42.5) - 130}" y="${mapY(1186) - 22}" width="260" height="18" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#dc2626" stroke-width="0.75"/>
+      <text x="${mapX(42.5)}" y="${mapY(1186) - 9}" font-size="11" fill="#dc2626" font-weight="bold" text-anchor="middle">包晶线 1186℃: L(66.3%) + α(10.5%) → β(42.5%)</text>
 
       <!-- Solidus & Solvus -->
       <line x1="${mapX(0)}" y1="${mapY(1769)}" x2="${mapX(10.5)}" y2="${mapY(1186)}" stroke="#d97706" stroke-width="2.5"/>
@@ -508,15 +512,16 @@ export function initBinaryPhaseModule() {
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <line x1="70" y1="${curY}" x2="670" y2="${curY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <circle cx="${curX}" cy="${curY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-      <text x="${curX + 8}" y="${curY - 8}" font-size="12" fill="#065f46" font-weight="bold">${w.toFixed(1)}%Ag / ${Math.round(t)}℃</text>
+      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
+      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="#065f46" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Ag / ${Math.round(t)}℃</text>
 
       <!-- Labels -->
-      <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">Pt</text>
+      <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">0 (Pt)</text>
       <text x="${mapX(10.5)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">10.5</text>
       <text x="${mapX(42.5)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">42.5</text>
       <text x="${mapX(66.3)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">66.3</text>
-      <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">Ag</text>
-      <text x="370" y="390" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Ag) / %</text>
+      <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">100 (Ag)</text>
+      <text x="370" y="405" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Ag) / %</text>
     `;
   }
 

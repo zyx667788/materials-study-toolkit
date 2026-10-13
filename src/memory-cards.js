@@ -66,6 +66,9 @@ export function initMemoryCardsModule() {
 
     if (state.random) {
       list = [...list].sort(() => 0.5 - Math.random());
+    } else {
+      const FREQ_RANK = { "高频": 1, "中频": 2, "低频": 3 };
+      list.sort((a, b) => (FREQ_RANK[a.freq] || 99) - (FREQ_RANK[b.freq] || 99));
     }
     return list;
   }

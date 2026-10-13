@@ -660,6 +660,9 @@ function refreshExamples() {
 async function initVisitCounter() {
   try {
     let total = parseInt(localStorage.getItem('mstool.visitor_count') || '23892', 10);
+    if (isNaN(total) || total < 20000) {
+      total = 23892 + Math.floor(Math.random() * 40);
+    }
     if (!sessionStorage.getItem('mstool.session_active')) {
       total += Math.floor(Math.random() * 3) + 1;
       localStorage.setItem('mstool.visitor_count', total.toString());
@@ -667,7 +670,7 @@ async function initVisitCounter() {
     }
     setText(els.visitOrdinalText, `第 ${total.toLocaleString('zh-CN')} 位研友已加入`);
   } catch {
-    setText(els.visitOrdinalText, "第 20,000+ 位研友");
+    setText(els.visitOrdinalText, "第 20,000+ 位研友已加入");
   }
 }
 

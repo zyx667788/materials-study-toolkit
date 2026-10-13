@@ -120,15 +120,15 @@ export function initDislocationIntersectionModule() {
   const dynamicRoot = new THREE.Group();
   scene.add(staticRoot, dynamicRoot);
 
-  const hemisphere = new THREE.HemisphereLight(0xffffff, 0x8797a5, 1.7);
+  const hemisphere = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
   scene.add(hemisphere);
-  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   key.position.set(5.8, -5.2, 7.6);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xbce8e0, 0.68);
+  const fill = new THREE.DirectionalLight(0xcbd5e1, 0.45);
   fill.position.set(-4.6, 3.4, 2.2);
   scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xffd8c7, 0.52);
+  const rim = new THREE.DirectionalLight(0xe2e8f0, 0.35);
   rim.position.set(2.4, 5.2, -3.4);
   scene.add(rim);
 

@@ -302,7 +302,7 @@ function applyTheme(theme, persist) {
 }
 
 function sceneBackgroundColor() {
-  return document.documentElement.dataset.theme === "dark" ? 0x171a1f : 0xfafbfc;
+  return document.documentElement.dataset.theme === "dark" ? 0x111318 : 0xfafafa;
 }
 
 function wireUi() {

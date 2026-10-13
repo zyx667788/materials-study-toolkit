@@ -8054,3 +8054,449 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================================================
+   v2.1 Academic Edition - Textbook Stipple Style
+   ========================================================= */
+
+/* Global: serif font, sharp corners */
+body {
+  font-family: "Source Han Serif SC", "Songti SC", "SimSun", "Noto Serif SC", serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root {
+  --bg: #f8fafc;
+  --workspace-bg: #fafafa;
+  --panel: #ffffff;
+  --panel-soft: #f8fafc;
+  --panel-strong: #e5e7eb;
+  --ink: #25282d;
+  --ink-soft: #4b5563;
+  --muted: #9ca3af;
+  --line: #d1d5db;
+  --line-strong: #9ca3af;
+  --accent: #475569;
+  --accent-strong: #1e293b;
+  --viewer-bg: #fafafa;
+  --topbar-bg: #ffffff;
+  --focus-ring: rgba(30, 41, 59, 0.12);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  font-family: "Source Han Serif SC", "Songti SC", "SimSun", "Noto Serif SC", serif;
+}
+
+/* Override border-radius globally for the academic sharp look */
+.app-sidebar,
+.nav-item,
+.topbar-breadcrumbs h1,
+.version-badge,
+.home-card,
+.home-stat-card,
+.structure-card,
+.interstitial-card,
+.module-view section,
+.bp-workspace > div,
+.study-hub-card,
+.ghost-button,
+.primary-button,
+.segmented .segment,
+.mem-card-display,
+.fc-card-display,
+.mem-list-item,
+.mem-rate-btn,
+.fc-option-btn {
+  border-radius: 4px !important;
+}
+
+/* Sidebar: pure white with sharp nav */
+.app-sidebar {
+  background: #ffffff;
+}
+
+.sidebar-brand {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-logo {
+  background: #1e293b !important;
+  box-shadow: none !important;
+  font-family: "Source Han Serif SC", serif;
+}
+
+.nav-item:hover {
+  background: #f8fafc;
+}
+
+.nav-item.is-active {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  color: #1e293b;
+}
+
+.sidebar-footer {
+  font-family: "Source Han Serif SC", serif;
+  color: #9ca3af;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* Topbar */
+.version-badge {
+  background: #e5e7eb;
+  color: #1e293b;
+  border: 1px solid #9ca3af;
+  font-family: "Source Han Serif SC", serif;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+/* Home hero: larger serif */
+.home-title {
+  font-size: 30px;
+  font-weight: 800;
+  font-family: "Source Han Serif SC", serif;
+  color: #111827;
+}
+
+.home-eyebrow {
+  font-family: "Source Han Serif SC", serif;
+  color: #475569;
+}
+
+.home-desc {
+  font-family: "Source Han Serif SC", "Songti SC", serif;
+  color: #4b5563;
+}
+
+/* Home cards: sharp, thin border, no colored shadow */
+.home-card {
+  border: 1px solid #d1d5db;
+  box-shadow: none;
+  background: #ffffff;
+}
+
+.home-card:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border-color: #9ca3af;
+}
+
+.home-card-icon {
+  background: #f1f5f9;
+}
+
+.home-card-title {
+  font-family: "Source Han Serif SC", serif;
+  color: #111827;
+}
+
+.home-card-desc {
+  font-family: "Source Han Serif SC", serif;
+  color: #6b7280;
+}
+
+/* Stats: grayscale */
+.home-stat-num {
+  color: #1e293b;
+  font-family: "Source Han Serif SC", serif;
+  font-weight: 800;
+}
+
+.home-stat-label {
+  font-family: "Source Han Serif SC", serif;
+  color: #6b7280;
+}
+
+/* Buttons: sharp, gray */
+.ghost-button {
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+  color: #4b5563;
+  border-radius: 4px;
+}
+
+.ghost-button:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  color: #1e293b;
+}
+
+.ghost-button.is-active {
+  background: #1e293b;
+  border-color: #1e293b;
+  color: #ffffff;
+}
+
+.primary-button {
+  border-radius: 4px;
+  background: #1e293b;
+  border: 1px solid #1e293b;
+  color: #ffffff;
+  font-family: "Source Han Serif SC", serif;
+}
+
+.primary-button:hover {
+  background: #0f172a;
+}
+
+/* Sliders: black rectangular track + square thumb */
+input[type="range"].interstitial-range,
+input[type="range"].structure-slider input[type="range"],
+input[type="range"]#atomScaleRange,
+input[type="range"]#carbonRange,
+input[type="range"].fe-carbon-range,
+input[type="range"].bp-slider,
+input[type="range"]#interstitialAtomRadius {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #1e293b;
+  border-radius: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type="range"].interstitial-range::-webkit-slider-thumb,
+input[type="range"]#atomScaleRange::-webkit-slider-thumb,
+input[type="range"]#carbonRange::-webkit-slider-thumb,
+input[type="range"].fe-carbon-range::-webkit-slider-thumb,
+input[type="range"].bp-slider::-webkit-slider-thumb,
+input[type="range"]#interstitialAtomRadius::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border: 2px solid #1e293b;
+  border-radius: 2px;
+  cursor: grab;
+}
+
+input[type="range"].interstitial-range::-webkit-slider-thumb:active,
+input[type="range"]#atomScaleRange::-webkit-slider-thumb:active,
+input[type="range"]#carbonRange::-webkit-slider-thumb:active,
+input[type="range"].bp-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  border-color: #475569;
+}
+
+/* Tangent badge */
+.interstitial-tangent-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: "Source Han Serif SC", serif;
+  background: #e5e7eb;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.interstitial-tangent-badge.is-tangent {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #10b981;
+}
+
+/* 3D viewer backgrounds */
+.interstitial-viewer-host,
+.structure-viewer-host {
+  background: #fafafa;
+}
+
+/* Module view sections: sharp cards */
+.interstitial-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+.structure-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+.fe-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+.bp-workspace > div {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+/* Study hub cards */
+.study-hub-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+  font-family: "Source Han Serif SC", serif;
+}
+
+/* Module footer */
+.module-footer-copy strong {
+  font-family: "Source Han Serif SC", serif;
+  color: #111827;
+}
+
+.module-footer-copy span {
+  font-family: "Source Han Serif SC", serif;
+  color: #6b7280;
+}
+
+/* Legend swatches: grayscale */
+.swatch-lattice { background: #4a5568; }
+.swatch-center { background: #2d3748; }
+.swatch-octa { background: #718096; }
+.swatch-tetra { background: #a0aec0; }
+.swatch-packing-plane { background: #94a3b8; }
+.swatch-packing-direction { background: #475569; }
+
+/* Memory cards & flashcards: sharp gray */
+.mem-card-display,
+.fc-card-display {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+.mem-card-title,
+.fc-card-head h2 {
+  font-family: "Source Han Serif SC", serif;
+  color: #111827;
+}
+
+.mem-list-item {
+  border-radius: 3px;
+}
+
+/* Binary phase */
+.bp-intro-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+  font-family: "Source Han Serif SC", serif;
+  color: #4b5563;
+}
+
+.bp-sys-tab {
+  border-radius: 4px !important;
+  font-family: "Source Han Serif SC", serif;
+}
+
+.bp-sys-tab.is-active {
+  background: #1e293b;
+  border-color: #1e293b;
+}
+
+.bp-diagram-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+.bp-analysis-card {
+  border: 1px solid #d1d5db;
+  border-radius: 4px !important;
+  box-shadow: none;
+}
+
+.bp-meta-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 3px;
+  background: #f8fafc;
+  font-family: "Source Han Serif SC", serif;
+}
+
+/* Iron carbon reactions */
+.fe-reaction-card {
+  border-radius: 3px;
+  font-family: "Source Han Serif SC", serif;
+}
+
+.fe-peritectic { border-left-color: #6b7280; }
+.fe-eutectic { border-left-color: #9ca3af; }
+.fe-eutectoid { border-left-color: #374151; }
+
+/* Fe-C slider sharp */
+.fe-carbon-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: #1e293b;
+  border-radius: 0;
+}
+
+.fe-carbon-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border: 2px solid #1e293b;
+  border-radius: 2px;
+  cursor: grab;
+}
+
+/* Search inputs sharp */
+.mem-search,
+.fc-search,
+.mem-select,
+.fc-select {
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  font-family: "Source Han Serif SC", serif;
+}
+
+.mem-cat-tab,
+.fc-subj-tab {
+  border-radius: 4px;
+  font-family: "Source Han Serif SC", serif;
+}
+
+.mem-cat-tab.is-active,
+.fc-subj-tab.is-active {
+  background: #1e293b;
+  border-color: #1e293b;
+}
+
+/* Dark theme: academic dark */
+html[data-theme="dark"] {
+  --bg: #111318;
+  --workspace-bg: #15171c;
+  --panel: #1b1e23;
+  --panel-soft: #202329;
+  --panel-strong: #272b32;
+  --ink: #f1f3f5;
+  --ink-soft: #d2d6dc;
+  --muted: #949ba5;
+  --line: #30343b;
+  --line-strong: #484e58;
+  --accent: #9ca3af;
+  --accent-strong: #d1d5db;
+  --viewer-bg: #15171c;
+  --topbar-bg: #1b1e23;
+  --focus-ring: rgba(148, 163, 184, 0.16);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .app-sidebar {
+  background: #1b1e23;
+}
+
+html[data-theme="dark"] .sidebar-logo {
+  background: #d1d5db;
+  color: #111318;
+}
+
+html[data-theme="dark"] .version-badge {
+  background: #272b32;
+  color: #d1d5db;
+  border-color: #484e58;
+}

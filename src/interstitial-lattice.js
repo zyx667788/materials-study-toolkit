@@ -4,12 +4,12 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { downloadCanvasPngWithWatermark } from "./export-watermark.js?v=20261008-phase-audit-motion";
 
 const COLORS = {
-  lattice: 0x29a894,
-  center: 0xe75078,
-  octa: 0xdf942d,
-  tetra: 0x805bd1,
-  packingPlane: 0x3f8f83,
-  packingDirection: 0x2f70b7,
+  lattice: 0x4a5568,
+  center: 0x2d3748,
+  octa: 0x718096,
+  tetra: 0xa0aec0,
+  packingPlane: 0x94a3b8,
+  packingDirection: 0x475569,
 };
 
 const LATTICES = {
@@ -25,6 +25,7 @@ const LATTICES = {
     closePlane: "{110}",
     closeDirection: "⟨111⟩",
     note: "BCC 没有严格意义上的完全密排面，{110} 是原子面密度最大的晶面族，⟨111⟩ 为密排方向。间隙数量按一个晶胞折合计算。",
+    tangentRadius: Math.sqrt(3) / 2,
     build: buildBccModel,
   },
   fcc: {
@@ -39,6 +40,7 @@ const LATTICES = {
     closePlane: "{111}",
     closeDirection: "⟨110⟩",
     note: "FCC 的密排面为 {111}，密排方向为 ⟨110⟩。每个晶胞含 4 个八面体位和 8 个四面体位。",
+    tangentRadius: 1 / Math.sqrt(2),
     build: buildFccModel,
   },
   hcp: {
@@ -53,6 +55,7 @@ const LATTICES = {
     closePlane: "(0001)",
     closeDirection: "⟨112̄0⟩",
     note: "HCP 的密排面为基面 (0001)，密排方向为 ⟨112̄0⟩。模型采用理想轴比 c/a = 1.633。",
+    tangentRadius: 0.66,
     build: buildHcpModel,
   },
 };
@@ -129,6 +132,8 @@ export function initInterstitialLatticeModule() {
     viewerStats: document.querySelector("#interstitialViewerStats"),
     resetButton: document.querySelector("#interstitialResetButton"),
     exportButton: document.querySelector("#interstitialExportButton"),
+    ratioReadout: document.querySelector("#interstitialRatioReadout"),
+    tangentBadge: document.querySelector("#interstitialTangentBadge"),
   };
 
   if (!els.host) return { refresh: () => {} };
@@ -176,15 +181,15 @@ export function initInterstitialLatticeModule() {
   const root = new THREE.Group();
   scene.add(root);
 
-  const hemisphere = new THREE.HemisphereLight(0xffffff, 0x8797a5, 1.75);
+  const hemisphere = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
   scene.add(hemisphere);
-  const key = new THREE.DirectionalLight(0xffffff, 2.25);
+  const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   key.position.set(4.8, -5.6, 7.4);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x86e5d5, 0.72);
+  const fill = new THREE.DirectionalLight(0xcbd5e1, 0.45);
   fill.position.set(-5.2, 2.8, 3.8);
   scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xc7b8ff, 0.6);
+  const rim = new THREE.DirectionalLight(0xe2e8f0, 0.35);
   rim.position.set(2.2, 5.6, -2.4);
   scene.add(rim);
 
@@ -217,6 +222,13 @@ export function initInterstitialLatticeModule() {
         if (!LATTICES[lattice] || state.lattice === lattice) return;
         state.lattice = lattice;
         els.latticeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+        const definition = LATTICES[lattice];
+        if (els.atomRadius && definition.tangentRadius) {
+          els.atomRadius.max = definition.tangentRadius.toFixed(3);
+          state.atomRadius = Math.min(definition.tangentRadius * 0.42, definition.tangentRadius);
+          els.atomRadius.value = state.atomRadius.toFixed(3);
+          els.atomRadiusValue.value = state.atomRadius.toFixed(2);
+        }
         drawLattice(true);
       });
     });
@@ -235,6 +247,16 @@ export function initInterstitialLatticeModule() {
     els.atomRadius?.addEventListener("input", () => {
       state.atomRadius = Number(els.atomRadius.value);
       els.atomRadiusValue.value = state.atomRadius.toFixed(2);
+      const definition = LATTICES[state.lattice];
+      if (els.ratioReadout && definition.tangentRadius) {
+        const ratio = (state.atomRadius / definition.tangentRadius).toFixed(3);
+        els.ratioReadout.textContent = `${ratio} × r_max`;
+      }
+      if (els.tangentBadge && definition.tangentRadius) {
+        const isTangent = state.atomRadius >= definition.tangentRadius - 0.005;
+        els.tangentBadge.textContent = isTangent ? "✔ 相切" : "未相切";
+        els.tangentBadge.classList.toggle("is-tangent", isTangent);
+      }
       drawLattice(false);
     });
 
@@ -302,12 +324,21 @@ export function initInterstitialLatticeModule() {
     els.viewerCode.textContent = definition.code;
     els.viewerName.textContent = definition.name;
     els.viewerStats.textContent = `${definition.atomCount} 原子 · O ${definition.octaCount} · T ${definition.tetraCount}`;
+    if (els.ratioReadout && definition.tangentRadius) {
+      const ratio = (state.atomRadius / definition.tangentRadius).toFixed(3);
+      els.ratioReadout.textContent = `${ratio} × r_max`;
+    }
+    if (els.tangentBadge) {
+      const isTangent = state.atomRadius >= definition.tangentRadius - 0.005;
+      els.tangentBadge.textContent = isTangent ? "✔ 相切" : "未相切";
+      els.tangentBadge.classList.toggle("is-tangent", isTangent);
+    }
   }
 
   function applySceneTheme() {
     scene.background = new THREE.Color(sceneBackground());
     const dark = isDarkTheme();
-    hemisphere.groundColor.set(dark ? 0x26354a : 0x8797a5);
+    hemisphere.groundColor.set(dark ? 0x26354a : 0x9ca3af);
     renderer.toneMappingExposure = dark ? 1.2 : 1.08;
   }
 
@@ -586,7 +617,7 @@ function makeCellEdges(edges) {
 }
 
 function makeGroundGrid(z) {
-  const color = isDarkTheme() ? 0x415169 : 0xb8c6d1;
+  const color = isDarkTheme() ? 0x4b5563 : 0xd1d5db;
   const grid = new THREE.GridHelper(7.2, 18, color, color);
   grid.rotation.x = Math.PI / 2;
   grid.position.z = z;
@@ -596,17 +627,46 @@ function makeGroundGrid(z) {
   return grid;
 }
 
+let _stippleTexture = null;
+function makeStippleBumpMap() {
+  if (_stippleTexture) return _stippleTexture;
+  const size = 256;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#808080";
+  ctx.fillRect(0, 0, size, size);
+  for (let i = 0; i < 3200; i++) {
+    const x = Math.random() * size;
+    const y = Math.random() * size;
+    const r = Math.random() * 1.2 + 0.3;
+    const alpha = Math.random() * 0.12;
+    ctx.fillStyle = Math.random() > 0.5 ? `rgba(0,0,0,${alpha})` : `rgba(255,255,255,${alpha})`;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  _stippleTexture = texture;
+  return texture;
+}
+
 function makeAtomGroup(points, radius, color) {
   const group = new THREE.Group();
   const geometry = new THREE.SphereGeometry(radius, 38, 24);
   const material = new THREE.MeshPhysicalMaterial({
     color,
-    roughness: 0.28,
-    metalness: 0.08,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.28,
+    roughness: 0.55,
+    metalness: 0.15,
+    clearcoat: 0.2,
+    clearcoatRoughness: 0.5,
+    bumpMap: makeStippleBumpMap(),
+    bumpScale: 0.008,
     emissive: color,
-    emissiveIntensity: isDarkTheme() ? 0.055 : 0.018,
+    emissiveIntensity: 0.005,
   });
   points.forEach((point) => {
     const atom = new THREE.Mesh(geometry, material);
@@ -621,12 +681,14 @@ function makeInterstitialAtoms(points, radius, color) {
   const geometry = new THREE.SphereGeometry(Math.max(0.075, radius), 34, 20);
   const material = new THREE.MeshPhysicalMaterial({
     color,
-    roughness: 0.22,
-    metalness: 0.02,
-    clearcoat: 0.72,
-    clearcoatRoughness: 0.22,
+    roughness: 0.6,
+    metalness: 0.12,
+    clearcoat: 0.15,
+    clearcoatRoughness: 0.55,
+    bumpMap: makeStippleBumpMap(),
+    bumpScale: 0.006,
     emissive: color,
-    emissiveIntensity: isDarkTheme() ? 0.18 : 0.055,
+    emissiveIntensity: 0.004,
   });
   points.forEach((point) => {
     const atom = new THREE.Mesh(geometry, material);
@@ -651,7 +713,7 @@ function makePackingPlane(points, color) {
     new THREE.MeshBasicMaterial({
       color,
       transparent: true,
-      opacity: isDarkTheme() ? 0.24 : 0.2,
+      opacity: isDarkTheme() ? 0.22 : 0.16,
       side: THREE.DoubleSide,
       depthWrite: false,
     }),
@@ -800,7 +862,7 @@ function isDarkTheme() {
 }
 
 function sceneBackground() {
-  return isDarkTheme() ? 0x0f1724 : 0xf3f7fa;
+  return isDarkTheme() ? 0x111318 : 0xfafafa;
 }
 
 function themeInkColor() {

@@ -219,12 +219,12 @@ export function initTernaryPhaseModule() {
   root.add(regionRoot, guideRoot, sectionRoot);
   scene.add(root);
 
-  const ambient = new THREE.HemisphereLight(0xffffff, 0xb8c5cb, 1.55);
+  const ambient = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
   scene.add(ambient);
-  const key = new THREE.DirectionalLight(0xffffff, 2.05);
+  const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   key.position.set(4.2, -5.2, 6.2);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xdff3ee, 0.72);
+  const fill = new THREE.DirectionalLight(0xcbd5e1, 0.45);
   fill.position.set(-4.5, 2.6, 3.3);
   scene.add(fill);
 

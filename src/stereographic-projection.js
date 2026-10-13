@@ -100,11 +100,11 @@ export function initStereographicProjectionModule() {
   );
   scene.add(modelRoot);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x415064, 1.55));
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.85);
+  scene.add(new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2));
+  const keyLight = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   keyLight.position.set(5, -6, 8);
   scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0x9debd9, 0.72);
+  const fillLight = new THREE.DirectionalLight(0xcbd5e1, 0.45);
   fillLight.position.set(-5, 4, 3);
   scene.add(fillLight);
 

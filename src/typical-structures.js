@@ -5,19 +5,19 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { downloadCanvasPngWithWatermark } from "./export-watermark.js?v=20261008-phase-audit-motion";
 
 const ELEMENTS = {
-  Al: { color: 0x9aa7b1, radius: 0.18 },
-  C: { color: 0x2f3a40, darkColor: 0x9baab1, radius: 0.14 },
-  Ca: { color: 0x47a35c, radius: 0.2 },
-  Cl: { color: 0x00a087, radius: 0.18 },
-  Cs: { color: 0x8e6bbd, radius: 0.23 },
-  F: { color: 0x66bb6a, radius: 0.13 },
-  Mg: { color: 0xffb74d, radius: 0.18 },
-  Na: { color: 0x1976d2, radius: 0.16 },
-  O: { color: 0xef6c00, radius: 0.12 },
-  S: { color: 0xffc107, radius: 0.17 },
-  Si: { color: 0x607d8b, darkColor: 0x93adb8, radius: 0.15 },
-  Ti: { color: 0x455a64, darkColor: 0x849eaa, radius: 0.15 },
-  Zn: { color: 0x4db6ac, radius: 0.16 },
+  Al: { color: 0x6b7280, radius: 0.18 },
+  C: { color: 0x1f2937, darkColor: 0x9ca3af, radius: 0.14 },
+  Ca: { color: 0x4b5563, radius: 0.2 },
+  Cl: { color: 0x6b7280, radius: 0.18 },
+  Cs: { color: 0x374151, radius: 0.23 },
+  F: { color: 0x9ca3af, radius: 0.13 },
+  Mg: { color: 0x4b5563, radius: 0.18 },
+  Na: { color: 0x374151, radius: 0.16 },
+  O: { color: 0x6b7280, radius: 0.12 },
+  S: { color: 0x4b5563, radius: 0.17 },
+  Si: { color: 0x374151, darkColor: 0x9ca3af, radius: 0.15 },
+  Ti: { color: 0x1f2937, darkColor: 0x9ca3af, radius: 0.15 },
+  Zn: { color: 0x6b7280, radius: 0.16 },
 };
 
 const STRUCTURES = [
@@ -33,6 +33,7 @@ const STRUCTURES = [
     lattice: cubic(3.57),
     atoms: diamond("C"),
     bondCutoff: 1.75,
+    tangentScale: 1.0,
     description: "典型共价原子晶体，复杂 FCC 结构。每个 C 原子与 4 个最近邻形成正四面体，符合 8-N 规则。",
   },
   {
@@ -338,14 +339,14 @@ export function initTypicalStructuresModule() {
   const root = new THREE.Group();
   scene.add(root);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0xb7c3ca, 1.55));
-  const key = new THREE.DirectionalLight(0xffffff, 2.0);
+  scene.add(new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2));
+  const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   key.position.set(4, -5, 7);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xdff4ee, 0.75);
+  const fill = new THREE.DirectionalLight(0xcbd5e1, 0.45);
   fill.position.set(-5, 3, 4);
   scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xeaf7ff, 0.85);
+  const rim = new THREE.DirectionalLight(0xe2e8f0, 0.35);
   rim.position.set(-3, 5, -2);
   scene.add(rim);
 
@@ -533,6 +534,33 @@ export function initTypicalStructuresModule() {
   }
 
 
+  let _stippleTex = null;
+  function makeStippleBumpMap() {
+    if (_stippleTex) return _stippleTex;
+    const size = 256;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#808080";
+    ctx.fillRect(0, 0, size, size);
+    for (let i = 0; i < 3200; i++) {
+      const x = Math.random() * size;
+      const y = Math.random() * size;
+      const r = Math.random() * 1.2 + 0.3;
+      const alpha = Math.random() * 0.12;
+      ctx.fillStyle = Math.random() > 0.5 ? `rgba(0,0,0,${alpha})` : `rgba(255,255,255,${alpha})`;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    _stippleTex = texture;
+    return texture;
+  }
+
   function makeAtoms(sites) {
     const group = new THREE.Group();
     const geometryCache = new Map();
@@ -547,12 +575,14 @@ export function initTypicalStructuresModule() {
       if (!materialCache.has(site.element)) {
         materialCache.set(site.element, new THREE.MeshPhysicalMaterial({
           color,
-          roughness: 0.33,
-          metalness: site.category === "atomic" ? 0.08 : 0.02,
-          clearcoat: 0.45,
-          clearcoatRoughness: 0.36,
+          roughness: 0.55,
+          metalness: 0.15,
+          clearcoat: 0.2,
+          clearcoatRoughness: 0.5,
+          bumpMap: null,
+          bumpScale: 0,
           emissive: color,
-          emissiveIntensity: 0.012,
+          emissiveIntensity: 0.005,
         }));
       }
 
@@ -925,5 +955,5 @@ function elementColor(element) {
 }
 
 function structureSceneBackground() {
-  return document.documentElement.dataset.theme === "dark" ? 0x0f1724 : 0xf3f7fa;
+  return document.documentElement.dataset.theme === "dark" ? 0x111318 : 0xfafafa;
 }

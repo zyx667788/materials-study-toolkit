@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta id="themeColorMeta" name="theme-color" content="#f0f6fc" />
-    <title>材料实验室 · 材料专业可视化教学系统</title>
+    <title>材料实验室 · 材料专业学术教学系统</title>
     <meta name="description" content="研乐材料实验室：材料专业可视化教学系统。包含3D典型晶体结构、点阵间隙、密勒指数、二元相图、铁碳相图、三元相图、极射投影、记忆卡片与真题刷题系统。" />
     <meta name="keywords" content="材料科学基础,材料实验室,研乐,晶体结构,密勒指数,二元相图,铁碳相图,三元相图,极射投影,考研题库" />
     <meta property="og:title" content="材料实验室 · 材料专业可视化教学系统" />
@@ -115,7 +115,7 @@
         </nav>
 
         <div class="sidebar-footer">
-          <span>本网页由研乐材料考研团队开发</span>
+          <span>Yanle Materials Lab · 基于教材标准模型构建</span>
         </div>
       </aside>
 
@@ -130,7 +130,7 @@
             </div>
           </div>
           <div class="topbar-right">
-            <span class="version-badge">v2.0</span>
+            <span class="version-badge">v2.1 · Academic Edition</span>
             <span id="visitOrdinalText" class="visit-ordinal-badge">研乐实验室</span>
             <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换主题" aria-pressed="false">
               <span id="themeToggleIcon" aria-hidden="true">☾</span>
@@ -145,7 +145,7 @@
         <div class="home-hero">
           <span class="home-eyebrow">MATERIALS SCIENCE · PHASE DIAGRAM · PROJECTION</span>
           <h2 class="home-title">材料专业可视化教学系统</h2>
-          <p class="home-desc">四大板块、八个交互工具。拖拽即可旋转晶胞，拉动滑轨实时算出相组成与组织含量——所有数据抽取自教材标准值，不玩虚的。</p>
+          <p class="home-desc">基于《材料科学基础》第三版 权威教材 · 八个学术级交互工具，严格匹配教材数据与晶体学公式</p>
         </div>
 
         <div class="home-grid">
@@ -274,7 +274,7 @@
               </div>
               <label class="structure-slider">
                 <span>原子半径</span>
-                <input id="atomScaleRange" type="range" min="0.65" max="1.35" step="0.05" value="1" />
+                <input id="atomScaleRange" type="range" min="0.65" max="1.60" step="0.05" value="1" data-structure-type="atomic" />
               </label>
             </section>
 
@@ -346,7 +346,7 @@
                 <span>原子显示半径</span>
                 <output id="interstitialAtomRadiusValue" for="interstitialAtomRadius">0.34</output>
               </label>
-              <input id="interstitialAtomRadius" class="interstitial-range" type="range" min="0.26" max="0.48" step="0.01" value="0.34" />
+              <input id="interstitialAtomRadius" class="interstitial-range" type="range" min="0.10" max="0.90" step="0.005" value="0.34" />
             </section>
 
             <section class="interstitial-card interstitial-switch-card">
@@ -411,6 +411,14 @@
                 </div>
               </dl>
               <dl class="interstitial-packing-meta">
+                <div>
+                  <dt>r/R 比值</dt>
+                  <dd id="interstitialRatioReadout">0.39</dd>
+                </div>
+                <div>
+                  <dt>相切状态</dt>
+                  <dd><span id="interstitialTangentBadge" class="interstitial-tangent-badge">未相切</span></dd>
+                </div>
                 <div>
                   <dt>密排面</dt>
                   <dd id="interstitialClosePlaneReadout">{110}</dd>

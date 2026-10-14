@@ -146,22 +146,22 @@ const REGION_DATA = {
 };
 
 const REGION_SHAPES = [
-  { id: "liquid", color: "#dceef6", points: [[0, 1600], [6.69, 1600], [6.69, 1227], [4.3, 1148], [0.53, 1495], [0, 1538]] },
-  { id: "liquidDelta", color: "#e4f0de", points: [[0, 1538], [0.53, 1495], [0.09, 1495]] },
-  { id: "delta", color: "#e9f4df", points: [[0, 1538], [0.09, 1495], [0, 1394]] },
-  { id: "liquidAustenite", color: "#f1ead9", points: [[0.53, 1495], [4.3, 1148], [2.11, 1148], [0.17, 1495]] },
-  { id: "austenite", color: "#e1efe7", points: [[0, 912], [0, 1394], [0.17, 1495], [2.11, 1148], [0.77, 727]] },
-  { id: "alphaGamma", color: "#e7f2ef", points: [[0, 727], [0, 912], [0.77, 727]] },
-  { id: "gammaCementite", color: "#eee6dc", points: [[0.77, 727], [2.11, 1148], [2.11, 727]] },
-  { id: "ledeburiteHot", color: "#f4e7d4", points: [[2.11, 727], [2.11, 1148], [6.69, 1148], [6.69, 727]] },
-  { id: "liquidCementite", color: "#f1dfd3", points: [[4.3, 1148], [6.69, 1227], [6.69, 1148]] },
-  { id: "industrialIron", color: "#eef6ed", points: [[0, 550], [0.0218, 550], [0.0218, 727], [0, 727]] },
-  { id: "hypoeutectoid", color: "#edf6f0", points: [[0.0218, 550], [0.77, 550], [0.77, 727], [0.0218, 727]] },
-  { id: "hypereutectoid", color: "#f0ebe2", points: [[0.77, 550], [2.11, 550], [2.11, 727], [0.77, 727]] },
-  { id: "hypoeutectic", color: "#f4eadb", points: [[2.11, 550], [4.3, 550], [4.3, 727], [2.11, 727]] },
-  { id: "hypereutectic", color: "#f5e3d7", points: [[4.3, 550], [6.69, 550], [6.69, 727], [4.3, 727]] },
-  { id: "eutectoid", color: "#e4f4ed", points: [[0.735, 550], [0.805, 550], [0.805, 727], [0.735, 727]] },
-  { id: "eutectic", color: "#f2dfc9", points: [[4.235, 550], [4.365, 550], [4.365, 727], [4.235, 727]] },
+  { id: "liquid", color: "#dbeafe", points: [[0, 1600], [6.69, 1600], [6.69, 1227], [4.3, 1148], [0.53, 1495], [0, 1538]] },
+  { id: "liquidDelta", color: "#e0f2fe", points: [[0, 1538], [0.53, 1495], [0.09, 1495]] },
+  { id: "delta", color: "#dcfce7", points: [[0, 1538], [0.09, 1495], [0, 1394]] },
+  { id: "liquidAustenite", color: "#e0e7ff", points: [[0.53, 1495], [4.3, 1148], [2.11, 1148], [0.17, 1495]] },
+  { id: "austenite", color: "#ede9fe", points: [[0, 912], [0, 1394], [0.17, 1495], [2.11, 1148], [0.77, 727]] },
+  { id: "alphaGamma", color: "#e6f4ea", points: [[0, 727], [0, 912], [0.77, 727]] },
+  { id: "gammaCementite", color: "#ffe4e6", points: [[0.77, 727], [2.11, 1148], [2.11, 727]] },
+  { id: "ledeburiteHot", color: "#fef3c7", points: [[2.11, 727], [2.11, 1148], [6.69, 1148], [6.69, 727]] },
+  { id: "liquidCementite", color: "#ffedd5", points: [[4.3, 1148], [6.69, 1227], [6.69, 1148]] },
+  { id: "industrialIron", color: "#ecfdf5", points: [[0, 550], [0.0218, 550], [0.0218, 727], [0, 727]] },
+  { id: "hypoeutectoid", color: "#d1fae5", points: [[0.0218, 550], [0.77, 550], [0.77, 727], [0.0218, 727]] },
+  { id: "hypereutectoid", color: "#fae8ff", points: [[0.77, 550], [2.11, 550], [2.11, 727], [0.77, 727]] },
+  { id: "hypoeutectic", color: "#fef08a", points: [[2.11, 550], [4.3, 550], [4.3, 727], [2.11, 727]] },
+  { id: "hypereutectic", color: "#fed7aa", points: [[4.3, 550], [6.69, 550], [6.69, 727], [4.3, 727]] },
+  { id: "eutectoid", color: "#c7d2fe", points: [[0.735, 550], [0.805, 550], [0.805, 727], [0.735, 727]] },
+  { id: "eutectic", color: "#fde047", points: [[4.235, 550], [4.365, 550], [4.365, 727], [4.235, 727]] },
 ];
 
 const labels = [

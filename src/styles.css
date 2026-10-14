@@ -765,8 +765,8 @@ h1 {
 }
 
 .fe-phase-lines .is-critical {
-  stroke: #00897b;
-  stroke-width: 2.6;
+  stroke: #dc2626;
+  stroke-width: 2.8;
 }
 
 .fe-axes line {
@@ -8532,6 +8532,56 @@ html[data-theme="dark"] #bpSvg text[fill="#334155"],
 html[data-theme="dark"] #feChartSvg text[fill="#64748b"],
 html[data-theme="dark"] #feChartSvg text[fill="#334155"] {
   fill: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .fe-plot-bg {
+  fill: #06090e !important;
+  stroke: #1e2638 !important;
+}
+
+html[data-theme="dark"] .fe-region {
+  stroke: #070a0f !important;
+  filter: brightness(0.72) saturate(1.35) contrast(1.12);
+}
+
+html[data-theme="dark"] .fe-region:hover,
+html[data-theme="dark"] .fe-region.is-selected {
+  stroke: #38bdf8 !important;
+  stroke-width: 2.8px !important;
+  filter: brightness(0.96) saturate(1.5) contrast(1.18);
+}
+
+html[data-theme="dark"] .fe-region-selection {
+  stroke: #38bdf8 !important;
+  stroke-width: 3.5px !important;
+}
+
+html[data-theme="dark"] .fe-phase-lines polyline {
+  stroke: #cbd5e1 !important;
+  stroke-width: 2.2px !important;
+}
+
+html[data-theme="dark"] .fe-phase-lines .is-critical {
+  stroke: #f43f5e !important;
+  stroke-width: 2.8px !important;
+}
+
+html[data-theme="dark"] .fe-axes line {
+  stroke: #475569 !important;
+}
+
+html[data-theme="dark"] .fe-axes text {
+  fill: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .fe-chart-labels text {
+  fill: #f1f5f9 !important;
+  stroke: #070a0f !important;
+  stroke-width: 4px !important;
+}
+
+html[data-theme="dark"] .fe-grid line {
+  stroke: #162032 !important;
 }
 
 html[data-theme="dark"] .bp-svg-badge-bg {

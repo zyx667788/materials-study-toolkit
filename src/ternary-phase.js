@@ -41,7 +41,7 @@ function createStableCompoundDiagram() {
         title: "L + A",
         phase: "L + A",
         kind: "液固两相区",
-        color: 0x00a676,
+        color: 0x0284c7,
         apexTop: point([1, 0, 0], 0.94),
         apexBottom: point([1, 0, 0], E1.t),
         upperBoundary: aDE,
@@ -56,7 +56,7 @@ function createStableCompoundDiagram() {
         title: "L + δ",
         phase: "L + δ",
         kind: "化合物初晶区",
-        color: 0x2d9cdb,
+        color: 0x6366f1,
         apexTop: D,
         apexBottom: dTop,
         upperBoundary: joinCurves(reverseCurve(dCE), dBE),
@@ -71,7 +71,7 @@ function createStableCompoundDiagram() {
         title: "L + B",
         phase: "L + B",
         kind: "液固两相区",
-        color: 0xf2a541,
+        color: 0xd97706,
         apexTop: point([0, 1, 0], 0.88),
         apexBottom: point([0, 1, 0], E2.t),
         upperBoundary: reverseCurve(dBE),
@@ -86,7 +86,7 @@ function createStableCompoundDiagram() {
         title: "L + C",
         phase: "L + C",
         kind: "液固两相区",
-        color: 0x9b5de5,
+        color: 0x7c3aed,
         apexTop: point([0, 0, 1], 0.91),
         apexBottom: point([0, 0, 1], Math.min(E1.t, E2.t)),
         upperBoundary: joinCurves(reverseCurve(bCE), reverseCurve(dCE)),
@@ -96,14 +96,14 @@ function createStableCompoundDiagram() {
         composition: "C 富集侧",
         note: "C 与 A-δ、δ-B 两个子体系都发生共晶关系，因此 C 初晶面被两组沟线夹持。",
       }),
-      curvedRibbonRegion("sc-eutectic-a-d-c", "L + A + δ / L + δ + C", "L + A + δ / L + δ + C", 0x3bb4a6, joinCurves(aDE, reverseCurve(dCE)), point([0.74, 0.22, 0.04], E1.t), point([0.36, 0.26, 0.38], E1.t), "A-δ-C 子三角形中的共晶沟"),
-      curvedRibbonRegion("sc-eutectic-d-b-c", "L + δ + B / L + B + C", "L + δ + B / L + B + C", 0xc7832f, joinCurves(dBE, reverseCurve(bCE)), point([0.38, 0.52, 0.1], E2.t), point([0.08, 0.58, 0.34], E2.t), "δ-B-C 子三角形中的共晶沟"),
+      curvedRibbonRegion("sc-eutectic-a-d-c", "L + A + δ / L + δ + C", "L + A + δ / L + δ + C", 0x06b6d4, joinCurves(aDE, reverseCurve(dCE)), point([0.74, 0.22, 0.04], E1.t), point([0.36, 0.26, 0.38], E1.t), "A-δ-C 子三角形中的共晶沟"),
+      curvedRibbonRegion("sc-eutectic-d-b-c", "L + δ + B / L + B + C", "L + δ + B / L + B + C", 0xea580c, joinCurves(dBE, reverseCurve(bCE)), point([0.38, 0.52, 0.1], E2.t), point([0.08, 0.58, 0.34], E2.t), "δ-B-C 子三角形中的共晶沟"),
       genericRuledRegion({
         id: "sc-delta",
         title: "δ 稳定化合物",
         phase: "δ",
         kind: "中间化合物相区",
-        color: 0x1976d2,
+        color: 0x4f46e5,
         apexTop: dTop,
         apexBottom: dBottom,
         upperBoundary: compoundBoundary(D.b, 0.42, 0.055),
@@ -113,15 +113,15 @@ function createStableCompoundDiagram() {
         composition: "接近 δ 化学计量成分",
         note: "稳定化合物有固定或窄范围成分，因此在三元空间图中表现为窄脊或窄带。",
       }),
-      prismRegion("sc-a-delta", "A + δ", "A + δ", "两固相区", 0x4c956c,
+      prismRegion("sc-a-delta", "A + δ", "A + δ", "两固相区", 0x10b981,
         [point([0.9, 0.1, 0], LOW_T), point([0.58, 0.4, 0.02], LOW_T), point([0.46, 0.34, 0.2], LOW_T), point([0.74, 0.14, 0.12], LOW_T)],
         [point([0.82, 0.18, 0], E1.t), point([0.58, 0.38, 0.04], E1.t), point([0.44, 0.34, 0.22], E1.t), point([0.68, 0.18, 0.14], E1.t)],
         "A 与稳定化合物 δ 之间的两固相带", "低于 A-δ-C 共晶沟", "A-δ 连线附近", "δ 将原 A-B 边分割后，A+δ 成为低温重要两相区。"),
-      prismRegion("sc-delta-b", "δ + B", "δ + B", "两固相区", 0xb08968,
+      prismRegion("sc-delta-b", "δ + B", "δ + B", "两固相区", 0xf59e0b,
         [point([0.58, 0.4, 0.02], LOW_T), point([0.08, 0.9, 0.02], LOW_T), point([0.16, 0.66, 0.18], LOW_T), point([0.46, 0.34, 0.2], LOW_T)],
         [point([0.58, 0.38, 0.04], E2.t), point([0.12, 0.82, 0.06], E2.t), point([0.2, 0.58, 0.22], E2.t), point([0.44, 0.34, 0.22], E2.t)],
         "δ 与 B 之间的两固相带", "低于 δ-B-C 共晶沟", "δ-B 连线附近", "稳定化合物另一侧与 B 形成两相平衡。"),
-      prismRegion("sc-delta-c", "δ + C", "δ + C", "两固相区", 0x6d597a,
+      prismRegion("sc-delta-c", "δ + C", "δ + C", "两固相区", 0x8b5cf6,
         [point([0.46, 0.34, 0.2], LOW_T), point([0.08, 0.08, 0.84], LOW_T), point([0.28, 0.3, 0.42], LOW_T), point([0.34, 0.18, 0.48], LOW_T)],
         [point([0.44, 0.34, 0.22], E1.t), point([0.1, 0.12, 0.78], E1.t), point([0.28, 0.3, 0.42], E1.t), point([0.34, 0.22, 0.44], E1.t)],
         "δ 与 C 之间的两固相带", "低于两组子三角形共晶沟", "δ-C 连线附近", "C 与稳定化合物 δ 共同构成两个子体系的公共低温边界。"),
@@ -891,9 +891,9 @@ function makeStandaloneSectionGuide(descriptor) {
     }
     const center = baryToVector([1 / 3, 1 / 3, 1 / 3], descriptor.temp);
     [
-      { text: "A", point: corners[0], color: 0x1b998b },
-      { text: "B", point: corners[1], color: 0xd77a19 },
-      { text: "C", point: corners[2], color: 0x7f52b8 },
+      { text: "A", point: corners[0], color: 0x0284c7 },
+      { text: "B", point: corners[1], color: 0xd97706 },
+      { text: "C", point: corners[2], color: 0x7c3aed },
     ].forEach(({ text, point, color }) => {
       const labelPosition = point.clone().add(point.clone().sub(center).setZ(0).normalize().multiplyScalar(0.16));
       labelPosition.z += 0.04;
@@ -914,8 +914,8 @@ function makeStandaloneSectionGuide(descriptor) {
     }
     const midpoint = descriptor.p1.map((value, index) => (value + descriptor.p2[index]) / 2);
     addSegment(baryToVector(midpoint, LOW_T), baryToVector(midpoint, AXIS_TOP_T));
-    group.add(makeTextSprite("P1", corners[0].clone().add(new THREE.Vector3(0, 0, -0.1)), 0x1b998b, 0.18));
-    group.add(makeTextSprite("P2", corners[1].clone().add(new THREE.Vector3(0, 0, -0.1)), 0xd77a19, 0.18));
+    group.add(makeTextSprite("P1", corners[0].clone().add(new THREE.Vector3(0, 0, -0.1)), 0x0284c7, 0.18));
+    group.add(makeTextSprite("P2", corners[1].clone().add(new THREE.Vector3(0, 0, -0.1)), 0xd97706, 0.18));
     group.add(makeTextSprite("T", corners[3].clone().add(new THREE.Vector3(0, 0, 0.12)), ternaryInkColor(), 0.18));
   }
 
@@ -2149,9 +2149,9 @@ function makeCompositionGuide(diagram) {
   group.add(makeLine([axis, axisTop], ternaryInkColor(), 0.72));
 
   [
-    { text: "A", point: [1.07, -0.035, -0.035], color: 0x1b998b, scale: 0.24 },
-    { text: "B", point: [-0.035, 1.07, -0.035], color: 0xd77a19, scale: 0.24 },
-    { text: "C", point: [-0.035, -0.035, 1.07], color: 0x7f52b8, scale: 0.24 },
+    { text: "A", point: [1.07, -0.035, -0.035], color: 0x0284c7, scale: 0.24 },
+    { text: "B", point: [-0.035, 1.07, -0.035], color: 0xd97706, scale: 0.24 },
+    { text: "C", point: [-0.035, -0.035, 1.07], color: 0x7c3aed, scale: 0.24 },
     { text: TEMP_LABELS.low, vector: baryToVector([1.2, -0.12, -0.08], 0.02), color: 0x607d8b, scale: 0.18 },
     { text: diagram?.axisTemps?.specialLabel || "TE", vector: baryToVector([1.2, -0.12, -0.08], diagram?.axisTemps?.special ?? 0.32), color: 0xc44536, scale: 0.18 },
     { text: "T", vector: baryToVector([1.2, -0.12, -0.08], AXIS_TOP_T), color: ternaryInkColor(), scale: 0.18 },

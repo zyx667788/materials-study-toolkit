@@ -3,11 +3,11 @@
 const A = [1, 0, 0], B = [0, 1, 0], C = [0, 0, 1];
 const LOW = 0.04, TOP = 1.02;
 const PHASES = {
-  L: ['L', 0x94a9ba], a: ['α', 0x219e8f], b: ['β', 0xd29536], g: ['γ', 0x8272b6],
-  La: ['L + α', 0x34b5a4], Lb: ['L + β', 0xe7b25d], Lg: ['L + γ', 0xa799ca],
-  ab: ['α + β', 0x72954d], ag: ['α + γ', 0x548ca4], bg: ['β + γ', 0xb07a81],
-  Lab: ['L + α + β', 0x407ea5], Lag: ['L + α + γ', 0x577a66], Lbg: ['L + β + γ', 0xb97354],
-  abg: ['α + β + γ', 0x8c627a], Labg: ['L + α + β + γ', 0xc54c52],
+  L: ['L', 0x38bdf8], a: ['α', 0x0284c7], b: ['β', 0xd97706], g: ['γ', 0x7c3aed],
+  La: ['L + α', 0x0284c7], Lb: ['L + β', 0xd97706], Lg: ['L + γ', 0x7c3aed],
+  ab: ['α + β', 0x10b981], ag: ['α + γ', 0x3b82f6], bg: ['β + γ', 0xf43f5e],
+  Lab: ['L + α + β', 0x06b6d4], Lag: ['L + α + γ', 0x0f766e], Lbg: ['L + β + γ', 0xea580c],
+  abg: ['α + β + γ', 0x8b5cf6], Labg: ['L + α + β + γ', 0xef4444],
 };
 const mix = (a, b, u) => a.map((v, i) => v + (b[i] - v) * u);
 const fraction = (t, high, low) => Math.max(0, Math.min(1, (high - t) / (high - low)));

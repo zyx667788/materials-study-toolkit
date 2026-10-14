@@ -450,31 +450,167 @@ export function initBinaryPhaseModule() {
   }
 
   function renderPtAg(w, t, sys) {
-    // Peritectic Pt-Ag logic
+    // Dynamic Peritectic Pt-Ag logic with full lever-rule calculations
     const mapX = (val) => 70 + (val / 100) * 600;
     const mapY = (val) => 350 - ((val - 400) / 1400) * 310;
 
     let phaseState = "";
+    let lPercent = 0, alphaPercent = 0, betaPercent = 0;
+    let microSegments = [];
+    let tieLineSvg = "";
+
+    // Characteristic boundary compositions at temperature t
+    // α solvus (400℃ ~ 1186℃): from 2.0% up to 10.5%
+    const cAlphaSolvus = 2.0 + 8.5 * Math.max(0, Math.min(1, (t - 400) / (1186 - 400)));
+    // α solidus (1186℃ ~ 1769℃): from 10.5% down to 0%
+    const cAlphaSolidus = t >= 1186 ? Math.max(0, Math.min(10.5, ((1769 - t) / (1769 - 1186)) * 10.5)) : 10.5;
+    // High-temperature liquidus Pt-side (1186℃ ~ 1769℃): from 66.3% down to 0%
+    const cLiquidHigh = t >= 1186 ? Math.max(0, Math.min(66.3, ((1769 - t) / (1769 - 1186)) * 66.3)) : 66.3;
+    // Liquidus Ag-side (962℃ ~ 1186℃): from 100% at 962℃ to 66.3% at 1186℃
+    const cLiquidLow = t <= 1186 && t >= 962 ? 66.3 + ((1186 - t) / (1186 - 962)) * (100 - 66.3) : (t > 1186 ? 66.3 : 100);
+    // β solidus (962℃ ~ 1186℃): from 100% at 962℃ down to 42.5% at 1186℃
+    const cBetaSolidus = t <= 1186 && t >= 962 ? 42.5 + ((1186 - t) / (1186 - 962)) * (100 - 42.5) : 42.5;
+    // β solvus limit (400℃ ~ 1186℃): approx 55% at 400℃ down to 42.5% at 1186℃
+    const cBetaSolvus = t < 962 ? 55.0 - ((t - 400) / (962 - 400)) * (55.0 - 42.5) : cBetaSolidus;
+
     if (t >= sys.tPeritectic) {
-      phaseState = "高温单/两相区 (L 或 L+α)";
+      // T >= 1186℃
+      if (t >= 1769) {
+        phaseState = "单一液相区 L (熔体)";
+        lPercent = 100;
+        microSegments = [{ label: "均匀液相熔体 L", percent: 100, color: "#2563eb" }];
+      } else if (w <= cAlphaSolidus) {
+        phaseState = "单一高温 α 固溶体区";
+        alphaPercent = 100;
+        microSegments = [{ label: "高温 α 晶粒", percent: 100, color: "#d97706" }];
+      } else if (w >= cLiquidHigh) {
+        phaseState = "单一液相区 L";
+        lPercent = 100;
+        microSegments = [{ label: "均匀液相熔体 L", percent: 100, color: "#2563eb" }];
+      } else {
+        // L + α two-phase region
+        phaseState = "L + α 两相区 (初生 α 晶粒与富 Ag 液相)";
+        lPercent = Math.max(0, Math.min(100, ((w - cAlphaSolidus) / (cLiquidHigh - cAlphaSolidus)) * 100));
+        alphaPercent = 100 - lPercent;
+        microSegments = [
+          { label: "高温初生 α 固溶体", percent: alphaPercent, color: "#d97706" },
+          { label: "高温剩余液相 L", percent: lPercent, color: "#2563eb" }
+        ];
+
+        const x1 = mapX(cAlphaSolidus);
+        const x2 = mapX(cLiquidHigh);
+        const y = mapY(t);
+        tieLineSvg = `
+          <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#059669" stroke-width="2.5" stroke-dasharray="3 3"/>
+          <circle cx="${x1}" cy="${y}" r="4" fill="#d97706"/>
+          <circle cx="${x2}" cy="${y}" r="4" fill="#2563eb"/>
+          <text x="${x1}" y="${y - 8}" font-size="10" fill="#d97706" text-anchor="middle">α (${cAlphaSolidus.toFixed(1)}%)</text>
+          <text x="${x2}" y="${y - 8}" font-size="10" fill="#2563eb" text-anchor="middle">L (${cLiquidHigh.toFixed(1)}%)</text>
+        `;
+      }
     } else {
-      phaseState = "包晶反应完成及固溶体转变区";
+      // T < 1186℃
+      if (t >= 962 && w >= cLiquidLow) {
+        phaseState = "单一液相区 L";
+        lPercent = 100;
+        microSegments = [{ label: "均匀液相熔体 L", percent: 100, color: "#2563eb" }];
+      } else if (t >= 962 && w > cBetaSolidus && w < cLiquidLow) {
+        phaseState = "L + β 两相区 (初生 β 结晶中)";
+        lPercent = Math.max(0, Math.min(100, ((w - cBetaSolidus) / (cLiquidLow - cBetaSolidus)) * 100));
+        betaPercent = 100 - lPercent;
+        microSegments = [
+          { label: "初生 β 晶粒", percent: betaPercent, color: "#7c3aed" },
+          { label: "剩余液相 L", percent: lPercent, color: "#2563eb" }
+        ];
+
+        const x1 = mapX(cBetaSolidus);
+        const x2 = mapX(cLiquidLow);
+        const y = mapY(t);
+        tieLineSvg = `
+          <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#059669" stroke-width="2.5" stroke-dasharray="3 3"/>
+          <circle cx="${x1}" cy="${y}" r="4" fill="#7c3aed"/>
+          <circle cx="${x2}" cy="${y}" r="4" fill="#2563eb"/>
+          <text x="${x1}" y="${y - 8}" font-size="10" fill="#7c3aed" text-anchor="middle">β (${cBetaSolidus.toFixed(1)}%)</text>
+          <text x="${x2}" y="${y - 8}" font-size="10" fill="#2563eb" text-anchor="middle">L (${cLiquidLow.toFixed(1)}%)</text>
+        `;
+      } else if (w <= cAlphaSolvus) {
+        phaseState = "单一 α 固溶体区";
+        alphaPercent = 100;
+        microSegments = [{ label: "α 晶粒", percent: 100, color: "#d97706" }];
+      } else if (w >= (t < 962 ? cBetaSolvus : cBetaSolidus)) {
+        phaseState = "单一 β 固溶体区";
+        betaPercent = 100;
+        microSegments = [{ label: "β 晶粒", percent: 100, color: "#7c3aed" }];
+      } else {
+        // α + β two-phase equilibrium region
+        const leftBound = cAlphaSolvus;
+        const rightBound = t < 962 ? cBetaSolvus : cBetaSolidus;
+        alphaPercent = Math.max(0, Math.min(100, ((rightBound - w) / (rightBound - leftBound)) * 100));
+        betaPercent = 100 - alphaPercent;
+
+        if (w < 10.5) {
+          phaseState = "α 固溶体及脱溶二次析出相 (w < 10.5%)";
+          microSegments = [
+            { label: "α 基体晶粒", percent: alphaPercent, color: "#d97706" },
+            { label: "晶内二次析出相 βⅡ", percent: betaPercent, color: "#7c3aed" }
+          ];
+        } else if (w <= 42.5) {
+          phaseState = "包晶合金 (剩余未反应 α + 包晶相 β)";
+          const proAlpha = Math.max(0, Math.min(100, ((42.5 - w) / (42.5 - 10.5)) * 100));
+          const periBeta = 100 - proAlpha;
+          microSegments = [
+            { label: "初生剩余 α 晶粒", percent: proAlpha, color: "#d97706" },
+            { label: "包晶转变产物 β", percent: periBeta, color: "#2563eb" }
+          ];
+        } else if (w <= 66.3) {
+          phaseState = "包晶合金 (包晶相 β + 液相结晶 β)";
+          const periBeta = Math.max(0, Math.min(100, ((66.3 - w) / (66.3 - 42.5)) * 100));
+          const postBeta = 100 - periBeta;
+          microSegments = [
+            { label: "包晶反应相 β(P)", percent: periBeta, color: "#2563eb" },
+            { label: "剩余液相结晶 β", percent: postBeta, color: "#7c3aed" }
+          ];
+        } else {
+          phaseState = "富 Ag 固溶体合金 (经包晶温度全部凝固为 β)";
+          microSegments = [{ label: "β 固溶体晶粒", percent: 100, color: "#7c3aed" }];
+        }
+
+        const x1 = mapX(leftBound);
+        const x2 = mapX(rightBound);
+        const y = mapY(t);
+        tieLineSvg = `
+          <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="#059669" stroke-width="2.5" stroke-dasharray="3 3"/>
+          <circle cx="${x1}" cy="${y}" r="4" fill="#d97706"/>
+          <circle cx="${x2}" cy="${y}" r="4" fill="#7c3aed"/>
+          <text x="${x1}" y="${y - 8}" font-size="10" fill="#d97706" text-anchor="middle">α (${leftBound.toFixed(1)}%)</text>
+          <text x="${x2}" y="${y - 8}" font-size="10" fill="#7c3aed" text-anchor="middle">β (${rightBound.toFixed(1)}%)</text>
+        `;
+      }
     }
+
+    alphaPercent = Math.max(0, Math.min(100, alphaPercent));
+    betaPercent = Math.max(0, Math.min(100, betaPercent));
+    lPercent = Math.max(0, Math.min(100, lPercent));
 
     els.phaseTitle.textContent = `${sys.name} · 相组成`;
     els.phaseBar.innerHTML = `
-      <div class="bp-bar-seg" style="width:60%;background:#2563eb;">包晶相 β (42.5%Ag) 60%</div>
-      <div class="bp-bar-seg" style="width:40%;background:#d97706;">剩余 α (10.5%Ag) 40%</div>
+      ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent.toFixed(1)}%;background:#2563eb;">${lPercent > 8 ? `液相 L ${lPercent.toFixed(1)}%` : ''}</div>` : ''}
+      ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent.toFixed(1)}%;background:#d97706;">${alphaPercent > 8 ? `α 相 ${alphaPercent.toFixed(1)}%` : ''}</div>` : ''}
+      ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent.toFixed(1)}%;background:#7c3aed;">${betaPercent > 8 ? `β 相 ${betaPercent.toFixed(1)}%` : ''}</div>` : ''}
     `;
 
-    els.microTitle.textContent = `组织组成物 (400-1800℃)`;
-    els.microBar.innerHTML = `
-      <div class="bp-bar-seg" style="width:100%;background:#2563eb;">实测温度下组织动态平衡 100%</div>
-    `;
+    els.microTitle.textContent = `组织组成物分析`;
+    els.microBar.innerHTML = microSegments
+      .filter((seg) => seg.percent > 0)
+      .map((seg) => `
+        <div class="bp-bar-seg" style="width:${seg.percent.toFixed(1)}%;background:${seg.color};">
+          ${seg.percent > 8 ? `${seg.label} ${seg.percent.toFixed(1)}%` : ''}
+        </div>
+      `).join("");
 
     els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Ag</strong>`;
-    els.stateCard.innerHTML = `<span class="bp-meta-label">状态</span><strong>${phaseState}</strong>`;
-    els.tempCard.innerHTML = `<span class="bp-meta-label">包晶特征</span><strong>包晶线 1186℃<br>L(66.3%) + α(10.5%) → β(42.5%)</strong>`;
+    els.stateCard.innerHTML = `<span class="bp-meta-label">平衡状态</span><strong>${phaseState}</strong>`;
+    els.tempCard.innerHTML = `<span class="bp-meta-label">包晶特征反应</span><strong>包晶线 1186℃<br>L(66.3%) + α(10.5%) → β(42.5%)</strong>`;
 
     const curX = mapX(w);
     const curY = mapY(t);
@@ -501,12 +637,17 @@ export function initBinaryPhaseModule() {
       <line x1="${mapX(0)}" y1="${mapY(1769)}" x2="${mapX(10.5)}" y2="${mapY(1186)}" stroke="#d97706" stroke-width="2.5"/>
       <line x1="${mapX(10.5)}" y1="${mapY(1186)}" x2="${mapX(2)}" y2="${mapY(400)}" stroke="#d97706" stroke-width="2"/>
       <line x1="${mapX(42.5)}" y1="${mapY(1186)}" x2="${mapX(100)}" y2="${mapY(962)}" stroke="#7c3aed" stroke-width="2.5"/>
+      <line x1="${mapX(42.5)}" y1="${mapY(1186)}" x2="${mapX(55)}" y2="${mapY(400)}" stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="3 3"/>
 
+      <!-- Labels inside diagram -->
       <text x="350" y="90" font-size="14" fill="#2563eb" font-weight="bold" text-anchor="middle">L 液相</text>
       <text x="300" y="190" font-size="13" fill="#047857" font-weight="bold">L + α</text>
       <text x="350" y="270" font-size="14" fill="#475569" font-weight="bold" text-anchor="middle">α + β</text>
       <text x="120" y="320" font-size="13" fill="#d97706" font-weight="bold">α</text>
       <text x="620" y="320" font-size="13" fill="#7c3aed" font-weight="bold">β</text>
+
+      <!-- Dynamic Tie Line for Two-Phase Region -->
+      ${tieLineSvg}
 
       <!-- Current Point -->
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>

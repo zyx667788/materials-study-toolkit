@@ -171,11 +171,42 @@ function wireModuleNav() {
 
   const sidebar = document.querySelector('#appSidebar');
   const mobileBtn = document.querySelector('#mobileMenuBtn');
+  const sidebarCloseBtn = document.querySelector('#sidebarCloseBtn');
+  const sidebarBackdrop = document.querySelector('#sidebarBackdrop');
+  const backToHomeBtn = document.querySelector('#backToHomeBtn');
+
+  function openSidebar() {
+    sidebar?.classList.add('is-open');
+    sidebarBackdrop?.classList.add('is-active');
+  }
+
+  function closeSidebar() {
+    sidebar?.classList.remove('is-open');
+    sidebarBackdrop?.classList.remove('is-active');
+  }
+
   if (mobileBtn && sidebar) {
-    mobileBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('is-open');
+    mobileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (sidebar.classList.contains('is-open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
     });
   }
+
+  sidebarCloseBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeSidebar();
+  });
+
+  sidebarBackdrop?.addEventListener('click', closeSidebar);
+
+  backToHomeBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    selectModule('home', true);
+  });
 
   buttons.forEach((button, index) => {
     const panel = panels.find(item => item.dataset.modulePanel === button.dataset.module);
@@ -186,7 +217,7 @@ function wireModuleNav() {
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', button.id);
     button.addEventListener('click', () => {
-      sidebar?.classList.remove('is-open');
+      closeSidebar();
       selectModule(button.dataset.module, true);
     });
     button.addEventListener('keydown', (event) => {
@@ -207,6 +238,12 @@ function wireModuleNav() {
   selectModuleRef = selectModule;
   async function selectModule(requested, push = false) {
     const name = buttons.some(button => button.dataset.module === requested) ? requested : 'home';
+    closeSidebar();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    if (backToHomeBtn) {
+      backToHomeBtn.classList.toggle('is-visible', name !== 'home');
+    }
 
     const TITLES = {
       home: { title: '首页导航', desc: '选择模块进入对应工具' },
@@ -217,6 +254,7 @@ function wireModuleNav() {
       'iron-carbon': { title: '铁碳相图', desc: '相图 · Fe-Fe3C 相图与组织计算' },
       'ternary-phase': { title: '三元相图', desc: '相图 · 三元匀晶与三元共晶' },
       stereographic: { title: '极射投影', desc: '投影 · 立方晶系标准投影' },
+      dislocation: { title: '位错理论', desc: '晶体缺陷 · 位错交割、割阶与扭折判定' },
       'memory-cards': { title: '记忆卡片', desc: '考研复习 · 核心知识点与公式记忆' },
       flashcards: { title: '考研题库', desc: '考研复习 · 材科基与金属学真题刷题' },
       redemption: { title: '资料交流', desc: '备考资源 · 教材推荐与考研交流' },

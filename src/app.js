@@ -232,14 +232,15 @@ function wireModuleNav() {
       selectModule(buttons[next].dataset.module, true);
     });
   });
+  selectModuleRef = selectModule;
   window.addEventListener('hashchange', () => selectModule(location.hash.slice(1)));
   selectModule(location.hash.slice(1));
 
-  selectModuleRef = selectModule;
   async function selectModule(requested, push = false) {
     const name = buttons.some(button => button.dataset.module === requested) ? requested : 'home';
     closeSidebar();
     window.scrollTo({ top: 0, behavior: 'instant' });
+    document.body.dataset.currentModule = name;
 
     if (backToHomeBtn) {
       backToHomeBtn.classList.toggle('is-visible', name !== 'home');

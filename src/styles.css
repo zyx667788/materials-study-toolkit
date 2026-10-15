@@ -7589,6 +7589,8 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  flex: 1;
 }
 
 .mobile-menu-btn {
@@ -7626,6 +7628,12 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
 
 .topbar-back-btn.is-visible {
   display: inline-flex;
+}
+
+.topbar-breadcrumbs {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .topbar-breadcrumbs h1 {
@@ -7720,6 +7728,7 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   display: flex;
   flex-direction: column;
   gap: 8px;
+  cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
@@ -7772,6 +7781,7 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 10px;
+  cursor: default;
 }
 
 .home-action-btn {
@@ -8097,6 +8107,14 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   font-variant-numeric: tabular-nums;
 }
 
+.countdown-long-prefix {
+  display: inline;
+}
+
+.countdown-short-prefix {
+  display: none;
+}
+
 /* --- 铁碳相图合并双色比例条 --- */
 .fe-combined-bar-wrapper {
   margin-top: 10px;
@@ -8167,9 +8185,13 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
     left: -260px;
     top: 0;
     width: 250px;
+    height: 100vh;
+    height: 100dvh;
     box-shadow: none;
     transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 70;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
   .app-sidebar.is-open {
     left: 0;
@@ -8195,6 +8217,12 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
     gap: 8px;
     min-width: 0;
     flex: 1;
+    overflow: hidden;
+  }
+  .topbar-breadcrumbs {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
   }
   .topbar-breadcrumbs h1 {
     font-size: 15px;
@@ -8208,10 +8236,18 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   .topbar-right {
     gap: 6px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
   }
   .version-badge,
   .visit-ordinal-badge {
     display: none !important;
+  }
+  .countdown-long-prefix {
+    display: none;
+  }
+  .countdown-short-prefix {
+    display: inline;
   }
   .exam-countdown-badge {
     padding: 2px 7px;
@@ -8247,6 +8283,25 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   }
   .fe-reactions-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-topbar {
+    padding: 0 10px;
+    height: 52px;
+  }
+  .topbar-left {
+    gap: 6px;
+  }
+  .topbar-back-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  /* In tool modules on small mobile screens, hide countdown badge so the module title has clean uncrowded space */
+  body[data-current-module]:not([data-current-module="home"]) .exam-countdown-badge,
+  .app-topbar:has(.topbar-back-btn.is-visible) .exam-countdown-badge {
+    display: none !important;
   }
 }
 

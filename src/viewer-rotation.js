@@ -22,6 +22,7 @@ export function createViewerRotation({ host, controls, invalidate }) {
   icon.alt = '';
   const startIcon = new URL('../assets/icons/rotate-3d.svg', import.meta.url).href;
   const pauseIcon = new URL('../assets/icons/pause.svg', import.meta.url).href;
+  icon.src = startIcon;
   button.append(icon);
   toolbar.prepend(button);
 

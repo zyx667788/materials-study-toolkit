@@ -14,11 +14,11 @@ export function initHomeOverviewModule(selectModuleFn) {
       return;
     }
 
-    // Tapping a single-action card navigates directly to the target tool
+    // Tapping a card navigates directly to its primary tool
     const card = e.target.closest(".home-card");
     if (card && !e.target.closest("button") && !e.target.closest("a")) {
       const allNavBtns = card.querySelectorAll("[data-nav-target]");
-      if (allNavBtns.length === 1) {
+      if (allNavBtns.length >= 1) {
         e.preventDefault();
         const target = allNavBtns[0].dataset.navTarget;
         if (selectModuleFn && target) {

@@ -352,11 +352,17 @@ function renderChartSvg() {
       </g>
 
       <g class="fe-regions">${regionMarkup}</g>
+      <polygon id="selectedRegionShape" class="fe-region-selection" points="" />
 
       <g class="fe-phase-lines">
+        ${polyline([[0, 550], [0, 1538]])}
         ${polyline([[0, 1538], [0.53, 1495], [4.3, 1148], [6.69, 1227]])}
-        ${polyline([[0, 1538], [0.09, 1495], [0.17, 1495], [2.11, 1148]])}
-        ${polyline([[0, 1394], [0.17, 1495], [0.09, 1495]])}
+        ${polyline([[0, 1538], [0.09, 1495]])}
+        ${polyline([[0, 1394], [0.09, 1495]])}
+        ${polyline([[0, 1394], [0.17, 1495]])}
+        ${polyline([[0.09, 1495], [0.53, 1495]])}
+        ${polyline([[0.17, 1495], [2.11, 1148]])}
+        ${polyline([[0, 912], [0.0218, 727]])}
         ${polyline([[0, 912], [0.77, 727]])}
         ${polyline([[0.77, 727], [2.11, 1148]])}
         ${polyline([[0.008, 550], [0.0218, 727]])}
@@ -366,8 +372,6 @@ function renderChartSvg() {
         ${polyline([[4.3, 1148], [4.3, 550]])}
         ${polyline([[6.69, 550], [6.69, 1227]])}
       </g>
-
-      <polygon id="selectedRegionShape" class="fe-region-selection" points="" />
 
       <g class="fe-axes">
         <line x1="${CHART.left}" y1="${CHART.xAxis}" x2="${CHART.width - CHART.right}" y2="${CHART.xAxis}" />

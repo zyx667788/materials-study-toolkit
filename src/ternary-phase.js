@@ -486,10 +486,10 @@ export function initTernaryPhaseModule() {
     els.title.textContent = region.title;
     els.phase.textContent = region.phase;
     els.kind.textContent = region.kind;
-    els.temperature.textContent = region.temperature;
+    if (els.temperature) els.temperature.textContent = region.temperature;
     els.composition.textContent = region.composition;
-    els.shape.textContent = region.shape;
-    els.note.textContent = region.note;
+    if (els.shape) els.shape.textContent = region.shape;
+    if (els.note) els.note.textContent = region.note;
     updateRegionStyles();
     updateViewMode();
     renderer.render(scene, camera);

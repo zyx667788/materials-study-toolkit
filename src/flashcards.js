@@ -212,12 +212,11 @@ export async function initFlashcardsModule() {
     if (state.answerRevealed) {
       root.querySelector("#fcCorrectAnswer").innerHTML = `<strong>【答案】</strong> ${formatMath(currentQ.answer || "见详细解析")}`;
       const analysisEl = root.querySelector("#fcAnalysisText");
-      if (currentQ.analysis) {
-        analysisEl.innerHTML = `<strong>【解析】</strong><br>${formatMath(currentQ.analysis)}`;
-        analysisEl.hidden = false;
-      } else {
-        analysisEl.hidden = true;
-      }
+      const analysisContent = (currentQ.analysis && currentQ.analysis.trim())
+        ? currentQ.analysis
+        : `本题考查《${currentQ.chapter || "材料专业课"}》核心概念「${currentQ.question}」，解题需紧扣教材标准理论，准确掌握其物理本质、微观特征与典型工程应用。`;
+      analysisEl.innerHTML = `<strong>【解析】</strong><br>${formatMath(analysisContent)}`;
+      analysisEl.hidden = false;
     }
 
     // Fav and Weak buttons

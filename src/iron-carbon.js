@@ -161,7 +161,6 @@ const REGION_SHAPES = [
   { id: "hypoeutectic", color: "#fef08a", points: [[2.11, 550], [4.3, 550], [4.3, 727], [2.11, 727]] },
   { id: "hypereutectic", color: "#fed7aa", points: [[4.3, 550], [6.69, 550], [6.69, 727], [4.3, 727]] },
   { id: "eutectoid", color: "#c7d2fe", points: [[0.735, 550], [0.805, 550], [0.805, 727], [0.735, 727]] },
-  { id: "eutectic", color: "#fde047", points: [[4.235, 550], [4.365, 550], [4.365, 727], [4.235, 727]] },
 ];
 
 const labels = [
@@ -363,6 +362,8 @@ function renderChartSvg() {
         ${polyline([[0.008, 550], [0.0218, 727]])}
         ${polyline([[0, 727], [6.69, 727]], "is-critical")}
         ${polyline([[2.11, 1148], [6.69, 1148]], "is-critical")}
+        ${polyline([[2.11, 1148], [2.11, 550]])}
+        ${polyline([[4.3, 1148], [4.3, 550]])}
         ${polyline([[6.69, 550], [6.69, 1227]])}
       </g>
 

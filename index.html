@@ -113,10 +113,6 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             <span>考研题库</span>
           </button>
-          <button class="nav-item" data-module="redemption" type="button" role="tab">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            <span>资料交流</span>
-          </button>
         </nav>
 
         <div class="sidebar-footer">
@@ -154,8 +150,8 @@
       <section id="homeOverviewModule" class="module-view home-module" data-module-panel="home">
         <div class="home-hero">
           <span class="home-eyebrow">MATERIALS SCIENCE · PHASE DIAGRAM · PROJECTION</span>
-          <h2 class="home-title">材料专业可视化教学系统</h2>
-          <p class="home-desc">基于《材料科学基础》第三版 权威教材 · 八个学术级交互工具，严格匹配教材数据与晶体学公式</p>
+          <h2 class="home-title">材料考研可视化学习平台</h2>
+          <p class="home-desc">基于《材料科学基础》权威教材 · 学术级交互工具，严格匹配教材数据与晶体学公式</p>
         </div>
 
         <div class="home-grid">
@@ -266,43 +262,24 @@
               <button class="home-action-btn is-accent" data-nav-target="flashcards" type="button">进入真题题库 →</button>
             </div>
           </div>
-
-          <!-- 08 资料交流 -->
-          <div class="home-card">
-            <div class="home-card-header">
-              <div class="home-card-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              </div>
-              <span class="home-card-idx">08</span>
-            </div>
-            <h3 class="home-card-title">备考资料与研友交流</h3>
-            <p class="home-card-desc">专业课教材与参考书单推荐、考研交流群二维码与答疑资源</p>
-            <div class="home-actions-wrap">
-              <button class="home-action-btn" data-nav-target="redemption" type="button">资料交流 →</button>
-            </div>
-          </div>
         </div>
 
         <!-- 底部统计 -->
         <div class="home-stats-grid">
           <div class="home-stat-card">
-            <div class="home-stat-num">8</div>
-            <div class="home-stat-label">交互工具</div>
-          </div>
-          <div class="home-stat-card">
             <div class="home-stat-num">100%</div>
-            <div class="home-stat-label">教材标准数据</div>
+            <div class="home-stat-label">标准教材数据</div>
           </div>
           <div class="home-stat-card">
-            <div class="home-stat-num">2</div>
-            <div class="home-stat-label">端适配 (PC / 手机)</div>
+            <div class="home-stat-num">2<span class="home-stat-sub">端</span></div>
+            <div class="home-stat-label">支持PC / 手机两端适配</div>
           </div>
         </div>
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料专业可视化教学系统 · 研乐材料实验室</strong>
-            <span>数据抽取自《材料科学基础》权威教材 · 本网页由研乐材料考研团队开发</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -382,9 +359,8 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -481,14 +457,6 @@
               </dl>
               <dl class="interstitial-packing-meta">
                 <div>
-                  <dt>r/R 比值</dt>
-                  <dd id="interstitialRatioReadout">0.39</dd>
-                </div>
-                <div>
-                  <dt>相切状态</dt>
-                  <dd><span id="interstitialTangentBadge" class="interstitial-tangent-badge">未相切</span></dd>
-                </div>
-                <div>
                   <dt>密排面</dt>
                   <dd id="interstitialClosePlaneReadout">{110}</dd>
                 </div>
@@ -497,7 +465,6 @@
                   <dd id="interstitialCloseDirectionReadout">⟨111⟩</dd>
                 </div>
               </dl>
-              <p id="interstitialNote" class="fe-note">BCC 中两类间隙均为畸变配位多面体；轮廓显示代表位点，填隙原子显示晶胞内全部等价位置。</p>
             </section>
           </aside>
 
@@ -523,9 +490,8 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -566,10 +532,6 @@
                   <span id="trainingQuestionNumber">第 1 题</span>
                   <strong id="trainingPrompt">写出图中立方晶面的指数</strong>
                 </div>
-                <div class="training-score" aria-label="训练成绩">
-                  <strong id="trainingScoreText">0 / 0</strong>
-                  <span id="trainingStreakText">连对 0</span>
-                </div>
               </div>
 
               <label class="control-label" for="trainingAnswerInput">你的答案</label>
@@ -589,7 +551,6 @@
               <p id="trainingFeedback" class="training-feedback" data-state="idle">尚未作答</p>
               <div class="training-actions">
                 <button id="trainingNextButton" class="ghost-button" type="button">换一题</button>
-                <button id="trainingResetButton" class="ghost-button" type="button">清空成绩</button>
               </div>
             </section>
 
@@ -657,9 +618,8 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -876,9 +836,8 @@
         
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -896,9 +855,8 @@
             </section>
 
             <section class="ternary-card ternary-diagram-card">
-              <label class="control-label" for="ternaryDiagramSelect">相图类型</label>
-              <select id="ternaryDiagramSelect" class="ternary-select" aria-label="选择三元相图类型"></select>
-              <p id="ternaryDiagramSummary" class="ternary-diagram-summary"></p>
+              <label class="control-label">相图类型</label>
+              <div id="ternaryDiagramButtons" class="ternary-diagram-buttons" role="group" aria-label="选择三元相图类型"></div>
             </section>
 
             <section class="ternary-card ternary-list-card">
@@ -1003,9 +961,8 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -1083,9 +1040,8 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -1103,15 +1059,29 @@
             </section>
 
             <section class="dislocation-card dislocation-preset-card">
-              <label class="control-label" for="dislocationPresetSelect">教材情形</label>
-              <select id="dislocationPresetSelect" class="dislocation-select" aria-label="选择位错交割预设">
-                <option value="edge-edge-kink">刃型 × 刃型 · A 扭折 / B 扭折</option>
-                <option value="edge-edge-jog">刃型 × 刃型 · A 不变 / B 割阶</option>
-                <option value="edge-screw" selected>刃型 × 螺型 · A 割阶 / B 扭折</option>
-                <option value="screw-screw">螺型 × 螺型 · A 割阶 / B 扭折</option>
-                <option value="mixed-edge">混合型 × 刃型 · A 扭折 / B 割阶</option>
-                <option value="custom">自定义矢量</option>
-              </select>
+              <label class="control-label">教材典型交割情形</label>
+              <div id="dislocationPresetButtons" class="dislocation-preset-buttons" role="group" aria-label="选择位错交割预设">
+                <button class="dislocation-preset-btn" type="button" data-preset="edge-edge-kink">
+                  <strong>刃型 × 刃型</strong>
+                  <span>A 扭折 / B 扭折</span>
+                </button>
+                <button class="dislocation-preset-btn" type="button" data-preset="edge-edge-jog">
+                  <strong>刃型 × 刃型</strong>
+                  <span>A 不变 / B 割阶</span>
+                </button>
+                <button class="dislocation-preset-btn is-active" type="button" data-preset="edge-screw">
+                  <strong>刃型 × 螺型</strong>
+                  <span>A 割阶 / B 扭折</span>
+                </button>
+                <button class="dislocation-preset-btn" type="button" data-preset="screw-screw">
+                  <strong>螺型 × 螺型</strong>
+                  <span>A 割阶 / B 扭折</span>
+                </button>
+                <button class="dislocation-preset-btn" type="button" data-preset="mixed-edge">
+                  <strong>混合型 × 刃型</strong>
+                  <span>A 扭折 / B 割阶</span>
+                </button>
+              </div>
               <p class="dislocation-relative-note">动画中位错 A 运动；按相对运动原理，两条位错所得台阶段的判定不变。本模型适用于两个不同且相交滑移面上的位错交割。</p>
             </section>
 
@@ -1208,57 +1178,11 @@
               </div>
             </div>
           </section>
-
-          <aside class="dislocation-analysis-panel" aria-label="位错交割结果分析">
-            <section class="dislocation-card dislocation-summary-card">
-              <span class="fe-kicker">交割结论</span>
-              <h3 id="dislocationSummary">A：割阶 · B：扭折</h3>
-              <p>位错 A 上的台阶段平行于 b₂；位错 B 上的台阶段平行于 b₁。</p>
-              <p id="dislocationWarning" class="dislocation-warning" hidden></p>
-            </section>
-
-            <section id="dislocationAResultCard" class="dislocation-card dislocation-result-card" data-result="jog">
-              <div class="dislocation-result-head">
-                <span>A</span>
-                <div>
-                  <small>位错 A 形成</small>
-                  <strong id="dislocationAResult">割阶</strong>
-                </div>
-              </div>
-              <dl class="dislocation-result-meta">
-                <div><dt>原位错</dt><dd id="dislocationAActualType">刃型</dd></div>
-                 <div><dt>台阶段方向</dt><dd id="dislocationAStep">∥ b₂ = [0 0 1]</dd></div>
-                <div><dt>台阶段性质</dt><dd id="dislocationAStepType">刃型台阶段</dd></div>
-              </dl>
-              <p id="dislocationARelation" class="dislocation-relation">n₁ · b₂ ≠ 0，台阶段离开原滑移面。</p>
-              <p id="dislocationAMobility" class="dislocation-mobility">基本割阶通常可随刃型位错一道移动。</p>
-            </section>
-
-            <section id="dislocationBResultCard" class="dislocation-card dislocation-result-card" data-result="kink">
-              <div class="dislocation-result-head">
-                <span>B</span>
-                <div>
-                  <small>位错 B 形成</small>
-                  <strong id="dislocationBResult">扭折</strong>
-                </div>
-              </div>
-              <dl class="dislocation-result-meta">
-                <div><dt>原位错</dt><dd id="dislocationBActualType">螺型</dd></div>
-                 <div><dt>台阶段方向</dt><dd id="dislocationBStep">∥ b₁ = [1 0 0]</dd></div>
-                <div><dt>台阶段性质</dt><dd id="dislocationBStepType">刃型台阶段</dd></div>
-              </dl>
-              <p id="dislocationBRelation" class="dislocation-relation">n₂ · b₁ = 0，台阶段仍在原滑移面内。</p>
-              <p id="dislocationBMobility" class="dislocation-mobility">扭折通常可在线张力作用下移动或消失。</p>
-            </section>
-
-            <p class="dislocation-rule-note"><strong>判定：</strong>台阶段在原滑移面内为扭折；离开原滑移面为割阶。若台阶段与原位错线重合，则线形不变。台阶段属于原位错，其柏氏矢量仍为原位错的 b。</p>
-          </aside>
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -1283,11 +1207,11 @@
                 <option value="低频">低频考点</option>
               </select>
               <select id="memStatusSelect" class="mem-select" aria-label="复习状态筛选">
-                <option value="all">全部状态</option>
-                <option value="weak">薄弱/错题</option>
-                <option value="known">已掌握</option>
+                <option value="all">全部熟练度</option>
+                <option value="weak">熟练度 1星/2星</option>
+                <option value="known">熟练度 3星级</option>
                 <option value="favorite">已收藏</option>
-                <option value="new">未学</option>
+                <option value="new">未评级</option>
               </select>
               <input id="memSearchInput" class="mem-search" type="search" placeholder="搜索卡片关键词..." />
               <button id="memRandomBtn" class="ghost-button" type="button">⇄ 随机</button>
@@ -1338,9 +1262,9 @@
                 </div>
 
                 <div class="mem-rate-group">
-                  <button class="mem-rate-btn" data-rate="forgot" type="button">1. 不会 (1)</button>
-                  <button class="mem-rate-btn" data-rate="uncertain" type="button">2. 记不清 (2)</button>
-                  <button class="mem-rate-btn" data-rate="known" type="button">3. 熟练掌握 (3)</button>
+                  <button class="mem-rate-btn" data-rate="forgot" type="button">★ 熟练度 1星级</button>
+                  <button class="mem-rate-btn" data-rate="uncertain" type="button">★★ 熟练度 2星级</button>
+                  <button class="mem-rate-btn" data-rate="known" type="button">★★★ 熟练度 3星级</button>
                 </div>
 
                 <footer class="mem-card-footer">
@@ -1355,9 +1279,8 @@
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
@@ -1369,8 +1292,8 @@
         <div class="fc-workspace">
           <div class="fc-filter-card">
             <div class="fc-subj-tabs">
-              <button class="fc-subj-tab is-active" data-subject="caikeji" type="button">材料科学基础 (1060题)</button>
-              <button class="fc-subj-tab" data-subject="metallurgy" type="button">金属学与热处理 (257题)</button>
+              <button class="fc-subj-tab is-active" data-subject="caikeji" type="button">材料科学基础 (1056题)</button>
+              <button class="fc-subj-tab" data-subject="metallurgy" type="button">金属学与热处理 (254题)</button>
             </div>
             <div class="fc-controls-row">
               <select id="fcChapterSelect" class="fc-select" aria-label="章节筛选">
@@ -1437,67 +1360,8 @@
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
-          </div>
-          <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
-          </figure>
-        </footer>
-      </section>
-          <section id="redemptionModule" class="module-view redemption-module is-hidden" data-module-panel="redemption">
-        <div class="redemption-workspace">
-          <div class="redemption-surface">
-            <section class="redemption-main" aria-labelledby="redemptionTitle">
-              <header class="redemption-heading">
-                <div class="redemption-title-row">
-                  <img src="./assets/app-logo.svg" alt="" style="width:44px;height:44px;" />
-                  <div>
-                    <span class="redemption-kicker">备考资源与研友交流</span>
-                    <h2 id="redemptionTitle">备考资料站</h2>
-                  </div>
-                </div>
-                <p>
-                  聚力材料学科考研，汇集专业课优质复习资料、大纲题型与考研同仁经验分享。
-                  <span>欢迎扫码加入材料考研研友交流圈，获取最新考纲解读与专业课真题资料。</span>
-                </p>
-              </header>
-
-              <div class="study-hub-grid">
-                <div class="study-hub-card">
-                  <h3>📚 核心专业课推荐教材</h3>
-                  <ul class="study-hub-list">
-                    <li>《材料科学基础》胡赓祥 / 蔡珣（上海交通大学出版社）</li>
-                    <li>《材料科学基础》刘智恩（西北工业大学出版社）</li>
-                    <li>《材料科学基础》石德珂（机械工业出版社）</li>
-                    <li>《金属学与热处理》崔忠圻（机械工业出版社）</li>
-                  </ul>
-                </div>
-                <div class="study-hub-card">
-                  <h3>🎯 专业课提分复习策略</h3>
-                  <p><strong>第一轮：</strong>对照本工具 3D 晶胞与相图模块，吃透晶面晶向指数标定与 Fe-C 杠杆定律计算；</p>
-                  <p><strong>第二轮：</strong>结合记忆卡片强化名词解释与核心定律记忆，逐章消灭薄弱盲点；</p>
-                  <p><strong>第三轮：</strong>利用考研题库模块进行真题刷题与错题重练，建立知识点网络。</p>
-                </div>
-                <div class="study-hub-card">
-                  <h3>🤝 交流与资料获取</h3>
-                  <div class="study-qr-box">
-                    <img src="./assets/app-qrcode.svg" alt="考研交流群二维码" />
-                    <p style="font-size:12px;color:var(--muted);text-align:center;">扫码获取最新备考笔记、真题解析与考研研友群</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <footer class="module-footer">
-          <div class="module-footer-copy">
-            <strong>材料科学与工程考研研学工具箱</strong>
-            <span>材料科学基础 · 金属学与热处理 · 专业课备考学习助手</span>
-            <span>本工具仅供材料考研专业课学习、课堂演示与复习自测使用，感谢同学们反馈改进建议。</span>
+            <strong>材料考研可视化学习平台</strong>
+            <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />

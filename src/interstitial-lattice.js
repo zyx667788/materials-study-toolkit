@@ -4,12 +4,12 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { downloadCanvasPngWithWatermark } from "./export-watermark.js?v=20261008-phase-audit-motion";
 
 const COLORS = {
-  lattice: 0x4a5568,
-  center: 0x2d3748,
-  octa: 0x718096,
-  tetra: 0xa0aec0,
-  packingPlane: 0x94a3b8,
-  packingDirection: 0x475569,
+  lattice: 0x0891b2,
+  center: 0x4f46e5,
+  octa: 0xd97706,
+  tetra: 0x7c3aed,
+  packingPlane: 0x0891b2,
+  packingDirection: 0xd96d43,
 };
 
 const LATTICES = {
@@ -318,9 +318,9 @@ export function initInterstitialLatticeModule() {
     els.tetraCount.textContent = definition.tetraCount;
     els.closePlaneLabel.textContent = definition.closePlane;
     els.closeDirectionLabel.textContent = definition.closeDirection;
-    els.closePlaneReadout.textContent = definition.closePlane;
-    els.closeDirectionReadout.textContent = definition.closeDirection;
-    els.note.textContent = definition.note;
+    if (els.closePlaneReadout) els.closePlaneReadout.textContent = definition.closePlane;
+    if (els.closeDirectionReadout) els.closeDirectionReadout.textContent = definition.closeDirection;
+    if (els.note) els.note.textContent = definition.note;
     els.viewerCode.textContent = definition.code;
     els.viewerName.textContent = definition.name;
     els.viewerStats.textContent = `${definition.atomCount} 原子 · O ${definition.octaCount} · T ${definition.tetraCount}`;

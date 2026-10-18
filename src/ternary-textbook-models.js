@@ -467,7 +467,7 @@ export function createEutecticDiagrams() {
 export function createTextbookDiagrams() {
   const P = TRANSITION_COMPOSITIONS, TP = TRANSITION_T;
   const ei = buildDiagram({ id: 'eutectic-isomorphous',
-    title: '两个共晶型二元系和一个匀晶型二元系构成的三元相图', shortTitle: '两共晶 + 一匀晶',
+    title: '两个共晶型二元系和一个匀晶型二元系构成的三元相图', shortTitle: '两个共晶和一个匀晶',
     subtitle: 'AB、BC：共晶；AC：完全互溶的 α 固溶体',
     temperatures: [TOP, 1, 0.90, 0.72, 0.55, 0.34, LOW], sampler: eutecticIsomorphousSection,
     axisTemps: { A: 0.90, B: 1, C: 0.55, special: 0.72, specialLabel: 'Te' },

@@ -134,6 +134,7 @@ export function initTernaryPhaseModule() {
     host: document.querySelector("#ternaryViewerHost"),
     viewPanel: document.querySelector(".ternary-view-panel"),
     diagramSelect: document.querySelector("#ternaryDiagramSelect"),
+    diagramButtons: document.querySelector("#ternaryDiagramButtons"),
     diagramSummary: document.querySelector("#ternaryDiagramSummary"),
     sectionPresets: document.querySelector("#ternarySectionPresets"),
     regionList: document.querySelector("#ternaryRegionList"),
@@ -362,10 +363,32 @@ export function initTernaryPhaseModule() {
   }
 
   function renderDiagramOptions() {
-    els.diagramSelect.innerHTML = DIAGRAMS.map((diagram) => `
-      <option value="${diagram.id}">${diagram.shortTitle || diagram.title}</option>
-    `).join("");
-    els.diagramSelect.value = state.diagramId;
+    if (els.diagramSelect) {
+      els.diagramSelect.innerHTML = DIAGRAMS.map((diagram) => `
+        <option value="${diagram.id}">${diagram.shortTitle || diagram.title}</option>
+      `).join("");
+      els.diagramSelect.value = state.diagramId;
+    }
+    if (els.diagramButtons) {
+      els.diagramButtons.innerHTML = DIAGRAMS.map((diagram) => `
+        <button class="ternary-diagram-btn${diagram.id === state.diagramId ? " is-active" : ""}" type="button" data-diagram-id="${diagram.id}">
+          ${diagram.shortTitle || diagram.title}
+        </button>
+      `).join("");
+      els.diagramButtons.querySelectorAll("[data-diagram-id]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (state.diagramId === btn.dataset.diagramId) return;
+          state.diagramId = btn.dataset.diagramId;
+          state.selectedId = selectedDiagram().regions[0].id;
+          state.sectionVisible = false;
+          state.sectionStandalone = false;
+          state.regionOffsets.clear();
+          disposeSceneChildren(sectionRoot);
+          renderDiagramOptions();
+          drawDiagram(true);
+        });
+      });
+    }
   }
 
   function drawDiagram(resetView) {
@@ -394,7 +417,7 @@ export function initTernaryPhaseModule() {
 
     guideRoot.add(makeCompositionGuide(diagram));
     guideRoot.add(makeCotecticGuide(diagram));
-    if (els.diagramSummary) els.diagramSummary.textContent = diagram.subtitle;
+    if (els.diagramSummary) els.diagramSummary.textContent = "";
     if (els.sectionPresets) {
       const presets = diagram.checkpoints;
       els.sectionPresets.replaceChildren(...presets.map(item => {

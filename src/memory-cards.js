@@ -86,7 +86,7 @@ export function initMemoryCardsModule() {
     const weakCount = CARDS.filter(c => ["forgot", "uncertain"].includes(state.progress[c.id]?.rating)).length;
     
     const countEl = root.querySelector("#memCountBadge");
-    if (countEl) countEl.textContent = `${list.length} 张卡片 (已掌握 ${knownCount}/${CARDS.length} · 薄弱 ${weakCount})`;
+    if (countEl) countEl.textContent = `${list.length} 张卡片 (三星熟练 ${knownCount}/${CARDS.length} · 待提升 ${weakCount})`;
 
     // Category tabs
     root.querySelectorAll(".mem-cat-tab").forEach(tab => {

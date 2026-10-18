@@ -1654,6 +1654,38 @@ h1 {
   box-shadow: 0 0 0 3px rgba(2, 119, 189, 0.14);
 }
 
+.ternary-diagram-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ternary-diagram-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--line, #e2e8f0);
+  background: var(--panel-soft, #f8fafc);
+  color: var(--ink, #1e293b);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.ternary-diagram-btn:hover {
+  border-color: var(--accent, #4f46e5);
+  background: var(--panel, #ffffff);
+}
+
+.ternary-diagram-btn.is-active {
+  border-color: var(--accent, #4f46e5);
+  background: color-mix(in srgb, var(--accent, #4f46e5) 10%, var(--panel, #ffffff));
+  color: var(--accent, #4f46e5);
+  font-weight: 600;
+}
+
 .ternary-list-card {
   max-height: 380px;
   overflow: hidden;
@@ -5234,7 +5266,7 @@ h1 {
 .dislocation-workspace {
   min-height: calc(100vh - 104px);
   display: grid;
-  grid-template-columns: minmax(300px, 336px) minmax(460px, 1fr) minmax(280px, 310px);
+  grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
   gap: 12px;
   align-items: start;
 }
@@ -5245,6 +5277,46 @@ h1 {
   gap: 12px;
   align-content: start;
   min-width: 0;
+}
+
+.dislocation-preset-buttons {
+  display: grid;
+  gap: 6px;
+}
+
+.dislocation-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--line, #e2e8f0);
+  background: var(--panel-soft, #f8fafc);
+  color: var(--ink, #1e293b);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.dislocation-preset-btn:hover {
+  border-color: var(--accent, #4f46e5);
+  background: var(--panel, #ffffff);
+}
+
+.dislocation-preset-btn.is-active {
+  border-color: var(--accent, #4f46e5);
+  background: color-mix(in srgb, var(--accent, #4f46e5) 10%, var(--panel, #ffffff));
+  color: var(--accent, #4f46e5);
+  font-weight: 600;
+}
+
+.dislocation-preset-btn span {
+  font-size: 11px;
+  color: var(--muted, #64748b);
+  font-weight: normal;
 }
 
 .dislocation-card,
@@ -7818,7 +7890,7 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
 
 .home-stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -7829,6 +7901,13 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
   border-radius: 12px;
   padding: 18px 24px;
   box-shadow: var(--shadow);
+}
+
+.home-stat-sub {
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: 2px;
+  color: var(--muted);
 }
 
 .home-stat-num {

@@ -144,7 +144,6 @@ const moduleLoaders = {
   'binary-phase': () => import('./binary-phase.js').then(m => m.initBinaryPhaseModule()),
   'memory-cards': () => import('./memory-cards.js').then(m => m.initMemoryCardsModule()),
   flashcards: () => import('./flashcards.js').then(m => m.initFlashcardsModule()),
-  redemption: () => import('./peripheral-redemption.js?v=20261008-phase-audit-motion').then(m => m.initPeripheralRedemptionModule()),
 };
 const moduleInstances = new Map();
 
@@ -258,7 +257,6 @@ function wireModuleNav() {
       dislocation: { title: '位错理论', desc: '晶体缺陷 · 位错交割、割阶与扭折判定' },
       'memory-cards': { title: '记忆卡片', desc: '考研复习 · 核心知识点与公式记忆' },
       flashcards: { title: '考研题库', desc: '考研复习 · 材科基与金属学真题刷题' },
-      redemption: { title: '资料交流', desc: '备考资源 · 教材推荐与考研交流' },
     };
     const meta = TITLES[name] || TITLES.home;
     const topTitle = document.querySelector('#topbarTitle');
@@ -655,8 +653,8 @@ function formatTrainingAnswer(question) {
 }
 
 function updateTrainingScore() {
-  els.trainingScoreText.textContent = `${trainingState.correct} / ${trainingState.attempts}`;
-  els.trainingStreakText.textContent = `连对 ${trainingState.streak}`;
+  if (els.trainingScoreText) els.trainingScoreText.textContent = `${trainingState.correct} / ${trainingState.attempts}`;
+  if (els.trainingStreakText) els.trainingStreakText.textContent = `连对 ${trainingState.streak}`;
 }
 
 function setTrainingFeedback(message, status) {
@@ -715,15 +713,22 @@ async function initVisitCounter() {
 
 function initExamCountdown() {
   const daysEl = document.querySelector("#examCountdownDays");
+  const prefixEl = document.querySelector(".countdown-long-prefix");
   if (!daysEl) return;
   const now = new Date();
-  let target = new Date(now.getFullYear(), 11, 26);
+  const currentYear = now.getFullYear();
+  let target = new Date(currentYear, 11, 21);
+  let examYear = currentYear + 1;
   if (now > target) {
-    target = new Date(now.getFullYear() + 1, 11, 26);
+    target = new Date(currentYear + 1, 11, 21);
+    examYear = currentYear + 2;
   }
   const diffTime = target - now;
   const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   daysEl.textContent = String(diffDays);
+  if (prefixEl) {
+    prefixEl.textContent = `🎯 ${examYear}考研倒计时: `;
+  }
 }
 
 function initVersionChecker() {

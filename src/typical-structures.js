@@ -5,19 +5,19 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { downloadCanvasPngWithWatermark } from "./export-watermark.js?v=20261008-phase-audit-motion";
 
 const ELEMENTS = {
-  Al: { color: 0x6b7280, radius: 0.18 },
+  Al: { color: 0x3b82f6, radius: 0.18 },
   C: { color: 0x1f2937, darkColor: 0x9ca3af, radius: 0.14 },
-  Ca: { color: 0x4b5563, radius: 0.2 },
-  Cl: { color: 0x6b7280, radius: 0.18 },
-  Cs: { color: 0x374151, radius: 0.23 },
-  F: { color: 0x9ca3af, radius: 0.13 },
-  Mg: { color: 0x4b5563, radius: 0.18 },
-  Na: { color: 0x374151, radius: 0.16 },
-  O: { color: 0x6b7280, radius: 0.12 },
-  S: { color: 0x4b5563, radius: 0.17 },
-  Si: { color: 0x374151, darkColor: 0x9ca3af, radius: 0.15 },
-  Ti: { color: 0x1f2937, darkColor: 0x9ca3af, radius: 0.15 },
-  Zn: { color: 0x6b7280, radius: 0.16 },
+  Ca: { color: 0xf59e0b, radius: 0.2 },
+  Cl: { color: 0x10b981, radius: 0.18 },
+  Cs: { color: 0x6366f1, radius: 0.23 },
+  F: { color: 0x06b6d4, radius: 0.13 },
+  Mg: { color: 0x0ea5e9, radius: 0.18 },
+  Na: { color: 0x2563eb, radius: 0.16 },
+  O: { color: 0xef4444, radius: 0.12 },
+  S: { color: 0xeab308, radius: 0.17 },
+  Si: { color: 0x0f766e, darkColor: 0x2dd4bf, radius: 0.15 },
+  Ti: { color: 0x8b5cf6, darkColor: 0xa78bfa, radius: 0.15 },
+  Zn: { color: 0xd97706, radius: 0.16 },
 };
 
 const STRUCTURES = [

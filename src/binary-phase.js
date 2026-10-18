@@ -17,25 +17,24 @@ export function initBinaryPhaseModule() {
       tMax: 1500,
       defaultW: 40.0,
       defaultT: 1250,
-      meltingA: 1083,
+      meltingA: 1084,
       meltingB: 1455,
-      // Liquidus & Solidus parameter curves
-      liquidus: (w) => 1083 + 2.7 * w + 0.0102 * w * w,
-      solidus: (w) => 1083 + 1.8 * w + 0.0192 * w * w,
+      // Liquidus & Solidus parameter curves (凸液相线，凹固相线，匹配标准教材纺锤形)
+      liquidus: (w) => 1084 + 5.51 * w - 0.018 * w * w,
+      solidus: (w) => 1084 + 2.21 * w + 0.015 * w * w,
       // Inverse functions for tie-line composition
       cLiquid: (t) => {
-        if (t <= 1083) return 0;
+        if (t <= 1084) return 0;
         if (t >= 1455) return 100;
-        // Solve 1083 + 2.7w + 0.0102w^2 = t
-        const a = 0.0102, b = 2.7, c = 1083 - t;
-        const w = (-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a);
+        const disc = Math.max(0, 5.51 * 5.51 - 0.072 * (t - 1084));
+        const w = (5.51 - Math.sqrt(disc)) / 0.036;
         return Math.max(0, Math.min(100, w));
       },
       cSolid: (t) => {
-        if (t <= 1083) return 0;
+        if (t <= 1084) return 0;
         if (t >= 1455) return 100;
-        const a = 0.0192, b = 1.8, c = 1083 - t;
-        const w = (-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a);
+        const disc = Math.max(0, 2.21 * 2.21 + 0.06 * (t - 1084));
+        const w = (-2.21 + Math.sqrt(disc)) / 0.03;
         return Math.max(0, Math.min(100, w));
       }
     },
@@ -211,8 +210,8 @@ export function initBinaryPhaseModule() {
     const mapX = (val) => 70 + (val / 100) * 600;
     const mapY = (val) => 350 - ((val - 900) / 600) * 310;
 
-    let liquidPath = `M ${mapX(0)} ${mapY(1083)}`;
-    let solidPath = `M ${mapX(0)} ${mapY(1083)}`;
+    let liquidPath = `M ${mapX(0)} ${mapY(sys.meltingA)}`;
+    let solidPath = `M ${mapX(0)} ${mapY(sys.meltingA)}`;
     for (let curW = 1; curW <= 100; curW += 2) {
       liquidPath += ` L ${mapX(curW)} ${mapY(sys.liquidus(curW))}`;
       solidPath += ` L ${mapX(curW)} ${mapY(sys.solidus(curW))}`;
@@ -255,7 +254,7 @@ export function initBinaryPhaseModule() {
       <text x="350" y="110" font-size="14" fill="#2563eb" font-weight="bold" text-anchor="middle">L 液相</text>
       <text x="350" y="240" font-size="13" fill="#047857" font-weight="bold" text-anchor="middle">L + α</text>
       <text x="490" y="310" font-size="14" fill="#dc2626" font-weight="bold" text-anchor="middle">α 固溶体</text>
-      <text x="75" y="${mapY(1083) + 16}" font-size="11" fill="#475569">Cu 1083℃</text>
+      <text x="75" y="${mapY(sys.meltingA) + 16}" font-size="11" fill="#475569">Cu ${sys.meltingA}℃</text>
       <text x="665" y="${mapY(1455) - 6}" font-size="11" fill="#475569" text-anchor="end">Ni 1455℃</text>
 
       <!-- Tie line -->

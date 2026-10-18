@@ -164,6 +164,13 @@ export function initDislocationIntersectionModule() {
   };
 
   function wireUi() {
+    const presetButtons = document.querySelectorAll("[data-preset]");
+    presetButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        applyPreset(btn.dataset.preset);
+      });
+    });
+
     els.preset?.addEventListener("change", () => {
       if (els.preset.value !== "custom") applyPreset(els.preset.value);
     });
@@ -212,6 +219,9 @@ export function initDislocationIntersectionModule() {
     els.a.type.value = classifyDislocationCharacter(preset.a.line, preset.a.burgers);
     els.b.type.value = classifyDislocationCharacter(preset.b.line, preset.b.burgers);
     if (els.preset) els.preset.value = id;
+    document.querySelectorAll("[data-preset]").forEach((btn) => {
+      btn.classList.toggle("is-active", btn.dataset.preset === id);
+    });
     setProgress(0, false);
     analyzeFromInputs();
   }
@@ -266,15 +276,17 @@ export function initDislocationIntersectionModule() {
   function updateAnalysisPanel() {
     if (!state.analysis) return;
     setAnalysisControlsEnabled(true);
-    els.summary.textContent = state.analysis.summary;
+    if (els.summary) els.summary.textContent = state.analysis.summary;
     writeResult(els.resultA, state.analysis.a, state.analysis.resultA);
     writeResult(els.resultB, state.analysis.b, state.analysis.resultB);
-    if (state.analysis.warnings.length) {
-      els.warning.hidden = false;
-      els.warning.textContent = state.analysis.warnings.join(" ");
-    } else {
-      els.warning.hidden = true;
-      els.warning.textContent = "";
+    if (els.warning) {
+      if (state.analysis.warnings.length) {
+        els.warning.hidden = false;
+        els.warning.textContent = state.analysis.warnings.join(" ");
+      } else {
+        els.warning.hidden = true;
+        els.warning.textContent = "";
+      }
     }
     updateStageUi();
   }
@@ -283,9 +295,11 @@ export function initDislocationIntersectionModule() {
     state.progress = 0;
     if (els.progress) els.progress.value = "0";
     setAnalysisControlsEnabled(false);
-    els.summary.textContent = "暂无法判定";
-    els.warning.hidden = false;
-    els.warning.textContent = message;
+    if (els.summary) els.summary.textContent = "暂无法判定";
+    if (els.warning) {
+      els.warning.hidden = false;
+      els.warning.textContent = message;
+    }
     writePendingResult(els.resultA);
     writePendingResult(els.resultB);
     if (els.viewerStage) els.viewerStage.textContent = "输入待修正";
@@ -568,25 +582,27 @@ function writeConfiguration(group, config) {
 }
 
 function writeResult(elements, dislocation, result) {
+  if (!elements?.card) return;
   elements.card.dataset.result = result.kind;
-  elements.type.textContent = characterLabel(dislocation.character);
-  elements.kind.textContent = result.kindLabel;
-  elements.step.textContent = `∥ ${result.stepSymbol} = ${formatDirection(result.step)}`;
-  elements.stepType.textContent = result.kind === "unchanged"
+  if (elements.type) elements.type.textContent = characterLabel(dislocation.character);
+  if (elements.kind) elements.kind.textContent = result.kindLabel;
+  if (elements.step) elements.step.textContent = `∥ ${result.stepSymbol} = ${formatDirection(result.step)}`;
+  if (elements.stepType) elements.stepType.textContent = result.kind === "unchanged"
     ? "与原线重合"
     : `${characterLabel(result.stepCharacter)}台阶段`;
-  elements.relation.textContent = result.relation;
-  elements.mobility.textContent = result.mobility;
+  if (elements.relation) elements.relation.textContent = result.relation;
+  if (elements.mobility) elements.mobility.textContent = result.mobility;
 }
 
 function writePendingResult(elements) {
+  if (!elements?.card) return;
   elements.card.dataset.result = "invalid";
-  elements.type.textContent = "—";
-  elements.kind.textContent = "待判定";
-  elements.step.textContent = "—";
-  elements.stepType.textContent = "—";
-  elements.relation.textContent = "请先修正上方矢量关系。";
-  elements.mobility.textContent = "有效交割条件满足后显示运动分析。";
+  if (elements.type) elements.type.textContent = "—";
+  if (elements.kind) elements.kind.textContent = "待判定";
+  if (elements.step) elements.step.textContent = "—";
+  if (elements.stepType) elements.stepType.textContent = "—";
+  if (elements.relation) elements.relation.textContent = "请先修正上方矢量关系。";
+  if (elements.mobility) elements.mobility.textContent = "有效交割条件满足后显示运动分析。";
 }
 
 function makeSlipPlane(normalArray, color, label) {
@@ -814,6 +830,9 @@ function showInputStatus(message, error) {
 function markCustom() {
   const select = document.querySelector("#dislocationPresetSelect");
   if (select) select.value = "custom";
+  document.querySelectorAll("[data-preset]").forEach((btn) => {
+    btn.classList.remove("is-active");
+  });
 }
 
 function vectorInputValue(vector) {

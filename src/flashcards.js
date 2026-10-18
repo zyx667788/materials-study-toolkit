@@ -46,11 +46,13 @@ export async function initFlashcardsModule() {
     try {
       if (questionsData.caikeji.length === 0) {
         const res = await fetch("data/caikeji_questions.json");
-        questionsData.caikeji = await res.json();
+        const list = await res.json();
+        questionsData.caikeji = Array.isArray(list) ? list.slice(0, 1056) : [];
       }
       if (questionsData.metallurgy.length === 0) {
         const res2 = await fetch("data/metallurgy_questions.json");
-        questionsData.metallurgy = await res2.json();
+        const list2 = await res2.json();
+        questionsData.metallurgy = Array.isArray(list2) ? list2.slice(0, 254) : [];
       }
     } catch (e) {
       console.error("Failed to load questions data", e);
@@ -208,10 +210,10 @@ export async function initFlashcardsModule() {
     revealBtn.textContent = state.answerRevealed ? "隐藏参考答案" : "查看参考答案与解析";
 
     if (state.answerRevealed) {
-      root.querySelector("#fcCorrectAnswer").innerHTML = `<strong>【正确答案】</strong> ${formatMath(currentQ.answer || "见详细解析")}`;
+      root.querySelector("#fcCorrectAnswer").innerHTML = `<strong>【答案】</strong> ${formatMath(currentQ.answer || "见详细解析")}`;
       const analysisEl = root.querySelector("#fcAnalysisText");
       if (currentQ.analysis) {
-        analysisEl.innerHTML = `<strong>【考点解析】</strong><br>${formatMath(currentQ.analysis)}`;
+        analysisEl.innerHTML = `<strong>【解析】</strong><br>${formatMath(currentQ.analysis)}`;
         analysisEl.hidden = false;
       } else {
         analysisEl.hidden = true;

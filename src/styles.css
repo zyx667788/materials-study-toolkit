@@ -8775,3 +8775,45 @@ html[data-theme="dark"] .home-action-btn.is-accent {
 }
 
 
+
+/* --- 典型晶体结构双列自适应布局 --- */
+.structure-dual-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.structure-column-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.structure-column-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.structure-column-list .structure-list-item {
+  min-height: 42px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+}
+.structure-column-list .structure-list-item span {
+  font-size: 13px;
+  font-weight: 600;
+}
+.interstitial-viewer-stats {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.stereo-legend-zone {
+  background: #7c3aed !important;
+}

@@ -142,7 +142,6 @@ const moduleLoaders = {
   'ternary-phase': () => import('./ternary-phase.js?v=20261008-phase-audit-motion').then(m => m.initTernaryPhaseModule()),
   home: () => import('./home-overview.js').then(m => m.initHomeOverviewModule((req, push) => selectModuleRef?.(req, push))),
   'binary-phase': () => import('./binary-phase.js').then(m => m.initBinaryPhaseModule()),
-  'memory-cards': () => import('./memory-cards.js').then(m => m.initMemoryCardsModule()),
   flashcards: () => import('./flashcards.js').then(m => m.initFlashcardsModule()),
 };
 const moduleInstances = new Map();
@@ -255,7 +254,6 @@ function wireModuleNav() {
       'ternary-phase': { title: '三元相图', desc: '相图 · 三元匀晶与三元共晶' },
       stereographic: { title: '极射投影', desc: '投影 · 立方晶系标准投影' },
       dislocation: { title: '位错理论', desc: '晶体缺陷 · 位错交割、割阶与扭折判定' },
-      'memory-cards': { title: '记忆卡片', desc: '考研复习 · 核心知识点与公式记忆' },
       flashcards: { title: '考研题库', desc: '考研复习 · 材科基与金属学真题刷题' },
     };
     const meta = TITLES[name] || TITLES.home;

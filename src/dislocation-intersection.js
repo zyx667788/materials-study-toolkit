@@ -419,7 +419,7 @@ export function initDislocationIntersectionModule() {
     if (els.playButton) {
       els.playButton.innerHTML = state.playing
         ? '<span aria-hidden="true">Ⅱ</span> 暂停'
-        : '<span aria-hidden="true">▶</span> 播放交割';
+        : '<span aria-hidden="true">▶</span> 播放';
     }
     if (els.viewerStage) els.viewerStage.textContent = stage.title;
     if (els.viewerCaption) {

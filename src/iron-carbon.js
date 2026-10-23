@@ -310,17 +310,42 @@ export function initIronCarbonModule() {
     els.phaseCementiteValue.textContent = formatPercent(room.phase.cementite);
     els.phaseAlphaBar.style.width = `${room.phase.alpha}%`;
     els.phaseCementiteBar.style.width = `${room.phase.cementite}%`;
-    els.structureBreakdown.innerHTML = room.structures
-      .map((item) => `
-        <div class="fe-structure-item">
-          <div class="fe-bar-label">
-            <span>${chemicalMarkup(item.name)}</span>
-            <strong>${formatPercent(item.value)}</strong>
-          </div>
-          <i class="fe-bar-fill" style="width: ${clamp(item.value, 0, 100)}%"></i>
-        </div>
-      `)
-      .join("");
+    const STRUCTURE_COLORS = {
+      "珠光体": "#0284c7",
+      "二次渗碳体": "#ea580c",
+      "变态莱氏体": "#059669",
+      "低温莱氏体": "#059669",
+      "一次渗碳体": "#dc2626",
+      "铁素体": "#2563eb",
+      "渗碳体": "#d97706"
+    };
+    function getStructureColor(name) {
+      for (const k in STRUCTURE_COLORS) {
+        if (name.includes(k)) return STRUCTURE_COLORS[k];
+      }
+      return "#6366f1";
+    }
+
+    const legendHtml = room.structures.map((item) => {
+      const color = getStructureColor(item.name);
+      return `
+        <span class="fe-legend-item">
+          <i class="fe-legend-dot" style="background:${color};"></i>
+          <span>${chemicalMarkup(item.name)}</span>:
+          <strong>${formatPercent(item.value)}</strong>
+        </span>
+      `;
+    }).join("");
+
+    const segmentsHtml = room.structures.map((item) => {
+      const color = getStructureColor(item.name);
+      return `<div class="fe-bar-segment" style="width: ${clamp(item.value, 0, 100)}%; background:${color};"></div>`;
+    }).join("");
+
+    els.structureBreakdown.innerHTML = `
+      <div class="fe-combined-legend" style="margin-bottom:8px;">${legendHtml}</div>
+      <div class="fe-combined-bar" aria-label="组织含量分布">${segmentsHtml}</div>
+    `;
   }
 }
 

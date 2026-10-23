@@ -323,7 +323,7 @@ export function initInterstitialLatticeModule() {
     if (els.note) els.note.textContent = definition.note;
     els.viewerCode.textContent = definition.code;
     els.viewerName.textContent = definition.name;
-    els.viewerStats.textContent = `${definition.atomCount} 原子 · O ${definition.octaCount} · T ${definition.tetraCount}`;
+    if (els.viewerStats) els.viewerStats.textContent = `(${definition.atomCount} 原子)`;
     if (els.ratioReadout && definition.tangentRadius) {
       const ratio = (state.atomRadius / definition.tangentRadius).toFixed(3);
       els.ratioReadout.textContent = `${ratio} × r_max`;

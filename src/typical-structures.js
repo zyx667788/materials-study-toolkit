@@ -287,9 +287,8 @@ const STRUCTURES = [
 export function initTypicalStructuresModule() {
   const els = {
     host: document.querySelector("#structureViewerHost"),
-    list: document.querySelector("#structureList"),
-    select: document.querySelector("#structureSelect"),
-    filterButtons: document.querySelectorAll("[data-structure-filter]"),
+    listAtomic: document.querySelector("#atomicStructureList"),
+    listIonic: document.querySelector("#ionicStructureList"),
     repeatButton: document.querySelector("#structureRepeatButton"),
     bondButton: document.querySelector("#structureBondButton"),
     exportButton: document.querySelector("#structureExportButton"),
@@ -374,13 +373,15 @@ export function initTypicalStructuresModule() {
   };
 
   function wireUi() {
-    els.filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        state.filter = button.dataset.structureFilter;
-        els.filterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-        renderStructureList();
+    if (els.filterButtons) {
+      els.filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          state.filter = button.dataset.structureFilter;
+          els.filterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+          renderStructureList();
+        });
       });
-    });
+    }
 
     els.select?.addEventListener("change", () => {
       chooseStructure(els.select.value);
@@ -410,35 +411,33 @@ export function initTypicalStructuresModule() {
   }
 
   function renderStructureList() {
-    const filtered = STRUCTURES.filter((structure) => structure.category === state.filter);
-    let changedSelection = false;
-    if (!filtered.some((structure) => structure.id === state.selectedId)) {
-      state.selectedId = filtered[0]?.id || STRUCTURES[0].id;
-      changedSelection = true;
-      drawSelectedStructure(true);
-    }
+    const atomicList = STRUCTURES.filter((s) => s.category === "atomic");
+    const ionicList = STRUCTURES.filter((s) => s.category === "ionic");
+
+    const renderItems = (items) => items.map((structure) => `
+      <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
+        <span>${structure.title}</span>
+      </button>
+    `).join("");
+
+    if (els.listAtomic) els.listAtomic.innerHTML = renderItems(atomicList);
+    if (els.listIonic) els.listIonic.innerHTML = renderItems(ionicList);
 
     if (els.select) {
-      els.select.innerHTML = filtered.map((structure) => `
+      els.select.innerHTML = STRUCTURES.map((structure) => `
         <option value="${structure.id}">${structure.title}</option>
       `).join("");
       els.select.value = state.selectedId;
     }
 
-    els.list.innerHTML = filtered.map((structure) => `
-      <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
-        <span>${structure.title}</span>
-        <small>${structure.formula} · ${structure.mpId}</small>
-      </button>
-    `).join("");
-
-    els.list.querySelectorAll("[data-structure-id]").forEach((button) => {
+    const allButtons = document.querySelectorAll("[data-structure-id]");
+    allButtons.forEach((button) => {
       button.addEventListener("click", () => {
         chooseStructure(button.dataset.structureId);
       });
     });
 
-    return changedSelection;
+    return false;
   }
 
   function chooseStructure(structureId) {
@@ -470,23 +469,29 @@ export function initTypicalStructuresModule() {
   }
 
   function updateInfo(structure, atomCount) {
-    els.title.textContent = structure.title;
-    els.kind.textContent = structure.category === "atomic" ? "原子结构" : "离子结构";
-    els.spaceGroup.textContent = structure.spaceGroup;
-    els.spaceGroup.previousElementSibling.textContent = structure.repeatable === false ? "结构特征" : "空间群";
-    els.coordination.textContent = structure.coordination;
+    if (els.title) els.title.textContent = structure.title;
+    if (els.kind) els.kind.textContent = structure.category === "atomic" ? "原子结构" : "离子结构";
+    if (els.spaceGroup) {
+      els.spaceGroup.textContent = structure.spaceGroup;
+      if (els.spaceGroup.previousElementSibling) {
+        els.spaceGroup.previousElementSibling.textContent = structure.repeatable === false ? "结构特征" : "空间群";
+      }
+    }
+    if (els.coordination) els.coordination.textContent = structure.coordination;
     if (els.viewerTitle) els.viewerTitle.textContent = structure.title;
     if (els.viewerMeta) els.viewerMeta.textContent = `${structure.spaceGroup} · 配位 ${structure.coordination}`;
     const repeatText = structure.repeatable === false ? "本地构建结构" : `${state.repeat}×${state.repeat}×${state.repeat} 超胞`;
-    els.description.textContent = `${structure.description} 当前显示 ${repeatText}，共 ${atomCount} 个原子/离子。`;
-    if (structure.mpUrl) {
-      els.link.href = structure.mpUrl;
-      els.link.textContent = `打开 Materials Project：${structure.mpId}`;
-      els.link.classList.remove("is-hidden");
-    } else {
-      els.link.href = "#";
-      els.link.textContent = "";
-      els.link.classList.add("is-hidden");
+    if (els.description) els.description.textContent = `${structure.description} 当前显示 ${repeatText}，共 ${atomCount} 个原子/离子。`;
+    if (els.link) {
+      if (structure.mpUrl) {
+        els.link.href = structure.mpUrl;
+        els.link.textContent = `打开 Materials Project：${structure.mpId}`;
+        els.link.classList.remove("is-hidden");
+      } else {
+        els.link.href = "#";
+        els.link.textContent = "";
+        els.link.classList.add("is-hidden");
+      }
     }
     els.repeatButton.disabled = structure.repeatable === false;
     els.repeatButton.textContent = structure.repeatable === false ? "本地模型" : state.repeat === 1 ? "1×1×1" : "2×2×2";

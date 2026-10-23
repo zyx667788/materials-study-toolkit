@@ -45,14 +45,14 @@ export async function initFlashcardsModule() {
   async function loadData() {
     try {
       if (questionsData.caikeji.length === 0) {
-        const res = await fetch("data/caikeji_questions.json");
-        const list = await res.json();
-        questionsData.caikeji = Array.isArray(list) ? list.slice(0, 1056) : [];
-      }
-      if (questionsData.metallurgy.length === 0) {
-        const res2 = await fetch("data/metallurgy_questions.json");
-        const list2 = await res2.json();
-        questionsData.metallurgy = Array.isArray(list2) ? list2.slice(0, 254) : [];
+        const [res1, res2] = await Promise.all([
+          fetch("data/caikeji_questions.json").then(r => r.json()).catch(() => []),
+          fetch("data/metallurgy_questions.json").then(r => r.json()).catch(() => [])
+        ]);
+        const list1 = Array.isArray(res1) ? res1.slice(0, 1056) : [];
+        const list2 = Array.isArray(res2) ? res2.slice(0, 254) : [];
+        questionsData.caikeji = [...list1, ...list2];
+        questionsData.metallurgy = [];
       }
     } catch (e) {
       console.error("Failed to load questions data", e);

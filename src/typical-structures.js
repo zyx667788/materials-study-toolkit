@@ -411,17 +411,48 @@ export function initTypicalStructuresModule() {
   }
 
   function renderStructureList() {
-    const atomicList = STRUCTURES.filter((s) => s.category === "atomic");
-    const ionicList = STRUCTURES.filter((s) => s.category === "ionic");
+    const atomicList = document.querySelector("#atomicStructureList");
+    const ionicList = document.querySelector("#ionicStructureList");
 
-    const renderItems = (items) => items.map((structure) => `
-      <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
-        <span>${structure.title}</span>
-      </button>
-    `).join("");
+    const atomicStructures = STRUCTURES.filter((s) => s.category === "atomic");
+    const ionicStructures = STRUCTURES.filter((s) => s.category === "ionic");
 
-    if (els.listAtomic) els.listAtomic.innerHTML = renderItems(atomicList);
-    if (els.listIonic) els.listIonic.innerHTML = renderItems(ionicList);
+    if (atomicList) {
+      atomicList.innerHTML = atomicStructures.map((structure) => `
+        <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
+          <div class="structure-item-head">
+            <strong>${structure.title}</strong>
+          </div>
+        </button>
+      `).join("");
+      atomicList.querySelectorAll("[data-structure-id]").forEach((button) => {
+        button.addEventListener("click", () => chooseStructure(button.dataset.structureId));
+      });
+    }
+
+    if (ionicList) {
+      ionicList.innerHTML = ionicStructures.map((structure) => `
+        <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
+          <div class="structure-item-head">
+            <strong>${structure.title}</strong>
+          </div>
+        </button>
+      `).join("");
+      ionicList.querySelectorAll("[data-structure-id]").forEach((button) => {
+        button.addEventListener("click", () => chooseStructure(button.dataset.structureId));
+      });
+    }
+
+    if (els.list) {
+      els.list.innerHTML = STRUCTURES.map((structure) => `
+        <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
+          <span>${structure.title}</span>
+        </button>
+      `).join("");
+      els.list.querySelectorAll("[data-structure-id]").forEach((button) => {
+        button.addEventListener("click", () => chooseStructure(button.dataset.structureId));
+      });
+    }
 
     if (els.select) {
       els.select.innerHTML = STRUCTURES.map((structure) => `
@@ -429,13 +460,6 @@ export function initTypicalStructuresModule() {
       `).join("");
       els.select.value = state.selectedId;
     }
-
-    const allButtons = document.querySelectorAll("[data-structure-id]");
-    allButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        chooseStructure(button.dataset.structureId);
-      });
-    });
 
     return false;
   }
@@ -479,32 +503,31 @@ export function initTypicalStructuresModule() {
     }
     if (els.coordination) els.coordination.textContent = structure.coordination;
     if (els.viewerTitle) els.viewerTitle.textContent = structure.title;
-    if (els.viewerMeta) els.viewerMeta.textContent = `${structure.spaceGroup} · 配位 ${structure.coordination}`;
-    const repeatText = structure.repeatable === false ? "本地构建结构" : `${state.repeat}×${state.repeat}×${state.repeat} 超胞`;
-    if (els.description) els.description.textContent = `${structure.description} 当前显示 ${repeatText}，共 ${atomCount} 个原子/离子。`;
-    if (els.link) {
-      if (structure.mpUrl) {
-        els.link.href = structure.mpUrl;
-        els.link.textContent = `打开 Materials Project：${structure.mpId}`;
-        els.link.classList.remove("is-hidden");
-      } else {
-        els.link.href = "#";
-        els.link.textContent = "";
-        els.link.classList.add("is-hidden");
-      }
+    if (els.viewerMeta) els.viewerMeta.textContent = "";
+    if (els.description) {
+      const repeatText = structure.repeatable === false ? "本地构建结构" : `${state.repeat}×${state.repeat}×${state.repeat} 超胞`;
+      els.description.textContent = `${structure.description} 当前显示 ${repeatText}，共 ${atomCount} 个原子/离子。`;
     }
-    els.repeatButton.disabled = structure.repeatable === false;
-    els.repeatButton.textContent = structure.repeatable === false ? "本地模型" : state.repeat === 1 ? "1×1×1" : "2×2×2";
-    els.repeatButton.dataset.repeat = String(state.repeat);
-    els.repeatButton.classList.toggle("is-active", structure.repeatable !== false && state.repeat === 2);
-    els.repeatButton.setAttribute("aria-pressed", String(structure.repeatable !== false && state.repeat === 2));
+    if (els.link) {
+      els.link.style.display = "none";
+      els.link.classList.add("is-hidden");
+    }
+    if (els.repeatButton) {
+      els.repeatButton.disabled = structure.repeatable === false;
+      els.repeatButton.textContent = structure.repeatable === false ? "本地模型" : state.repeat === 1 ? "1×1×1" : "2×2×2";
+      els.repeatButton.dataset.repeat = String(state.repeat);
+      els.repeatButton.classList.toggle("is-active", structure.repeatable !== false && state.repeat === 2);
+      els.repeatButton.setAttribute("aria-pressed", String(structure.repeatable !== false && state.repeat === 2));
+    }
 
     const sourceAtoms = structure.generator ? structure.generator().atoms : structure.atoms;
     const elements = [...new Set(sourceAtoms.map((site) => site.element))];
-    els.legend.innerHTML = elements.map((element) => {
-      const color = `#${elementColor(element).toString(16).padStart(6, "0")}`;
-      return `<span><i style="background:${color}"></i>${element}</span>`;
-    }).join("");
+    if (els.legend) {
+      els.legend.innerHTML = elements.map((element) => {
+        const color = `#${elementColor(element).toString(16).padStart(6, "0")}`;
+        return `<span><i style="background:${color}"></i>${element}</span>`;
+      }).join("");
+    }
   }
 
   function resetCamera(radius) {

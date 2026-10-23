@@ -13,8 +13,8 @@ import { downloadCanvasPngWithWatermark } from "./export-watermark.js?v=20261008
 import { arrowLabelPosition, labelRectangle, chooseLabelPosition } from "./dislocation-label-layout.js?v=20261008-phase-audit-motion";
 
 const COLORS = {
-  a: 0x168f7e,
-  b: 0xd96d43,
+  a: 0x7c3aed,
+  b: 0xf59e0b,
   kink: 0xd59a2f,
   jog: 0x7757b7,
   unchanged: 0x74808b,

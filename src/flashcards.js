@@ -62,7 +62,7 @@ export async function initFlashcardsModule() {
   await loadData();
 
   function getCurrentBank() {
-    return questionsData[state.subject] || [];
+    return [...questionsData.caikeji, ...questionsData.metallurgy];
   }
 
   function getChapters() {

@@ -20,10 +20,7 @@ export function createViewerRotation({ host, controls, invalidate }) {
   const icon = document.createElement('img');
   icon.className = 'tool-icon';
   icon.alt = '';
-  const startIcon = new URL('../assets/icons/rotate-3d.svg', import.meta.url).href;
-  const pauseIcon = new URL('../assets/icons/pause.svg', import.meta.url).href;
-  icon.src = startIcon;
-  button.append(icon);
+  button.innerHTML = '<span class="rotation-symbol" aria-hidden="true">▶</span>';
   toolbar.prepend(button);
 
   let spinning = false;
@@ -65,10 +62,12 @@ export function createViewerRotation({ host, controls, invalidate }) {
     const pressed = String(spinning);
     if (button.getAttribute('aria-pressed') !== pressed) {
       button.setAttribute('aria-pressed', pressed);
-      const label = spinning ? '暂停旋转' : '开始旋转';
+      const label = spinning ? '暂停旋转演示' : '开始动态演示';
       button.setAttribute('aria-label', label);
       button.title = label;
-      icon.src = spinning ? pauseIcon : startIcon;
+      button.innerHTML = spinning
+        ? '<span class="rotation-symbol" aria-hidden="true">⏸</span>'
+        : '<span class="rotation-symbol" aria-hidden="true">▶</span>';
     }
   }
 

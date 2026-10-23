@@ -8817,3 +8817,151 @@ html[data-theme="dark"] .home-action-btn.is-accent {
 .stereo-legend-zone {
   background: #7c3aed !important;
 }
+
+
+/* --- 典型结构三栏式全新布局（左单质-中视口-右化合物） --- */
+.structure-three-col-layout {
+  display: grid !important;
+  grid-template-columns: 290px minmax(0, 1fr) 290px !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+  min-height: 640px !important;
+}
+@media (max-width: 1180px) {
+  .structure-three-col-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+.structure-column-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  max-height: 480px !important;
+  overflow-y: auto !important;
+}
+.structure-column-list .structure-list-item {
+  width: 100% !important;
+  text-align: left !important;
+  padding: 10px 14px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.structure-column-list .structure-list-item:hover {
+  border-color: var(--primary, #2563eb) !important;
+  background: var(--surface-hover, rgba(37, 99, 235, 0.05)) !important;
+}
+.structure-column-list .structure-list-item.is-active {
+  border-color: var(--primary, #2563eb) !important;
+  background: var(--primary-bg, rgba(37, 99, 235, 0.1)) !important;
+  font-weight: 700 !important;
+  color: var(--primary, #2563eb) !important;
+}
+
+/* --- 3D 悬浮操作按钮统一移至右下角 --- */
+.interstitial-view-actions,
+.dislocation-view-actions,
+.viewer-rotation-actions {
+  position: absolute !important;
+  top: auto !important;
+  bottom: 60px !important;
+  right: 16px !important;
+  z-index: 10 !important;
+}
+@media (max-width: 768px) {
+  .interstitial-view-actions,
+  .dislocation-view-actions,
+  .viewer-rotation-actions {
+    bottom: 50px !important;
+    right: 10px !important;
+  }
+}
+
+.viewer-rotation-actions .viewer-rotation-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 8px !important;
+  background: var(--panel, #ffffff) !important;
+  border: 1px solid var(--line, #e2e8f0) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  color: var(--ink, #1e293b) !important;
+}
+.viewer-rotation-actions .viewer-rotation-toggle:hover {
+  background: var(--surface-hover, #f8fafc) !important;
+  border-color: var(--primary, #2563eb) !important;
+}
+.rotation-symbol {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* --- 点阵与间隙角标加粗单行 --- */
+.interstitial-view-badge {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid var(--line) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+}
+html[data-theme="dark"] .interstitial-view-badge {
+  background: rgba(15, 23, 42, 0.88) !important;
+}
+.interstitial-view-badge strong {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+}
+.interstitial-view-badge span {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+.interstitial-viewer-stats {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--primary, #2563eb) !important;
+}
+
+/* --- 位错交割全新配色与现代化胶囊角标 --- */
+.swatch-a {
+  background: #7c3aed !important;
+}
+.swatch-b {
+  background: #f59e0b !important;
+}
+.swatch-kink {
+  background: #ec4899 !important;
+}
+.swatch-jog {
+  background: #06b6d4 !important;
+}
+.dislocation-view-badge {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  padding: 8px 14px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="dark"] .dislocation-view-badge {
+  background: rgba(15, 23, 42, 0.92) !important;
+}
+.dislocation-view-badge strong {
+  color: #7c3aed !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+}

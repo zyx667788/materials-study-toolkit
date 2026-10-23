@@ -277,7 +277,7 @@ export function initTernaryPhaseModule() {
       selectRegion(els.regionSelect.value);
     });
 
-    els.onlyButton.addEventListener("click", () => {
+    els.onlyButton?.addEventListener("click", () => {
       state.showOnlySelected = !state.showOnlySelected;
       els.onlyButton.classList.toggle("is-active", state.showOnlySelected);
       els.onlyButton.setAttribute("aria-pressed", String(state.showOnlySelected));
@@ -286,8 +286,8 @@ export function initTernaryPhaseModule() {
 
     els.dragRegionButton?.addEventListener("click", () => setDragMode(!state.dragMode));
     els.resetRegionsButton?.addEventListener("click", resetRegionPositions);
-    els.resetButton.addEventListener("click", resetActiveView);
-    els.exportButton.addEventListener("click", exportPng);
+    els.resetButton?.addEventListener("click", resetActiveView);
+    els.exportButton?.addEventListener("click", exportPng);
     els.mobileSectionToggle?.addEventListener("click", () => {
       const open = !els.sectionCard.classList.contains("is-mobile-open");
       els.sectionCard.classList.toggle("is-mobile-open", open);
@@ -305,13 +305,13 @@ export function initTernaryPhaseModule() {
           : "垂直截面：输入两个成分点 P1/P2 后获得穿过这两点的垂直剖面。";
       });
     });
-    els.applySectionButton.addEventListener("click", applySectionFromInputs);
+    els.applySectionButton?.addEventListener("click", applySectionFromInputs);
     els.standaloneSectionButton?.addEventListener("click", () => {
       if (state.sectionStandalone) exitStandaloneSection();
       else enterStandaloneSection();
     });
     els.returnSpaceButton?.addEventListener("click", exitStandaloneSection);
-    els.clearSectionButton.addEventListener("click", clearSection);
+    els.clearSectionButton?.addEventListener("click", clearSection);
 
     renderer.domElement.addEventListener("click", (event) => {
       if (state.sectionStandalone || state.dragMoved) {

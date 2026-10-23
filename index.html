@@ -266,50 +266,52 @@
       </section>
 
           <section id="typicalStructuresModule" class="module-view structure-module is-hidden" data-module-panel="typical-structures">
-        <div class="structure-workspace">
-          <aside class="structure-control-panel" aria-label="典型结构控制">
+        <div class="structure-workspace structure-three-col-layout">
+          <!-- 左侧：原子晶体 / 单质 -->
+          <aside class="structure-control-panel structure-panel-left" aria-label="原子晶体与视图参数">
             <section class="structure-card structure-head-card">
-            <span class="fe-kicker">典型结构</span>
-            <h2>典型晶体与空间构型</h2>
-          </section>
+              <span class="fe-kicker">单质与碳材料</span>
+              <h2>原子晶体 / 单质</h2>
+            </section>
 
             <section class="structure-card structure-list-card">
-            <div class="structure-dual-columns">
-              <div class="structure-column">
-                <div class="structure-column-title">原子晶体 / 单质</div>
-                <div id="atomicStructureList" class="structure-column-list" aria-label="原子晶体列表"></div>
-              </div>
-              <div class="structure-column">
-                <div class="structure-column-title">离子晶体 / 化合物</div>
-                <div id="ionicStructureList" class="structure-column-list" aria-label="离子晶体列表"></div>
-              </div>
-            </div>
-            <select id="structureSelect" class="structure-select" aria-label="选择典型结构" style="display:none;"></select>
-          </section>
+              <div id="atomicStructureList" class="structure-column-list" aria-label="原子晶体列表"></div>
+            </section>
 
             <section class="structure-card structure-display-card">
-              <label class="control-label">显示</label>
+              <label class="control-label">视图参数</label>
               <div class="structure-tools">
                 <button id="structureRepeatButton" class="ghost-button is-active" type="button" data-repeat="2" aria-pressed="true">2×2×2</button>
                 <button id="structureBondButton" class="ghost-button is-active" type="button">近邻连接</button>
                 <button id="structureExportButton" class="ghost-button" type="button">导出图片</button>
               </div>
-              <label class="structure-slider">
+              <label class="slider-field" for="atomScaleRange">
                 <span>原子半径</span>
                 <input id="atomScaleRange" type="range" min="0.65" max="1.60" step="0.05" value="1" data-structure-type="atomic" />
               </label>
             </section>
+          </aside>
 
-            </aside>
-
+          <!-- 中间：3D 查看器 -->
           <section class="structure-view-panel" aria-label="典型结构三维视图">
             <div id="structureViewerHost" class="structure-viewer-host"></div>
             <div class="structure-view-badge" aria-live="polite">
-              <strong id="structureViewerTitle">体心立方 α-Fe</strong>
-              <span id="structureViewerMeta">Im-3m · 配位 8</span>
+              <strong id="structureViewerTitle">金刚石 C</strong>
             </div>
             <div id="structureLegend" class="structure-legend" aria-label="元素图例"></div>
           </section>
+
+          <!-- 右侧：离子晶体 / 化合物 -->
+          <aside class="structure-control-panel structure-panel-right" aria-label="离子晶体列表">
+            <section class="structure-card structure-head-card">
+              <span class="fe-kicker">化合物</span>
+              <h2>离子晶体 / 化合物</h2>
+            </section>
+            <section class="structure-card structure-list-card">
+              <div id="ionicStructureList" class="structure-column-list" aria-label="离子晶体列表"></div>
+            </section>
+            <select id="structureSelect" class="structure-select" aria-label="选择典型结构" style="display:none;"></select>
+          </aside>
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
@@ -317,7 +319,7 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
+            <img class="module-qr-image" src="./assets/wechat-qr.png" alt="考研资料与交流答疑二维码" />
             <figcaption>考研资料与交流答疑</figcaption>
           </figure>
         </footer>
@@ -428,9 +430,9 @@
               <button id="interstitialExportButton" class="viewer-icon-button" type="button" aria-label="导出图片" title="导出图片">⇩</button>
             </div>
             <div class="interstitial-view-badge" aria-live="polite">
-              <strong id="interstitialViewerCode">BCC</strong>
-              <span id="interstitialViewerName">体心立方</span>
-              <span id="interstitialViewerStats" class="interstitial-viewer-stats">(2 原子)</span>
+              <strong id="interstitialViewerCode">HCP</strong>
+              <span id="interstitialViewerName">六方密排</span>
+              <span id="interstitialViewerStats" class="interstitial-viewer-stats">(6原子)</span>
             </div>
             <div class="interstitial-legend" aria-label="点阵和间隙颜色图例">
               <span><i class="interstitial-swatch swatch-lattice"></i>点阵原子</span>
@@ -818,17 +820,7 @@
               <div id="ternaryRegionList" class="ternary-region-list" aria-label="三元相区列表"></div>
             </section>
 
-            <section class="ternary-card ternary-display-card">
-              <label class="control-label">显示</label>
-              <div class="ternary-tools">
-                <button id="ternaryOnlyButton" class="ghost-button" type="button" aria-pressed="false" aria-label="仅选中相区" title="仅选中相区"><img class="tool-icon" src="./assets/icons/scan.svg" alt="" /></button>
-                <button id="ternaryDragRegionButton" class="ghost-button" type="button" aria-pressed="false" aria-label="拖动相区" title="拖动相区"><img class="tool-icon" src="./assets/icons/move.svg" alt="" /></button>
-                <button id="ternaryResetRegionsButton" class="ghost-button" type="button" aria-label="相区归位" title="相区归位"><img class="tool-icon" src="./assets/icons/layers.svg" alt="" /></button>
-                <button id="ternaryResetButton" class="ghost-button" type="button" aria-label="复位视角" title="复位视角"><img class="tool-icon" src="./assets/icons/rotate-ccw.svg" alt="" /></button>
-                <button id="ternaryMobileSectionToggle" class="ghost-button ternary-mobile-section-toggle" type="button" aria-expanded="false" aria-label="截面设置" title="截面设置"><img class="tool-icon" src="./assets/icons/square-split-horizontal.svg" alt="" /></button>
-                <button id="ternaryExportButton" class="ghost-button" type="button" aria-label="导出图片" title="导出图片"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
-              </div>
-            </section>
+            
 
             <section class="ternary-card ternary-section-card">
               <label class="control-label">截面</label>
@@ -896,8 +888,7 @@
           <section class="ternary-view-panel" aria-label="三元相图空间相区视图">
             <div id="ternaryViewerHost" class="ternary-viewer-host"></div>
             <div class="ternary-view-mode-badge" aria-live="polite">
-              <strong id="ternaryViewModeTitle">空间相图</strong>
-              <span id="ternaryViewModeMeta">当前相区 · L + α</span>
+              <strong id="ternaryViewModeTitle">空间立体三元相图</strong>
             </div>
             <button id="ternaryReturnSpaceButton" class="ternary-return-space ghost-button" type="button" hidden>← 空间相图</button>
             <div id="ternaryLegend" class="ternary-legend" aria-label="三元相区颜色图例"></div>
@@ -1137,7 +1128,7 @@
         <div class="fc-workspace">
           <div class="fc-filter-card">
             <div class="fc-subj-tabs">
-              <button class="fc-subj-tab is-active" data-subject="caikeji" type="button">材料科学基础与综合题库 (1310题)</button>
+              <button class="fc-subj-tab is-active" data-subject="all" type="button">考研核心真题精选 (1310题)</button>
             </div>
             <div class="fc-controls-row">
               <select id="fcTypeSelect" class="fc-select" aria-label="题型筛选">

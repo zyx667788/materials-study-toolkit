@@ -185,7 +185,12 @@ export async function initFlashcardsModule() {
 
   function formatMath(text) {
     if (!text) return "";
-    let str = String(text);
+    let str = "";
+    if (typeof text === "object") {
+      str = text.mathText || text.text || text.value || text.label || "";
+    } else {
+      str = String(text);
+    }
     if (window.katex) {
       // Replace $$...$$
       str = str.replace(/\$\$([^$]+)\$\$/g, (_, expr) => {
@@ -195,6 +200,16 @@ export async function initFlashcardsModule() {
       // Replace $...$
       str = str.replace(/\$([^$\n]+)\$/g, (_, expr) => {
         try { return window.katex.renderToString(expr.trim(), { displayMode: false, throwOnError: false }); }
+        catch { return _; }
+      });
+      // Replace \(...\)
+      str = str.replace(/\\\(([\s\S]*?)\\\)/g, (_, expr) => {
+        try { return window.katex.renderToString(expr.trim(), { displayMode: false, throwOnError: false }); }
+        catch { return _; }
+      });
+      // Replace \[...\]
+      str = str.replace(/\\\[([\s\S]*?)\\\]/g, (_, expr) => {
+        try { return window.katex.renderToString(expr.trim(), { displayMode: true, throwOnError: false }); }
         catch { return _; }
       });
     }
@@ -277,7 +292,10 @@ export async function initFlashcardsModule() {
     if (isChoice) {
       optionsContainer.hidden = false;
       optionsContainer.innerHTML = currentQ.options.map((opt, i) => {
-        const optLetter = String.fromCharCode(65 + i);
+        const optLetter = (typeof opt === "object" && opt?.label) ? opt.label : String.fromCharCode(65 + i);
+        const optText = (typeof opt === "object")
+          ? (opt.mathText || opt.text || opt.value || "")
+          : String(opt || "");
         let optClass = "fc-option-btn";
         if (state.selectedOption === optLetter) {
           const isRight = currentQ.answer && currentQ.answer.includes(optLetter);
@@ -288,7 +306,7 @@ export async function initFlashcardsModule() {
         return `
           <button class="${optClass}" data-letter="${optLetter}" type="button">
             <span class="fc-opt-letter">${optLetter}</span>
-            <span class="fc-opt-text">${formatMath(opt)}</span>
+            <span class="fc-opt-text">${formatMath(optText)}</span>
           </button>
         `;
       }).join("");

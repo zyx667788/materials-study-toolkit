@@ -583,12 +583,20 @@ export function initTernaryPhaseModule() {
       }
 
       if (els.regionList) {
-        els.regionList.innerHTML = diagram.regions.map((region) => `
-          <button class="ternary-region-item${region.id === state.selectedId ? " is-active" : ""}" type="button" data-ternary-region="${region.id}">
-            <span>${region.title}</span>
-            <small>${region.kind} · ${region.phase}</small>
+        els.regionList.innerHTML = diagram.regions.map((region) => {
+          const colorHex = typeof region.color === "number"
+            ? `#${region.color.toString(16).padStart(6, "0")}`
+            : (region.color || "#3b82f6");
+          return `
+          <button class="ternary-region-item${region.id === state.selectedId ? " is-active" : ""}" type="button" data-ternary-region="${region.id}" style="--region-accent: ${colorHex};">
+            <div class="ternary-region-header">
+              <strong class="ternary-region-name">${region.title}</strong>
+              <span class="ternary-region-pill">${region.kind}</span>
+            </div>
+            <p class="ternary-region-detail">${region.phase}</p>
           </button>
-        `).join("");
+        `;
+        }).join("");
 
         els.regionList.querySelectorAll("[data-ternary-region]").forEach((button) => {
           button.addEventListener("click", () => selectRegion(button.dataset.ternaryRegion));

@@ -481,7 +481,7 @@ function renderChartSvg() {
   `).join("");
 
   const xTicks = [0, 0.77, 2.11, 4.3, 6.69];
-  const gridXTicks = [0, 0.77, 2.11, 6.69];
+  const gridXTicks = [0, 0.77, 6.69];
   const yTicks = [600, 727, 912, 1148, 1394, 1495, 1538];
 
   return `
@@ -515,7 +515,6 @@ function renderChartSvg() {
         ${polyline([[0.008, 550], [0.0218, 727]])}
         ${polyline([[0, 727], [6.69, 727]], "is-critical")}
         ${polyline([[2.11, 1148], [6.69, 1148]], "is-critical")}
-        ${polyline([[2.11, 1148], [2.11, 550]])}
         ${polyline([[6.69, 550], [6.69, 1227]])}
       </g>
 

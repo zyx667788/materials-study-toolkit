@@ -461,8 +461,8 @@
             <section class="control-section mode-section">
               <label class="control-label">投影几何目标</label>
               <div class="segmented mode-segmented" role="group" aria-label="投影几何目标">
-                <button class="segment is-active" type="button" data-mode="plane">晶面 (hkl)</button>
-                <button class="segment" type="button" data-mode="direction">晶向 [uvw]</button>
+                <button class="segment is-active" type="button" data-mode="plane">晶面</button>
+                <button class="segment" type="button" data-mode="direction">晶向</button>
               </div>
             </section>
 
@@ -492,35 +492,7 @@
               <div id="exampleChips" class="chip-row" aria-label="示例指数"></div>
             </section>
 
-            <section id="crystalTrainingSection" class="training-section" aria-live="polite">
-              <div class="training-head">
-                <div class="training-question">
-                  <span id="trainingQuestionNumber">第 1 题</span>
-                  <strong id="trainingPrompt">写出图中立方晶面的指数</strong>
-                </div>
-              </div>
-
-              <label class="control-label" for="trainingAnswerInput">你的答案</label>
-              <div class="input-row training-input-row">
-                <input
-                  id="trainingAnswerInput"
-                  class="index-input"
-                  type="text"
-                  placeholder="例如 1 1 1"
-                  autocomplete="off"
-                  spellcheck="false"
-                />
-                <button id="trainingSubmitButton" class="primary-button" type="button">提交</button>
-              </div>
-              <p id="trainingHint" class="input-hint">按 h k l 顺序输入，使用空格分隔</p>
-              <p id="trainingCoordinateText" class="training-coordinate is-hidden"></p>
-              <p id="trainingFeedback" class="training-feedback" data-state="idle">尚未作答</p>
-              <div class="training-actions">
-                <button id="trainingNextButton" class="ghost-button" type="button">下一个</button>
-              </div>
-            </section>
-
-            <section id="planeLayerSection" class="control-section compact-section layer-section is-hidden" hidden>
+                        <section id="planeLayerSection" class="control-section compact-section layer-section">
               <label class="control-label" for="layerInput">层位</label>
               <div class="input-row">
                 <input id="layerInput" class="small-input" type="number" step="1" value="1" />
@@ -528,7 +500,7 @@
               </div>
             </section>
 
-            <section class="readout-panel is-hidden" aria-live="polite" hidden>
+            <section class="readout-panel" aria-live="polite">
               <div class="status-row">
                 <span id="statusDot" class="status-dot"></span>
                 <span id="statusText">已绘制晶面 (1 1 1)</span>
@@ -561,6 +533,35 @@
               <span><i class="swatch swatch-plane"></i>晶面</span>
               <span><i class="swatch swatch-direction"></i>晶向</span>
             </div>
+
+            <!-- 右侧自主识图训练悬浮卡片 -->
+            <section id="crystalTrainingSection" class="training-section crystal-training-hud" aria-live="polite">
+              <div class="training-head">
+                <div class="training-question">
+                  <span id="trainingQuestionNumber">第 1 题</span>
+                  <strong id="trainingPrompt">写出图中立方晶面的指数</strong>
+                </div>
+              </div>
+
+              <label class="control-label" for="trainingAnswerInput">你的答案</label>
+              <div class="input-row training-input-row">
+                <input
+                  id="trainingAnswerInput"
+                  class="index-input"
+                  type="text"
+                  placeholder="例如 1 1 1"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button id="trainingSubmitButton" class="primary-button" type="button">提交</button>
+              </div>
+              <p id="trainingHint" class="input-hint">按 h k l 顺序输入，使用空格分隔</p>
+              <p id="trainingCoordinateText" class="training-coordinate is-hidden"></p>
+              <p id="trainingFeedback" class="training-feedback" data-state="idle">尚未作答</p>
+              <div class="training-actions">
+                <button id="trainingNextButton" class="ghost-button" type="button">下一个</button>
+              </div>
+            </section>
           </section>
         </div>
         <footer class="module-footer">
@@ -578,11 +579,7 @@
       <!-- 二元相图模块 -->
       <section id="binaryPhaseModule" class="module-view binary-phase-module is-hidden" data-module-panel="binary-phase">
         <div class="bp-workspace">
-          <div class="bp-intro-card">
-            <p>三套经典二元相图：<strong>Cu-Ni 匀晶（无限固溶）</strong>、<strong>Pb-Sn 共晶</strong>、<strong>Pt-Ag 包晶</strong>。上方拉动成分与温度滑轨，实时按杠杆定律给出相组成与组织组成物占比；Pt-Ag 在 1186℃ 可完整演示包晶反应 L(66.3%) + α(10.5%) → β(42.5%)。</p>
-          </div>
-
-          <div class="bp-sys-tabs">
+                    <div class="bp-sys-tabs">
             <button class="bp-sys-tab is-active" data-sys="cuni" type="button">匀晶相图 · Cu-Ni</button>
             <button class="bp-sys-tab" data-sys="pbsn" type="button">共晶相图 · Pb-Sn</button>
             <button class="bp-sys-tab" data-sys="ptag" type="button">包晶相图 · Pt-Ag</button>

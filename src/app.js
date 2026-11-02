@@ -851,8 +851,12 @@ function updateSections() {
   els.crystalModule?.classList.remove("is-training");
   els.trainingSection?.classList.remove("is-hidden");
   els.indexSection?.classList.remove("is-hidden");
-  els.readoutPanel?.classList.add("is-hidden");
-  els.planeLayerSection?.classList.add("is-hidden");
+  els.readoutPanel?.classList.remove("is-hidden");
+  if (state.mode === "plane") {
+    els.planeLayerSection?.classList.remove("is-hidden");
+  } else {
+    els.planeLayerSection?.classList.add("is-hidden");
+  }
 }
 
 function updateInputHint() {

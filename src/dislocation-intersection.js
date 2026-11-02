@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { createSceneLoop } from "./scene-loop.js?v=20261008-phase-audit-motion";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
+  DISLOCATION_STAGES,
   analyzeDislocationPair,
   characterLabel,
   classifyDislocationCharacter,
@@ -58,7 +59,7 @@ const PRESETS = {
   },
 };
 
-const STAGE_POINTS = [0, 0.36, 0.55, 1];
+const STAGE_POINTS = DISLOCATION_STAGES.map((stage) => stage.progress);
 
 export function initDislocationIntersectionModule() {
   const els = {
@@ -68,7 +69,7 @@ export function initDislocationIntersectionModule() {
     playButton: document.querySelector("#dislocationPlayButton"),
     initialButton: document.querySelector("#dislocationInitialButton"),
     progress: document.querySelector("#dislocationProgress"),
-    stageButtons: document.querySelectorAll("[data-dislocation-stage]"),
+    stageButtons: Array.from(document.querySelectorAll("[data-dislocation-stage]")),
     resetButton: document.querySelector("#dislocationResetButton"),
     exportButton: document.querySelector("#dislocationExportButton"),
     viewerStage: document.querySelector("#dislocationViewerStage"),
@@ -132,6 +133,7 @@ export function initDislocationIntersectionModule() {
   rim.position.set(2.4, 5.2, -3.4);
   scene.add(rim);
 
+  normalizeStageDomButtons();
   wireUi();
   applyPreset("edge-screw");
   applySceneTheme();
@@ -162,6 +164,43 @@ export function initDislocationIntersectionModule() {
       controls.update();
     },
   };
+
+  function normalizeStageDomButtons() {
+    document.querySelectorAll("[data-dislocation-stage]").forEach((button) => {
+      const stageAttr = (button.dataset.dislocationStage || "").trim();
+      const text = (button.textContent || "").trim();
+      if (stageAttr === "approach" || text === "接近") {
+        button.remove();
+        return;
+      }
+      if (stageAttr === "initial" || text === "初始" || text === "初始位置") {
+        button.dataset.dislocationStage = "initial";
+        button.textContent = text === "初始位置" ? "起始位置" : "起始";
+      } else if (stageAttr === "cross" || stageAttr === "intersect" || text === "交割") {
+        button.dataset.dislocationStage = "cross";
+        button.textContent = "交割";
+      } else if (stageAttr === "result" || text === "结果" || text === "交割结果") {
+        button.dataset.dislocationStage = "result";
+        button.textContent = "结果";
+      }
+    });
+
+    els.stageButtons = Array.from(document.querySelectorAll("[data-dislocation-stage]"));
+    els.stageButtons.forEach((button, index) => {
+      const def = DISLOCATION_STAGES[index];
+      if (!def) return;
+      if (!button.dataset.dislocationStage || /^\d+$/.test(button.dataset.dislocationStage)) {
+        button.dataset.dislocationStage = def.key;
+      }
+      if (index === 0 && (button.textContent || "").includes("初始")) {
+        button.textContent = button.textContent.replace("初始", "起始");
+      }
+    });
+
+    if (els.initialButton && (els.initialButton.textContent || "").includes("初始")) {
+      els.initialButton.textContent = els.initialButton.textContent.replace("初始", "起始");
+    }
+  }
 
   function wireUi() {
     const presetButtons = document.querySelectorAll("[data-preset]");
@@ -202,12 +241,17 @@ export function initDislocationIntersectionModule() {
     });
 
     els.stageButtons.forEach((button, index) => {
-      button.addEventListener("click", () => setProgress(STAGE_POINTS[index] ?? 0, false));
+      button.addEventListener("click", () => {
+        setProgress(progressForStageButton(button, index), false);
+      });
     });
     els.progress?.addEventListener("input", () => setProgress(Number(els.progress.value), false));
     els.playButton?.addEventListener("click", togglePlayback);
     els.initialButton?.addEventListener("click", () => setProgress(0, false));
-    els.resetButton?.addEventListener("click", resetCamera);
+    els.resetButton?.addEventListener("click", () => {
+      resetCamera();
+      if (!els.initialButton) setProgress(0, false);
+    });
     els.exportButton?.addEventListener("click", exportPng);
   }
 
@@ -216,8 +260,8 @@ export function initDislocationIntersectionModule() {
     if (!preset) return;
     writeConfiguration(els.a, preset.a);
     writeConfiguration(els.b, preset.b);
-    els.a.type.value = classifyDislocationCharacter(preset.a.line, preset.a.burgers);
-    els.b.type.value = classifyDislocationCharacter(preset.b.line, preset.b.burgers);
+    if (els.a.type) els.a.type.value = classifyDislocationCharacter(preset.a.line, preset.a.burgers);
+    if (els.b.type) els.b.type.value = classifyDislocationCharacter(preset.b.line, preset.b.burgers);
     if (els.preset) els.preset.value = id;
     document.querySelectorAll("[data-preset]").forEach((btn) => {
       btn.classList.toggle("is-active", btn.dataset.preset === id);
@@ -239,7 +283,7 @@ export function initDislocationIntersectionModule() {
       const line = parseDirection(group.line.value, `位错 ${label} 的位错线方向`);
       const burgers = parseDirection(group.burgers.value, `位错 ${label} 的柏氏矢量`);
       const character = classifyDislocationCharacter(line, burgers);
-      group.type.value = character;
+      if (group.type) group.type.value = character;
       let fallback = null;
       try {
         fallback = parseDirection(group.plane.value, `位错 ${label} 的滑移面法向`);
@@ -247,10 +291,12 @@ export function initDislocationIntersectionModule() {
         fallback = null;
       }
       const plane = deriveSlipPlaneNormal(line, burgers, fallback);
-      group.plane.value = vectorInputValue(plane);
-      group.planeHint.textContent = character === "screw"
-        ? "螺型位错的滑移面不唯一，可修改 n。"
-        : "已由 ξ × b 自动得到。";
+      if (group.plane) group.plane.value = vectorInputValue(plane);
+      if (group.planeHint) {
+        group.planeHint.textContent = character === "screw"
+          ? "螺型位错的滑移面不唯一，可修改 n。"
+          : "已由 ξ × b 自动得到。";
+      }
     } catch (error) {
       showInputStatus(error.message, true);
     }
@@ -412,7 +458,8 @@ export function initDislocationIntersectionModule() {
   function updateStageUi() {
     const stage = stageForProgress(state.progress);
     els.stageButtons.forEach((button, index) => {
-      const active = index === stage.index;
+      const raw = (button.dataset.dislocationStage || "").trim();
+      const active = raw === stage.key || index === stage.index;
       button.classList.toggle("is-active", active);
       button.setAttribute("aria-pressed", String(active));
     });
@@ -423,17 +470,18 @@ export function initDislocationIntersectionModule() {
     }
     if (els.viewerStage) els.viewerStage.textContent = stage.title;
     if (els.viewerCaption) {
-      els.viewerCaption.textContent = stage.index === 3 && state.analysis
+      els.viewerCaption.textContent = stage.key === "result" && state.analysis
         ? state.analysis.summary
         : stage.caption;
     }
   }
 
   function applySceneTheme() {
-    const dark = isDarkTheme();
-    scene.background = new THREE.Color(dark ? 0x171a1f : 0xf9fafb);
-    hemisphere.groundColor.set(dark ? 0x26344a : 0x8797a5);
-    renderer.toneMappingExposure = dark ? 1.16 : 1.05;
+    const theme = currentTheme();
+    const dark = theme === "dark";
+    scene.background = new THREE.Color(dislocationSceneBackground());
+    hemisphere.groundColor.set(dark ? 0x26344a : theme === "gray" ? 0x7c8b9e : 0x8797a5);
+    renderer.toneMappingExposure = dark ? 1.16 : theme === "gray" ? 1.02 : 1.05;
   }
 
   function resizeLabels() {
@@ -453,7 +501,7 @@ export function initDislocationIntersectionModule() {
       end: screen(object.userData.arrow.end.clone().project(camera)),
     }));
     const hostRect = els.host.getBoundingClientRect();
-    const occupied = [...els.host.parentElement.querySelectorAll('.dislocation-view-badge, .dislocation-legend, .dislocation-view-actions')]
+    const occupied = [...(els.host.parentElement?.querySelectorAll('.dislocation-view-badge, .dislocation-legend, .dislocation-view-actions') ?? [])]
       .map(element => {
         const rect = element.getBoundingClientRect();
         return { left: rect.left - hostRect.left, right: rect.right - hostRect.left,
@@ -541,6 +589,21 @@ export function initDislocationIntersectionModule() {
   }
 }
 
+function progressForStageButton(button, index) {
+  const raw = (button.dataset.dislocationStage || "").trim();
+  if (raw === "initial" || raw === "start" || raw === "起始") return DISLOCATION_STAGES[0].progress;
+  if (raw === "cross" || raw === "intersect" || raw === "intersection" || raw === "交割") return DISLOCATION_STAGES[1].progress;
+  if (raw === "result" || raw === "结果") return DISLOCATION_STAGES[2].progress;
+  if (raw !== "") {
+    const numeric = Number(raw);
+    if (Number.isFinite(numeric)) {
+      if (raw.includes(".") && numeric >= 0 && numeric <= 1) return numeric;
+      if (DISLOCATION_STAGES[numeric]) return DISLOCATION_STAGES[numeric].progress;
+    }
+  }
+  return STAGE_POINTS[index] ?? 0;
+}
+
 function collectInputElements(label) {
   return {
     type: document.querySelector(`#dislocation${label}Type`),
@@ -572,13 +635,15 @@ function readConfiguration(group) {
 }
 
 function writeConfiguration(group, config) {
-  group.line.value = vectorInputValue(config.line);
-  group.burgers.value = vectorInputValue(config.burgers);
-  group.plane.value = vectorInputValue(config.plane);
+  if (group.line) group.line.value = vectorInputValue(config.line);
+  if (group.burgers) group.burgers.value = vectorInputValue(config.burgers);
+  if (group.plane) group.plane.value = vectorInputValue(config.plane);
   const character = classifyDislocationCharacter(config.line, config.burgers);
-  group.planeHint.textContent = character === "screw"
-    ? "螺型位错的滑移面不唯一，可修改 n。"
-    : "已由 ξ × b 自动得到。";
+  if (group.planeHint) {
+    group.planeHint.textContent = character === "screw"
+      ? "螺型位错的滑移面不唯一，可修改 n。"
+      : "已由 ξ × b 自动得到。";
+  }
 }
 
 function writeResult(elements, dislocation, result) {
@@ -625,12 +690,13 @@ function makeSlipPlane(normalArray, color, label) {
   geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
   geometry.computeVertexNormals();
   const group = new THREE.Group();
+  const theme = currentTheme();
   const plane = new THREE.Mesh(
     geometry,
     new THREE.MeshBasicMaterial({
       color,
       transparent: true,
-      opacity: isDarkTheme() ? 0.09 : 0.075,
+      opacity: theme === "dark" ? 0.09 : theme === "gray" ? 0.11 : 0.075,
       side: THREE.DoubleSide,
       depthWrite: false,
     }),
@@ -654,7 +720,7 @@ function makeSlipPlane(normalArray, color, label) {
     new THREE.LineBasicMaterial({
       color,
       transparent: true,
-      opacity: isDarkTheme() ? 0.22 : 0.16,
+      opacity: theme === "dark" ? 0.22 : theme === "gray" ? 0.24 : 0.16,
       depthWrite: false,
     }),
   );
@@ -777,7 +843,8 @@ function makeTextSprite(text, color, scale = 0.6) {
   context.textBaseline = 'alphabetic';
   context.lineJoin = 'round';
   context.lineWidth = 6;
-  context.strokeStyle = isDarkTheme() ? '#191d23' : '#ffffff';
+  const theme = currentTheme();
+  context.strokeStyle = theme === 'dark' ? '#191d23' : theme === 'gray' ? '#dce2ea' : '#ffffff';
   const ink = new THREE.Color(color);
   if (isDarkTheme()) ink.lerp(new THREE.Color(0xffffff), 0.32);
   context.fillStyle = `#${ink.getHexString()}`;
@@ -808,16 +875,13 @@ function makeTextSprite(text, color, scale = 0.6) {
 }
 
 function stageForProgress(progress) {
-  if (progress < 0.25) {
-    return { index: 0, title: "初始位置", caption: "A 沿 v 方向滑移，B 固定。" };
-  }
-  if (progress < 0.5) {
-    return { index: 1, title: "接近", caption: "位错 A 靠近位错 B，交割点即将形成。" };
+  if (progress < 0.35) {
+    return DISLOCATION_STAGES[0];
   }
   if (progress < 0.82) {
-    return { index: 2, title: "交割", caption: "相交处分别引入平行于另一条柏氏矢量的台阶段。" };
+    return DISLOCATION_STAGES[1];
   }
-  return { index: 3, title: "交割结果", caption: "根据台阶段是否位于原滑移面内判定缺陷。" };
+  return DISLOCATION_STAGES[2];
 }
 
 function showInputStatus(message, error) {
@@ -855,8 +919,19 @@ function smoothstep(min, max, value) {
   return x * x * (3 - 2 * x);
 }
 
+function currentTheme() {
+  return document.documentElement.dataset.theme || "light";
+}
+
 function isDarkTheme() {
-  return document.documentElement.dataset.theme === "dark";
+  return currentTheme() === "dark";
+}
+
+function dislocationSceneBackground() {
+  const theme = currentTheme();
+  if (theme === "dark") return 0x12161f;
+  if (theme === "gray") return 0xdce2ea;
+  return 0xf8fafc;
 }
 
 function disposeChildren(root) {

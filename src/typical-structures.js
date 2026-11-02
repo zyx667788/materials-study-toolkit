@@ -26,6 +26,8 @@ const STRUCTURES = [
     category: "atomic",
     title: "金刚石 C",
     formula: "C",
+    badge: "Fd-3m",
+    crystalTag: "立方 · 四面体共价",
     mpId: "mp-66",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-66",
     spaceGroup: "Fd-3m (227)",
@@ -41,6 +43,8 @@ const STRUCTURES = [
     category: "atomic",
     title: "石墨 C",
     formula: "C",
+    badge: "2H-C",
+    crystalTag: "六方层状 · sp²",
     mpId: "mp-48",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-48",
     spaceGroup: "P6₃/mmc (194)",
@@ -56,6 +60,8 @@ const STRUCTURES = [
     category: "atomic",
     title: "石墨烯",
     formula: "C",
+    badge: "2D",
+    crystalTag: "二维蜂窝单层",
     mpId: "本地模型",
     mpUrl: "",
     spaceGroup: "二维蜂窝晶格",
@@ -71,6 +77,8 @@ const STRUCTURES = [
     category: "atomic",
     title: "富勒烯 C60",
     formula: "C60",
+    badge: "0D · C₆₀",
+    crystalTag: "笼状分子巴基球",
     mpId: "本地模型",
     mpUrl: "",
     spaceGroup: "分子笼状结构",
@@ -86,6 +94,8 @@ const STRUCTURES = [
     category: "atomic",
     title: "碳纳米管",
     formula: "C",
+    badge: "1D · (6,6)",
+    crystalTag: "扶手椅型单壁管",
     mpId: "本地模型",
     mpUrl: "",
     spaceGroup: "扶手椅型 (6, 6) · 开口单壁",
@@ -101,6 +111,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "NaCl 岩盐结构",
     formula: "NaCl",
+    badge: "AB · B1",
+    crystalTag: "立方 Fm-3m",
     mpId: "mp-22862",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-22862",
     spaceGroup: "Fm-3m (225)",
@@ -122,6 +134,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "CsCl 结构",
     formula: "CsCl",
+    badge: "AB · B2",
+    crystalTag: "简单立方 Pm-3m",
     mpId: "mp-22865",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-22865",
     spaceGroup: "Pm-3m (221)",
@@ -140,6 +154,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "ZnS 闪锌矿结构",
     formula: "ZnS",
+    badge: "AB · B3",
+    crystalTag: "立方 F-43m",
     mpId: "mp-10695",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-10695",
     spaceGroup: "F-43m (216)",
@@ -158,6 +174,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "ZnS 纤锌矿结构",
     formula: "ZnS",
+    badge: "AB · B4",
+    crystalTag: "六方 P6₃mc",
     mpId: "mp-560588",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-560588",
     spaceGroup: "P6₃mc (186)",
@@ -173,6 +191,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "CaF₂ 萤石结构",
     formula: "CaF₂",
+    badge: "AB₂ · C1",
+    crystalTag: "立方 Fm-3m",
     mpId: "mp-2741",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-2741",
     spaceGroup: "Fm-3m (225)",
@@ -198,6 +218,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "TiO₂ 金红石结构",
     formula: "TiO₂",
+    badge: "AB₂ · C4",
+    crystalTag: "四方 P4₂/mnm",
     mpId: "mp-390",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-390",
     spaceGroup: "P4₂/mnm (136)",
@@ -220,6 +242,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "α-Al₂O₃ 刚玉结构",
     formula: "Al₂O₃",
+    badge: "A₂B₃ · D5₁",
+    crystalTag: "三方 R-3c",
     mpId: "mp-1143",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-1143",
     spaceGroup: "R-3c (167)",
@@ -235,6 +259,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "CaTiO₃ 钙钛矿结构",
     formula: "CaTiO₃",
+    badge: "ABO₃ · E2₁",
+    crystalTag: "立方 Pm-3m",
     mpId: "mp-5827",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-5827",
     spaceGroup: "Pm-3m (221)",
@@ -256,6 +282,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "MgAl₂O₄ 尖晶石结构",
     formula: "MgAl₂O₄",
+    badge: "AB₂O₄ · H1₁",
+    crystalTag: "立方 Fd-3m",
     mpId: "mp-3536",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-3536",
     spaceGroup: "Fd-3m (227)",
@@ -271,6 +299,8 @@ const STRUCTURES = [
     category: "ionic",
     title: "[SiO₄] 硅氧四面体",
     formula: "SiO₄",
+    badge: "[SiO₄]⁴⁻",
+    crystalTag: "硅酸盐四面体单元",
     mpId: "本地模型",
     mpUrl: "",
     spaceGroup: "硅酸盐基本单元",
@@ -306,6 +336,8 @@ export function initTypicalStructuresModule() {
 
   if (!els.host) return { refresh: () => {} };
 
+  ensureStructureCardFallbackStyles();
+
   const state = {
     selectedId: STRUCTURES[0].id,
     filter: "atomic",
@@ -321,7 +353,7 @@ export function initTypicalStructuresModule() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = document.documentElement.dataset.theme === "dark" ? 1.18 : 1.08;
+  renderer.toneMappingExposure = structureToneExposure();
   els.host.appendChild(renderer.domElement);
 
   let cameraFrustum = 3.4;
@@ -338,7 +370,8 @@ export function initTypicalStructuresModule() {
   const root = new THREE.Group();
   scene.add(root);
 
-  scene.add(new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2));
+  const hemisphere = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
+  scene.add(hemisphere);
   const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   key.position.set(4, -5, 7);
   scene.add(key);
@@ -349,6 +382,7 @@ export function initTypicalStructuresModule() {
   rim.position.set(-3, 5, -2);
   scene.add(rim);
 
+  applySceneTheme();
   wireUi();
   renderStructureList();
   drawSelectedStructure(true);
@@ -360,8 +394,7 @@ export function initTypicalStructuresModule() {
   }
   window.addEventListener("resize", resize);
   window.addEventListener("mstool:themechange", () => {
-    scene.background.set(structureSceneBackground());
-    renderer.toneMappingExposure = document.documentElement.dataset.theme === "dark" ? 1.18 : 1.08;
+    applySceneTheme();
     drawSelectedStructure(false);
   });
 
@@ -371,6 +404,13 @@ export function initTypicalStructuresModule() {
       controls.update();
     },
   };
+
+  function applySceneTheme() {
+    const theme = currentTheme();
+    scene.background.set(structureSceneBackground());
+    hemisphere.groundColor.set(theme === "dark" ? 0x26354a : theme === "gray" ? 0x7c8b9e : 0x9ca3af);
+    renderer.toneMappingExposure = structureToneExposure();
+  }
 
   function wireUi() {
     if (els.filterButtons) {
@@ -387,7 +427,7 @@ export function initTypicalStructuresModule() {
       chooseStructure(els.select.value);
     });
 
-    els.repeatButton.addEventListener("click", () => {
+    els.repeatButton?.addEventListener("click", () => {
       const structure = selectedStructure();
       if (structure.repeatable === false) return;
       state.repeat = state.repeat === 1 ? 2 : 1;
@@ -396,18 +436,45 @@ export function initTypicalStructuresModule() {
       drawSelectedStructure(true);
     });
 
-    els.bondButton.addEventListener("click", () => {
-      state.showBonds = !state.showBonds;
-      els.bondButton.classList.toggle("is-active", state.showBonds);
-      drawSelectedStructure(false);
-    });
+    if (els.bondButton) {
+      els.bondButton.textContent = "直线连接";
+      els.bondButton.setAttribute("aria-label", "直线连接");
+      els.bondButton.setAttribute("aria-pressed", String(state.showBonds));
+      els.bondButton.addEventListener("click", () => {
+        state.showBonds = !state.showBonds;
+        els.bondButton.textContent = "直线连接";
+        els.bondButton.classList.toggle("is-active", state.showBonds);
+        els.bondButton.setAttribute("aria-pressed", String(state.showBonds));
+        drawSelectedStructure(false);
+      });
+    }
 
     els.exportButton?.addEventListener("click", exportPng);
 
-    els.atomScale.addEventListener("input", () => {
+    els.atomScale?.addEventListener("input", () => {
       state.atomScale = Number(els.atomScale.value);
       drawSelectedStructure(false);
     });
+  }
+
+  function renderStructureCardMarkup(structure, index) {
+    const active = structure.id === state.selectedId;
+    const indexCode = String(index + 1).padStart(2, "0");
+    const badgeText = structure.badge || structure.formula;
+    const systemTag = structure.crystalTag || structure.spaceGroup;
+    return `
+      <button class="structure-list-item${active ? " is-active" : ""}" type="button" data-structure-id="${structure.id}" data-category="${structure.category}" aria-pressed="${active}">
+        <div class="structure-item-head">
+          <span class="structure-item-index">${indexCode}</span>
+          <strong class="structure-item-title">${structure.title}</strong>
+          <span class="structure-item-badge">${badgeText}</span>
+        </div>
+        <div class="structure-item-meta">
+          <span class="structure-item-tag">${systemTag}</span>
+          <span class="structure-item-coord">CN ${structure.coordination}</span>
+        </div>
+      </button>
+    `;
   }
 
   function renderStructureList() {
@@ -418,37 +485,25 @@ export function initTypicalStructuresModule() {
     const ionicStructures = STRUCTURES.filter((s) => s.category === "ionic");
 
     if (atomicList) {
-      atomicList.innerHTML = atomicStructures.map((structure) => `
-        <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
-          <div class="structure-item-head">
-            <strong>${structure.title}</strong>
-          </div>
-        </button>
-      `).join("");
+      atomicList.innerHTML = atomicStructures
+        .map((structure, index) => renderStructureCardMarkup(structure, index))
+        .join("");
       atomicList.querySelectorAll("[data-structure-id]").forEach((button) => {
         button.addEventListener("click", () => chooseStructure(button.dataset.structureId));
       });
     }
 
     if (ionicList) {
-      ionicList.innerHTML = ionicStructures.map((structure) => `
-        <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
-          <div class="structure-item-head">
-            <strong>${structure.title}</strong>
-          </div>
-        </button>
-      `).join("");
+      ionicList.innerHTML = ionicStructures
+        .map((structure, index) => renderStructureCardMarkup(structure, index))
+        .join("");
       ionicList.querySelectorAll("[data-structure-id]").forEach((button) => {
         button.addEventListener("click", () => chooseStructure(button.dataset.structureId));
       });
     }
 
     if (els.list) {
-      els.list.innerHTML = STRUCTURES.map((structure) => `
-        <button class="structure-list-item${structure.id === state.selectedId ? " is-active" : ""}" type="button" data-structure-id="${structure.id}">
-          <span>${structure.title}</span>
-        </button>
-      `).join("");
+      els.list.innerHTML = STRUCTURES.map((structure, index) => renderStructureCardMarkup(structure, index)).join("");
       els.list.querySelectorAll("[data-structure-id]").forEach((button) => {
         button.addEventListener("click", () => chooseStructure(button.dataset.structureId));
       });
@@ -519,6 +574,11 @@ export function initTypicalStructuresModule() {
       els.repeatButton.classList.toggle("is-active", structure.repeatable !== false && state.repeat === 2);
       els.repeatButton.setAttribute("aria-pressed", String(structure.repeatable !== false && state.repeat === 2));
     }
+    if (els.bondButton) {
+      els.bondButton.textContent = "直线连接";
+      els.bondButton.classList.toggle("is-active", state.showBonds);
+      els.bondButton.setAttribute("aria-pressed", String(state.showBonds));
+    }
 
     const sourceAtoms = structure.generator ? structure.generator().atoms : structure.atoms;
     const elements = [...new Set(sourceAtoms.map((site) => site.element))];
@@ -560,7 +620,6 @@ export function initTypicalStructuresModule() {
     renderer.render(scene, camera);
     downloadCanvasPngWithWatermark(renderer.domElement, `structure-${state.selectedId}.png`);
   }
-
 
   let _stippleTex = null;
   function makeStippleBumpMap() {
@@ -624,12 +683,13 @@ export function initTypicalStructuresModule() {
 
   function makeBonds(sites, structure, explicitBonds = []) {
     const group = new THREE.Group();
+    const theme = currentTheme();
     const material = new THREE.MeshPhysicalMaterial({
-      color: 0xb0bec5,
+      color: theme === "gray" ? 0x64748b : 0xb0bec5,
       roughness: 0.38,
       metalness: 0.02,
       transparent: true,
-      opacity: 0.72,
+      opacity: theme === "gray" ? 0.8 : 0.72,
     });
 
     if (explicitBonds.length) {
@@ -650,6 +710,78 @@ export function initTypicalStructuresModule() {
 
     return group;
   }
+}
+
+function ensureStructureCardFallbackStyles() {
+  if (typeof document === "undefined" || document.getElementById("structure-card-matrix-fallback")) return;
+  const style = document.createElement("style");
+  style.id = "structure-card-matrix-fallback";
+  style.textContent = `
+    :where(#atomicStructureList, #ionicStructureList) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    :where(.structure-list-item) {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: center;
+      gap: 3px;
+      text-align: left;
+    }
+    :where(.structure-item-head) {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: 100%;
+      min-width: 0;
+    }
+    :where(.structure-item-index) {
+      font-size: 10px;
+      font-weight: 700;
+      opacity: 0.55;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    :where(.structure-item-title) {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    :where(.structure-item-badge) {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.12);
+      color: inherit;
+      opacity: 0.85;
+      flex-shrink: 0;
+    }
+    :where(.structure-item-meta) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 10.5px;
+      opacity: 0.72;
+      width: 100%;
+      min-width: 0;
+    }
+    :where(.structure-item-tag) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    :where(.structure-item-coord) {
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 function buildStructureModel(structure, repeat) {
@@ -721,9 +853,12 @@ function makeCellEdges(lattice, repeat, center) {
   const positions = edges.flatMap(([a, b]) => [...corners[a].toArray(), ...corners[b].toArray()]);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  const theme = currentTheme();
+  const edgeColor = theme === "dark" ? 0x94a3b8 : theme === "gray" ? 0x475569 : 0x78909c;
+  const edgeOpacity = theme === "gray" ? 0.64 : 0.52;
   return new THREE.LineSegments(
     geometry,
-    new THREE.LineBasicMaterial({ color: 0x78909c, transparent: true, opacity: 0.52 }),
+    new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: edgeOpacity }),
   );
 }
 
@@ -977,11 +1112,25 @@ function bondsByDistance(atoms, cutoff) {
   return bonds;
 }
 
+function currentTheme() {
+  return document.documentElement.dataset.theme || "light";
+}
+
 function elementColor(element) {
   const info = ELEMENTS[element] || ELEMENTS.C;
-  return document.documentElement.dataset.theme === "dark" ? (info.darkColor ?? info.color) : info.color;
+  return currentTheme() === "dark" ? (info.darkColor ?? info.color) : info.color;
 }
 
 function structureSceneBackground() {
-  return document.documentElement.dataset.theme === "dark" ? 0x111318 : 0xfafafa;
+  const theme = currentTheme();
+  if (theme === "dark") return 0x12161f;
+  if (theme === "gray") return 0xdce2ea;
+  return 0xf8fafc;
+}
+
+function structureToneExposure() {
+  const theme = currentTheme();
+  if (theme === "dark") return 1.18;
+  if (theme === "gray") return 1.04;
+  return 1.08;
 }

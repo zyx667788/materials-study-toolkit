@@ -1,6 +1,33 @@
 const EPS = 1e-8;
 const DIRECTION_TOLERANCE = 1e-5;
 
+export const DISLOCATION_STAGES = [
+  {
+    key: "initial",
+    index: 0,
+    progress: 0,
+    label: "起始",
+    title: "起始位置",
+    caption: "A 沿 v 方向滑移，B 固定。",
+  },
+  {
+    key: "cross",
+    index: 1,
+    progress: 0.55,
+    label: "交割",
+    title: "交割",
+    caption: "相交处分别引入平行于另一条柏氏矢量的台阶段。",
+  },
+  {
+    key: "result",
+    index: 2,
+    progress: 1,
+    label: "结果",
+    title: "交割结果",
+    caption: "根据台阶段是否位于原滑移面内判定缺陷。",
+  },
+];
+
 export function parseDirection(value, label = "方向") {
   if (Array.isArray(value)) {
     return validateVector(value.map(Number), label);

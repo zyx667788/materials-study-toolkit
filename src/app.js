@@ -292,11 +292,27 @@ function wireModuleNav() {
 }
 
 function initTheme() {
-  applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light", false);
-  els.themeToggle?.addEventListener("click", () => {
-    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    applyTheme(nextTheme, true);
-  });
+  const initialTheme = ["light", "gray", "dark"].includes(document.documentElement.dataset.theme)
+    ? document.documentElement.dataset.theme
+    : "light";
+  applyTheme(initialTheme, false);
+
+  const modeButtons = document.querySelectorAll("[data-theme-mode]");
+  if (modeButtons.length > 0) {
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        applyTheme(btn.dataset.themeMode, true);
+      });
+    });
+  } else {
+    els.themeToggle?.addEventListener("click", () => {
+      const order = ["light", "gray", "dark"];
+      const current = document.documentElement.dataset.theme || "light";
+      const nextTheme = order[(order.indexOf(current) + 1) % order.length];
+      applyTheme(nextTheme, true);
+    });
+  }
 
   const media = window.matchMedia("(prefers-color-scheme: dark)");
   media.addEventListener?.("change", (event) => {
@@ -310,35 +326,43 @@ function initTheme() {
 }
 
 function applyTheme(theme, persist) {
-  const dark = theme === "dark";
-  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  const normalized = ["light", "gray", "dark"].includes(theme) ? theme : "light";
+  const dark = normalized === "dark";
+  const gray = normalized === "gray";
+  document.documentElement.dataset.theme = normalized;
   document.documentElement.style.colorScheme = dark ? "dark" : "light";
   if (persist) {
     try {
-      localStorage.setItem(THEME_STORAGE_KEY, dark ? "dark" : "light");
+      localStorage.setItem(THEME_STORAGE_KEY, normalized);
     } catch {
       // Theme switching still works for the current page without storage.
     }
   }
 
-  if (els.themeToggle) {
-    els.themeToggle.setAttribute("aria-pressed", String(dark));
-    els.themeToggle.setAttribute("aria-label", dark ? "切换到亮色模式" : "切换到暗色模式");
+  document.querySelectorAll("[data-theme-mode]").forEach((btn) => {
+    const active = btn.dataset.themeMode === normalized;
+    btn.classList.toggle("is-active", active);
+    btn.setAttribute("aria-pressed", String(active));
+  });
+
+  if (els.themeColorMeta) {
+    els.themeColorMeta.content = dark ? "#111318" : gray ? "#dce2ea" : "#f5f6f8";
   }
-  if (els.themeToggleIcon) els.themeToggleIcon.textContent = dark ? "☀" : "☾";
-  if (els.themeColorMeta) els.themeColorMeta.content = dark ? "#111318" : "#f5f6f8";
 
   PALETTE.cell = dark ? 0xd7e3ed : 0x263238;
   PALETTE.axisC = dark ? 0xaab8c5 : 0x546e7a;
-  PALETTE.grid = dark ? 0x425268 : 0xb0bec5;
+  PALETTE.grid = dark ? 0x425268 : gray ? 0x94a3b8 : 0xb0bec5;
   PALETTE.guide = dark ? 0x7f91a3 : 0x78909c;
   scene.background.set(sceneBackgroundColor());
   if (root.children.length) draw();
-  window.dispatchEvent(new CustomEvent("mstool:themechange", { detail: { theme: dark ? "dark" : "light" } }));
+  window.dispatchEvent(new CustomEvent("mstool:themechange", { detail: { theme: normalized } }));
 }
 
 function sceneBackgroundColor() {
-  return document.documentElement.dataset.theme === "dark" ? 0x111318 : 0xfafafa;
+  const t = document.documentElement.dataset.theme;
+  if (t === "dark") return 0x111318;
+  if (t === "gray") return 0xdce2ea;
+  return 0xfafafa;
 }
 
 function wireUi() {
@@ -356,12 +380,9 @@ function wireUi() {
       refreshExamples();
       updateSections();
       updateInputHint();
-      if (state.workflow === "training") {
-        nextTrainingQuestion(true);
-      } else {
-        setDefaultInput();
-        draw(true);
-      }
+      setDefaultInput();
+      generateTrainingQuestionSilent();
+      draw(true);
     });
   });
 
@@ -373,44 +394,72 @@ function wireUi() {
       refreshExamples();
       updateSections();
       updateInputHint();
-      if (state.workflow === "training") {
-        nextTrainingQuestion(false);
-      } else {
-        setDefaultInput();
-        draw();
-      }
+      setDefaultInput();
+      generateTrainingQuestionSilent();
+      draw();
     });
   });
 
-  els.drawButton.addEventListener("click", () => draw());
-  els.indexInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") draw();
+  els.drawButton?.addEventListener("click", () => {
+    state.workflow = "draw";
+    draw();
   });
-  els.indexInput.addEventListener("input", () => {
+  els.indexInput?.addEventListener("focus", () => {
+    if (state.workflow !== "draw") {
+      state.workflow = "draw";
+      scheduleDraw();
+    }
+  });
+  els.indexInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      state.workflow = "draw";
+      draw();
+    }
+  });
+  els.indexInput?.addEventListener("input", () => {
+    state.workflow = "draw";
     state.autoLayer = true;
     scheduleDraw();
   });
 
-  els.trainingSubmitButton?.addEventListener("click", submitTrainingAnswer);
-  els.trainingAnswerInput?.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") submitTrainingAnswer();
+  els.trainingAnswerInput?.addEventListener("focus", () => {
+    if (state.workflow !== "training") {
+      state.workflow = "training";
+      if (!trainingState.question) generateTrainingQuestionSilent();
+      scheduleDraw();
+    }
   });
-  els.trainingNextButton?.addEventListener("click", () => nextTrainingQuestion(false));
+  els.trainingSubmitButton?.addEventListener("click", () => {
+    state.workflow = "training";
+    submitTrainingAnswer();
+  });
+  els.trainingAnswerInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      state.workflow = "training";
+      submitTrainingAnswer();
+    }
+  });
+  els.trainingNextButton?.addEventListener("click", () => {
+    state.workflow = "training";
+    nextTrainingQuestion(false);
+  });
   els.trainingResetButton?.addEventListener("click", resetTrainingScore);
 
-  els.layerInput.addEventListener("input", () => {
+  els.layerInput?.addEventListener("input", () => {
     state.autoLayer = false;
     state.currentLayer = Number(els.layerInput.value);
     scheduleDraw();
   });
 
-  els.autoLayerButton.addEventListener("click", () => {
+  els.autoLayerButton?.addEventListener("click", () => {
     state.autoLayer = true;
     draw();
   });
 
-  els.resetButton.addEventListener("click", resetCamera);
-  els.exportButton.addEventListener("click", exportPng);
+  els.resetButton?.addEventListener("click", resetCamera);
+  els.exportButton?.addEventListener("click", exportPng);
+
+  generateTrainingQuestionSilent();
 }
 
 function activate(selector, activeButton) {
@@ -497,8 +546,7 @@ function addTrainingQuestion(questions, values, canonicalSign) {
   questions.set(key, key);
 }
 
-function nextTrainingQuestion(resetView = false) {
-  if (state.workflow !== "training") return;
+function generateTrainingQuestionSilent() {
   const pool = trainingQuestions[state.system][state.mode];
   const category = `${state.system}:${state.mode}`;
   const recent = new Set(trainingState.recentKeys.slice(-TRAINING_RECENT_LIMIT));
@@ -516,13 +564,20 @@ function nextTrainingQuestion(resetView = false) {
   trainingState.answered = false;
   state.autoLayer = true;
 
-  els.trainingAnswerInput.value = "";
-  els.trainingAnswerInput.disabled = false;
-  els.trainingSubmitButton.disabled = false;
-  els.trainingNextButton.textContent = "换一题";
+  if (els.trainingAnswerInput) {
+    els.trainingAnswerInput.value = "";
+    els.trainingAnswerInput.disabled = false;
+  }
+  if (els.trainingSubmitButton) els.trainingSubmitButton.disabled = false;
+  if (els.trainingNextButton) els.trainingNextButton.textContent = "下一个";
   updateTrainingQuestionText();
   updateTrainingScore();
   setTrainingFeedback("尚未作答", "idle");
+}
+
+function nextTrainingQuestion(resetView = false) {
+  state.workflow = "training";
+  generateTrainingQuestionSilent();
   draw(resetView);
 }
 
@@ -535,19 +590,21 @@ function updateTrainingQuestionText() {
   const example = state.system === "cubic"
     ? state.mode === "plane" ? "1 1 1" : "1 -1 0"
     : state.mode === "plane" ? "1 0 -1 0" : "2 -1 -1 0";
-  const poolSize = trainingQuestions[state.system][state.mode].length;
 
-  els.trainingQuestionNumber.textContent = `第 ${trainingState.number} 题 · ${poolSize} 种指数`;
-  els.trainingPrompt.textContent = `写出图中${systemName}${modeName}的指数`;
-  els.trainingAnswerInput.placeholder = `例如 ${example}`;
-  els.trainingHint.textContent = state.mode === "direction"
-    ? `按 ${symbols} 顺序输入，分数可写为 1/2`
-    : `按 ${symbols} 顺序输入，使用空格分隔`;
+  if (els.trainingQuestionNumber) els.trainingQuestionNumber.textContent = `第 ${trainingState.number} 题`;
+  if (els.trainingPrompt) els.trainingPrompt.textContent = `写出图中${systemName}${modeName}的指数`;
+  if (els.trainingAnswerInput) els.trainingAnswerInput.placeholder = `例如 ${example}`;
+  if (els.trainingHint) {
+    els.trainingHint.textContent = state.mode === "direction"
+      ? `按 ${symbols} 顺序输入，分数可写为 1/2`
+      : `按 ${symbols} 顺序输入，使用空格分隔`;
+  }
   setTrainingCoordinateText(null);
 }
 
 function submitTrainingAnswer() {
-  if (state.workflow !== "training" || !trainingState.question || trainingState.answered) return;
+  if (!trainingState.question || trainingState.answered) return;
+  state.workflow = "training";
   const evaluation = evaluateTrainingAnswer(els.trainingAnswerInput.value, trainingState.question);
   if (!evaluation.valid) {
     setTrainingFeedback(evaluation.message, "invalid");
@@ -558,7 +615,7 @@ function submitTrainingAnswer() {
   trainingState.answered = true;
   els.trainingAnswerInput.disabled = true;
   els.trainingSubmitButton.disabled = true;
-  els.trainingNextButton.textContent = "下一题";
+  els.trainingNextButton.textContent = "下一个";
 
   const standardAnswer = formatTrainingAnswer(trainingState.question);
   if (evaluation.correct) {
@@ -684,6 +741,7 @@ function refreshExamples() {
     chip.className = "chip";
     chip.textContent = state.mode === "plane" ? `(${value})` : `[${value}]`;
     chip.addEventListener("click", () => {
+      state.workflow = "draw";
       els.indexInput.value = value;
       state.autoLayer = true;
       draw();
@@ -715,10 +773,10 @@ function initExamCountdown() {
   if (!daysEl) return;
   const now = new Date();
   const currentYear = now.getFullYear();
-  let target = new Date(currentYear, 11, 21);
+  let target = new Date(currentYear, 11, 26, 8, 30);
   let examYear = currentYear + 1;
   if (now > target) {
-    target = new Date(currentYear + 1, 11, 21);
+    target = new Date(currentYear + 1, 11, 26, 8, 30);
     examYear = currentYear + 2;
   }
   const diffTime = target - now;
@@ -790,12 +848,11 @@ function formatVisitOrdinal(totalVisits) {
 }
 
 function updateSections() {
-  const trainingActive = state.workflow === "training";
-  els.crystalModule.classList.toggle("is-training", trainingActive);
-  els.trainingSection.classList.toggle("is-hidden", !trainingActive);
-  els.indexSection.classList.toggle("is-hidden", trainingActive);
-  els.readoutPanel.classList.toggle("is-hidden", trainingActive);
-  els.planeLayerSection.classList.toggle("is-hidden", trainingActive || state.mode !== "plane");
+  els.crystalModule?.classList.remove("is-training");
+  els.trainingSection?.classList.remove("is-hidden");
+  els.indexSection?.classList.remove("is-hidden");
+  els.readoutPanel?.classList.add("is-hidden");
+  els.planeLayerSection?.classList.add("is-hidden");
 }
 
 function updateInputHint() {
@@ -1239,15 +1296,10 @@ function placeTrainingDirectionSegment(segment, placement) {
   };
 }
 
-function setTrainingCoordinateText(segment) {
+function setTrainingCoordinateText() {
   if (!els.trainingCoordinateText) return;
-  if (!segment) {
-    els.trainingCoordinateText.textContent = "";
-    els.trainingCoordinateText.classList.add("is-hidden");
-    return;
-  }
-  els.trainingCoordinateText.textContent = `端点分数坐标：起点 (${fractionVectorToText(segment.startFrac)})，终点 (${fractionVectorToText(segment.endFrac)})`;
-  els.trainingCoordinateText.classList.remove("is-hidden");
+  els.trainingCoordinateText.textContent = "";
+  els.trainingCoordinateText.classList.add("is-hidden");
 }
 
 function liftDirectionObject(object) {

@@ -129,659 +129,809 @@ function createStableCompoundDiagram() {
   };
 }
 
-export function initTernaryPhaseModule() {
-  const els = {
-    host: document.querySelector("#ternaryViewerHost"),
-    viewPanel: document.querySelector(".ternary-view-panel"),
-    diagramSelect: document.querySelector("#ternaryDiagramSelect"),
-    diagramButtons: document.querySelector("#ternaryDiagramButtons"),
-    diagramSummary: document.querySelector("#ternaryDiagramSummary"),
-    sectionPresets: document.querySelector("#ternarySectionPresets"),
-    regionList: document.querySelector("#ternaryRegionList"),
-    regionSelect: document.querySelector("#ternaryRegionSelect"),
-    title: document.querySelector("#ternaryRegionTitle"),
-    phase: document.querySelector("#ternaryPhaseReadout"),
-    kind: document.querySelector("#ternaryKindReadout"),
-    temperature: document.querySelector("#ternaryTemperatureReadout"),
-    composition: document.querySelector("#ternaryCompositionReadout"),
-    shape: document.querySelector("#ternaryShapeReadout"),
-    note: document.querySelector("#ternaryNote"),
-    onlyButton: document.querySelector("#ternaryOnlyButton"),
-    dragRegionButton: document.querySelector("#ternaryDragRegionButton"),
-    resetRegionsButton: document.querySelector("#ternaryResetRegionsButton"),
-    resetButton: document.querySelector("#ternaryResetButton"),
-    exportButton: document.querySelector("#ternaryExportButton"),
-    mobileSectionToggle: document.querySelector("#ternaryMobileSectionToggle"),
-    sectionCard: document.querySelector(".ternary-section-card"),
-    legend: document.querySelector("#ternaryLegend"),
-    sectionModeButtons: document.querySelectorAll("[data-ternary-section-mode]"),
-    horizontalSection: document.querySelector("#ternaryHorizontalSection"),
-    verticalSection: document.querySelector("#ternaryVerticalSection"),
-    sectionTemp: document.querySelector("#ternarySectionTemp"),
-    point1A: document.querySelector("#ternaryPoint1A"),
-    point1B: document.querySelector("#ternaryPoint1B"),
-    point1C: document.querySelector("#ternaryPoint1C"),
-    point2A: document.querySelector("#ternaryPoint2A"),
-    point2B: document.querySelector("#ternaryPoint2B"),
-    point2C: document.querySelector("#ternaryPoint2C"),
-    applySectionButton: document.querySelector("#ternaryApplySectionButton"),
-    standaloneSectionButton: document.querySelector("#ternaryStandaloneSectionButton"),
-    clearSectionButton: document.querySelector("#ternaryClearSectionButton"),
-    sectionStatus: document.querySelector("#ternarySectionStatus"),
-    returnSpaceButton: document.querySelector("#ternaryReturnSpaceButton"),
-    viewModeTitle: document.querySelector("#ternaryViewModeTitle"),
-    viewModeMeta: document.querySelector("#ternaryViewModeMeta"),
-  };
-
-  if (!els.host) return { refresh: () => {} };
-
-  const state = {
-    diagramId: DIAGRAMS[0].id,
-    selectedId: DIAGRAMS[0].regions[0].id,
-    showOnlySelected: false,
-    sectionMode: "horizontal",
-    sectionVisible: false,
-    sectionStandalone: false,
-    sectionTemp: 0.42,
-    sectionP1: [1, 0, 0],
-    sectionP2: [0, 1, 0],
-    dragMode: false,
-    draggingRegionId: null,
-    dragMoved: false,
-    regionOffsets: new Map(),
-  };
-
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(ternarySceneBackground());
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.04;
-  els.host.appendChild(renderer.domElement);
-
-  let cameraFrustum = 4.9;
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -100, 100);
-  camera.up.set(0, 0, 1);
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.rotateSpeed = 0.68;
-  controls.zoomSpeed = 0.82;
-  controls.enablePan = true;
-  controls.panSpeed = 0.36;
-
-  const root = new THREE.Group();
-  const regionRoot = new THREE.Group();
-  const guideRoot = new THREE.Group();
-  const sectionRoot = new THREE.Group();
-  root.add(regionRoot, guideRoot, sectionRoot);
-  scene.add(root);
-
-  const ambient = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
-  scene.add(ambient);
-  const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
-  key.position.set(4.2, -5.2, 6.2);
-  scene.add(key);
-  const fill = new THREE.DirectionalLight(0xcbd5e1, 0.45);
-  fill.position.set(-4.5, 2.6, 3.3);
-  scene.add(fill);
-
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
-  const dragPlane = new THREE.Plane();
-  const dragPoint = new THREE.Vector3();
-  const dragOffset = new THREE.Vector3();
-  const dragStart = new THREE.Vector2();
-  const regionMeshes = new Map();
-
-  wireUi();
-  renderDiagramOptions();
-  drawDiagram(true);
-  resize();
-  createSceneLoop({ host: els.host, controls, render: () => renderer.render(scene, camera) });
-
-  if ("ResizeObserver" in window) {
-    new ResizeObserver(resize).observe(els.host);
-    new ResizeObserver(updateSectionInsets).observe(els.legend);
-  }
-  window.addEventListener("resize", resize);
-  window.addEventListener("mstool:themechange", () => {
-    scene.background.set(ternarySceneBackground());
-    renderer.toneMappingExposure = document.documentElement.dataset.theme === "dark" ? 1.16 : 1.04;
-    drawDiagram(false);
-  });
-
+function createFallbackCanvasRenderer() {
+  const canvas = document.createElement("canvas");
+  let width = 640;
+  let height = 480;
+  let pixelRatio = 1;
   return {
-    refresh() {
-      resize();
-      controls.update();
+    domElement: canvas,
+    outputColorSpace: "",
+    toneMapping: 0,
+    toneMappingExposure: 1,
+    setPixelRatio(pr) {
+      pixelRatio = Math.max(1, pr || 1);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+    },
+    setSize(w, h, updateStyle = true) {
+      width = Math.max(1, w || 640);
+      height = Math.max(1, h || 480);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      if (updateStyle !== false) {
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+      }
+    },
+    render(scene, camera) {
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.save();
+      ctx.scale(pixelRatio, pixelRatio);
+      const bgHex = scene.background ? `#${scene.background.getHexString()}` : "#f3f7fa";
+      ctx.fillStyle = bgHex;
+      ctx.fillRect(0, 0, width, height);
+      scene.updateMatrixWorld?.(true);
+      camera.updateMatrixWorld?.(true);
+      camera.updateProjectionMatrix?.();
+
+      const projectVec = (vec) => {
+        const v = vec.clone().project(camera);
+        return {
+          x: (v.x * 0.5 + 0.5) * width,
+          y: (-v.y * 0.5 + 0.5) * height,
+          z: v.z,
+        };
+      };
+
+      const drawList = [];
+      scene.traverse((obj) => {
+        if (!obj.visible) return;
+        let p = obj.parent;
+        while (p) {
+          if (!p.visible) return;
+          p = p.parent;
+        }
+        if ((obj.isLine || obj.isLineSegments) && obj.geometry?.attributes?.position) {
+          const pos = obj.geometry.attributes.position;
+          const color = obj.material?.color ? `#${obj.material.color.getHexString()}` : "#334155";
+          const alpha = obj.material?.opacity ?? 0.8;
+          if (alpha <= 0.01) return;
+          const step = obj.isLineSegments ? 2 : 1;
+          for (let i = 0; i < pos.count - 1; i += step) {
+            const a = new THREE.Vector3().fromBufferAttribute(pos, i).applyMatrix4(obj.matrixWorld);
+            const b = new THREE.Vector3().fromBufferAttribute(pos, i + 1).applyMatrix4(obj.matrixWorld);
+            const pa = projectVec(a);
+            const pb = projectVec(b);
+            drawList.push({ type: "line", z: (pa.z + pb.z) * 0.5, pa, pb, color, alpha });
+          }
+        } else if (obj.isSprite && obj.material?.map?.image) {
+          const center = new THREE.Vector3().setFromMatrixPosition(obj.matrixWorld);
+          const pc = projectVec(center);
+          drawList.push({ type: "sprite", z: pc.z - 0.1, pc, img: obj.material.map.image, scale: obj.scale });
+        }
+      });
+
+      drawList.sort((a, b) => b.z - a.z);
+      for (const item of drawList) {
+        if (item.type === "line") {
+          ctx.strokeStyle = item.color;
+          ctx.globalAlpha = item.alpha;
+          ctx.lineWidth = 1.25;
+          ctx.beginPath();
+          ctx.moveTo(item.pa.x, item.pa.y);
+          ctx.lineTo(item.pb.x, item.pb.y);
+          ctx.stroke();
+        } else if (item.type === "sprite" && item.img) {
+          ctx.globalAlpha = 1;
+          const sw = Math.max(18, item.scale.x * 75);
+          const sh = Math.max(12, item.scale.y * 75);
+          ctx.drawImage(item.img, item.pc.x - sw / 2, item.pc.y - sh / 2, sw, sh);
+        }
+      }
+      ctx.restore();
     },
   };
+}
 
-  function wireUi() {
-    els.diagramSelect?.addEventListener("change", () => {
-      state.diagramId = els.diagramSelect.value;
-      state.selectedId = selectedDiagram().regions[0].id;
-      state.sectionVisible = false;
-      state.sectionStandalone = false;
-      state.regionOffsets.clear();
-      disposeSceneChildren(sectionRoot);
-      setDragMode(false);
-      drawDiagram(true);
-    });
+function createSafeRenderer() {
+  const candidates = [
+    { antialias: true, alpha: false, preserveDrawingBuffer: true, powerPreference: "high-performance" },
+    { antialias: false, alpha: false, preserveDrawingBuffer: true },
+    { antialias: false, alpha: false, preserveDrawingBuffer: false },
+  ];
+  for (const opts of candidates) {
+    try {
+      const r = new THREE.WebGLRenderer(opts);
+      r.outputColorSpace = THREE.SRGBColorSpace;
+      r.toneMapping = THREE.ACESFilmicToneMapping;
+      r.toneMappingExposure = 1.04;
+      return r;
+    } catch (_err) {
+      // Try next WebGLRenderer configuration
+    }
+  }
+  return createFallbackCanvasRenderer();
+}
 
-    els.regionSelect?.addEventListener("change", () => {
-      selectRegion(els.regionSelect.value);
-    });
-
-    els.onlyButton?.addEventListener("click", () => {
-      state.showOnlySelected = !state.showOnlySelected;
-      els.onlyButton.classList.toggle("is-active", state.showOnlySelected);
-      els.onlyButton.setAttribute("aria-pressed", String(state.showOnlySelected));
-      updateRegionStyles();
-    });
-
-    els.dragRegionButton?.addEventListener("click", () => setDragMode(!state.dragMode));
-    els.resetRegionsButton?.addEventListener("click", resetRegionPositions);
-    els.resetButton?.addEventListener("click", resetActiveView);
-    els.exportButton?.addEventListener("click", exportPng);
-    els.mobileSectionToggle?.addEventListener("click", () => {
-      const open = !els.sectionCard.classList.contains("is-mobile-open");
-      els.sectionCard.classList.toggle("is-mobile-open", open);
-      els.mobileSectionToggle.setAttribute("aria-expanded", String(open));
-      els.mobileSectionToggle.title = open ? "收起截面" : "截面设置";
-    });
-    els.sectionModeButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        state.sectionMode = button.dataset.ternarySectionMode;
-        els.sectionModeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-        els.horizontalSection.classList.toggle("is-hidden", state.sectionMode !== "horizontal");
-        els.verticalSection.classList.toggle("is-hidden", state.sectionMode !== "vertical");
-        els.sectionStatus.textContent = state.sectionMode === "horizontal"
-          ? "水平截面：输入温度 T 后获得该温度下的相区交线。"
-          : "垂直截面：输入两个成分点 P1/P2 后获得穿过这两点的垂直剖面。";
-      });
-    });
-    els.applySectionButton?.addEventListener("click", applySectionFromInputs);
-    els.standaloneSectionButton?.addEventListener("click", () => {
-      if (state.sectionStandalone) exitStandaloneSection();
-      else enterStandaloneSection();
-    });
-    els.returnSpaceButton?.addEventListener("click", exitStandaloneSection);
-    els.clearSectionButton?.addEventListener("click", clearSection);
-
-    renderer.domElement.addEventListener("click", (event) => {
-      if (state.sectionStandalone || state.dragMoved) {
-        state.dragMoved = false;
-        return;
-      }
-      const hit = pickRegion(event);
-      if (hit) selectRegion(hit.object.userData.regionId);
-    });
-
-    renderer.domElement.addEventListener("pointerdown", (event) => {
-      if (!state.dragMode || state.sectionStandalone) return;
-      const hit = pickRegion(event);
-      if (!hit) return;
-      event.preventDefault();
-      const regionId = hit.object.userData.regionId;
-      selectRegion(regionId);
-      state.draggingRegionId = regionId;
-      state.dragMoved = false;
-      dragStart.set(event.clientX, event.clientY);
-      const cameraDirection = new THREE.Vector3();
-      camera.getWorldDirection(cameraDirection);
-      dragPlane.setFromNormalAndCoplanarPoint(cameraDirection, hit.point);
-      const group = regionMeshes.get(regionId)?.group;
-      if (group) dragOffset.copy(group.position).sub(regionRoot.worldToLocal(hit.point.clone()));
-      renderer.domElement.setPointerCapture?.(event.pointerId);
-    });
-
-    renderer.domElement.addEventListener("pointermove", (event) => {
-      if (!state.draggingRegionId) return;
-      event.preventDefault();
-      updatePointer(event);
-      raycaster.setFromCamera(pointer, camera);
-      if (!raycaster.ray.intersectPlane(dragPlane, dragPoint)) return;
-      const group = regionMeshes.get(state.draggingRegionId)?.group;
-      if (!group) return;
-      group.position.copy(regionRoot.worldToLocal(dragPoint)).add(dragOffset);
-      state.regionOffsets.set(state.draggingRegionId, group.position.clone());
-      if (dragStart.distanceTo(new THREE.Vector2(event.clientX, event.clientY)) > 3) state.dragMoved = true;
-    });
-
-    const endRegionDrag = (event) => {
-      if (!state.draggingRegionId) return;
-      state.draggingRegionId = null;
-      renderer.domElement.releasePointerCapture?.(event.pointerId);
+export function initTernaryPhaseModule() {
+  try {
+    const els = {
+      host: document.querySelector("#ternaryViewerHost"),
+      viewPanel: document.querySelector(".ternary-view-panel"),
+      diagramSelect: document.querySelector("#ternaryDiagramSelect"),
+      diagramButtons: document.querySelector("#ternaryDiagramButtons"),
+      diagramSummary: document.querySelector("#ternaryDiagramSummary"),
+      sectionPresets: document.querySelector("#ternarySectionPresets"),
+      regionList: document.querySelector("#ternaryRegionList"),
+      regionSelect: document.querySelector("#ternaryRegionSelect"),
+      title: document.querySelector("#ternaryRegionTitle"),
+      phase: document.querySelector("#ternaryPhaseReadout"),
+      kind: document.querySelector("#ternaryKindReadout"),
+      temperature: document.querySelector("#ternaryTemperatureReadout"),
+      composition: document.querySelector("#ternaryCompositionReadout"),
+      shape: document.querySelector("#ternaryShapeReadout"),
+      note: document.querySelector("#ternaryNote"),
+      onlyButton: document.querySelector("#ternaryOnlyButton"),
+      dragRegionButton: document.querySelector("#ternaryDragRegionButton"),
+      resetRegionsButton: document.querySelector("#ternaryResetRegionsButton"),
+      resetButton: document.querySelector("#ternaryResetButton"),
+      exportButton: document.querySelector("#ternaryExportButton"),
+      mobileSectionToggle: document.querySelector("#ternaryMobileSectionToggle"),
+      sectionCard: document.querySelector(".ternary-section-card"),
+      legend: document.querySelector("#ternaryLegend"),
+      sectionModeButtons: document.querySelectorAll("[data-ternary-section-mode]"),
+      horizontalSection: document.querySelector("#ternaryHorizontalSection"),
+      verticalSection: document.querySelector("#ternaryVerticalSection"),
+      sectionTemp: document.querySelector("#ternarySectionTemp"),
+      point1A: document.querySelector("#ternaryPoint1A"),
+      point1B: document.querySelector("#ternaryPoint1B"),
+      point1C: document.querySelector("#ternaryPoint1C"),
+      point2A: document.querySelector("#ternaryPoint2A"),
+      point2B: document.querySelector("#ternaryPoint2B"),
+      point2C: document.querySelector("#ternaryPoint2C"),
+      applySectionButton: document.querySelector("#ternaryApplySectionButton"),
+      standaloneSectionButton: document.querySelector("#ternaryStandaloneSectionButton"),
+      clearSectionButton: document.querySelector("#ternaryClearSectionButton"),
+      sectionStatus: document.querySelector("#ternarySectionStatus"),
+      returnSpaceButton: document.querySelector("#ternaryReturnSpaceButton"),
+      viewModeTitle: document.querySelector("#ternaryViewModeTitle"),
+      viewModeMeta: document.querySelector("#ternaryViewModeMeta"),
     };
-    renderer.domElement.addEventListener("pointerup", endRegionDrag);
-    renderer.domElement.addEventListener("pointercancel", endRegionDrag);
-  }
 
-  function renderDiagramOptions() {
-    if (els.diagramSelect) {
-      els.diagramSelect.innerHTML = DIAGRAMS.map((diagram) => `
-        <option value="${diagram.id}">${diagram.shortTitle || diagram.title}</option>
-      `).join("");
-      els.diagramSelect.value = state.diagramId;
+    if (!els.host) return { refresh: () => {} };
+
+    const state = {
+      diagramId: DIAGRAMS[0].id,
+      selectedId: DIAGRAMS[0].regions[0].id,
+      showOnlySelected: false,
+      sectionMode: "horizontal",
+      sectionVisible: false,
+      sectionStandalone: false,
+      sectionTemp: 0.42,
+      sectionP1: [1, 0, 0],
+      sectionP2: [0, 1, 0],
+      dragMode: false,
+      draggingRegionId: null,
+      dragMoved: false,
+      regionOffsets: new Map(),
+    };
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(ternarySceneBackground());
+
+    const renderer = createSafeRenderer();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    els.host.innerHTML = "";
+    els.host.appendChild(renderer.domElement);
+
+    let cameraFrustum = 4.9;
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -100, 100);
+    camera.up.set(0, 0, 1);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.rotateSpeed = 0.68;
+    controls.zoomSpeed = 0.82;
+    controls.enablePan = true;
+    controls.panSpeed = 0.36;
+
+    const root = new THREE.Group();
+    const regionRoot = new THREE.Group();
+    const guideRoot = new THREE.Group();
+    const sectionRoot = new THREE.Group();
+    root.add(regionRoot, guideRoot, sectionRoot);
+    scene.add(root);
+
+    const ambient = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
+    scene.add(ambient);
+    const key = new THREE.DirectionalLight(0xe2e8f0, 1.4);
+    key.position.set(4.2, -5.2, 6.2);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xcbd5e1, 0.45);
+    fill.position.set(-4.5, 2.6, 3.3);
+    scene.add(fill);
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+    const dragPlane = new THREE.Plane();
+    const dragPoint = new THREE.Vector3();
+    const dragOffset = new THREE.Vector3();
+    const dragStart = new THREE.Vector2();
+    const regionMeshes = new Map();
+
+    wireUi();
+    renderDiagramOptions();
+    drawDiagram(true);
+    resize();
+    createSceneLoop({ host: els.host, controls, render: () => renderer.render(scene, camera) });
+
+    if ("ResizeObserver" in window) {
+      if (els.host) new ResizeObserver(resize).observe(els.host);
+      if (els.legend) new ResizeObserver(updateSectionInsets).observe(els.legend);
     }
-    if (els.diagramButtons) {
-      els.diagramButtons.innerHTML = DIAGRAMS.map((diagram) => `
-        <button class="ternary-diagram-btn${diagram.id === state.diagramId ? " is-active" : ""}" type="button" data-diagram-id="${diagram.id}">
-          ${diagram.shortTitle || diagram.title}
-        </button>
-      `).join("");
-      els.diagramButtons.querySelectorAll("[data-diagram-id]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          if (state.diagramId === btn.dataset.diagramId) return;
-          state.diagramId = btn.dataset.diagramId;
-          state.selectedId = selectedDiagram().regions[0].id;
-          state.sectionVisible = false;
-          state.sectionStandalone = false;
-          state.regionOffsets.clear();
-          disposeSceneChildren(sectionRoot);
-          renderDiagramOptions();
-          drawDiagram(true);
+    window.addEventListener("resize", resize);
+    window.addEventListener("mstool:themechange", () => {
+      const theme = document.documentElement.dataset.theme;
+      scene.background.set(ternarySceneBackground());
+      renderer.toneMappingExposure = theme === "dark" ? 1.16 : theme === "gray" ? 1.0 : 1.04;
+      drawDiagram(false);
+    });
+
+    return {
+      refresh() {
+        try {
+          resize();
+          controls.update();
+          renderer.render(scene, camera);
+          requestAnimationFrame(() => {
+            try {
+              resize();
+              controls.update();
+              renderer.render(scene, camera);
+            } catch (_err) {}
+          });
+        } catch (_err) {}
+      },
+    };
+
+    function wireUi() {
+      els.diagramSelect?.addEventListener("change", () => {
+        state.diagramId = els.diagramSelect.value;
+        state.selectedId = selectedDiagram().regions[0].id;
+        state.sectionVisible = false;
+        state.sectionStandalone = false;
+        state.regionOffsets.clear();
+        disposeSceneChildren(sectionRoot);
+        setDragMode(false);
+        drawDiagram(true);
+      });
+
+      els.regionSelect?.addEventListener("change", () => {
+        selectRegion(els.regionSelect.value);
+      });
+
+      els.onlyButton?.addEventListener("click", () => {
+        state.showOnlySelected = !state.showOnlySelected;
+        els.onlyButton.classList.toggle("is-active", state.showOnlySelected);
+        els.onlyButton.setAttribute("aria-pressed", String(state.showOnlySelected));
+        updateRegionStyles();
+      });
+
+      els.dragRegionButton?.addEventListener("click", () => setDragMode(!state.dragMode));
+      els.resetRegionsButton?.addEventListener("click", resetRegionPositions);
+      els.resetButton?.addEventListener("click", resetActiveView);
+      els.exportButton?.addEventListener("click", exportPng);
+      els.mobileSectionToggle?.addEventListener("click", () => {
+        if (!els.sectionCard) return;
+        const open = !els.sectionCard.classList.contains("is-mobile-open");
+        els.sectionCard.classList.toggle("is-mobile-open", open);
+        els.mobileSectionToggle.setAttribute("aria-expanded", String(open));
+        els.mobileSectionToggle.title = open ? "收起截面" : "截面设置";
+      });
+      els.sectionModeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          state.sectionMode = button.dataset.ternarySectionMode;
+          els.sectionModeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+          els.horizontalSection?.classList.toggle("is-hidden", state.sectionMode !== "horizontal");
+          els.verticalSection?.classList.toggle("is-hidden", state.sectionMode !== "vertical");
+          if (els.sectionStatus) {
+            els.sectionStatus.textContent = state.sectionMode === "horizontal"
+              ? "水平截面：输入温度 T 后获得该温度下的相区交线。"
+              : "垂直截面：输入两个成分点 P1/P2 后获得穿过这两点的垂直剖面。";
+          }
         });
       });
-    }
-  }
-
-  function drawDiagram(resetView) {
-    disposeSceneChildren(regionRoot);
-    disposeSceneChildren(guideRoot);
-    regionMeshes.clear();
-
-    const diagram = selectedDiagram();
-    ambient.intensity = diagram.curvedLiquidus ? 0.8 : 1.55;
-    key.intensity = diagram.curvedLiquidus ? 2.65 : 2.05;
-    fill.intensity = diagram.curvedLiquidus ? 0.42 : 0.72;
-    diagram.regions.forEach((region) => {
-      const group = makeRegionGroup(region);
-      const offset = state.regionOffsets.get(region.id);
-      if (offset) group.position.copy(offset);
-      regionRoot.add(group);
-      regionMeshes.set(region.id, {
-        group,
-        mesh: group.userData.mesh,
-        edges: group.userData.edges,
-        liquidus: group.userData.liquidus,
-        contours: group.userData.contours,
-        region,
+      els.applySectionButton?.addEventListener("click", applySectionFromInputs);
+      els.standaloneSectionButton?.addEventListener("click", () => {
+        if (state.sectionStandalone) exitStandaloneSection();
+        else enterStandaloneSection();
       });
-    });
+      els.returnSpaceButton?.addEventListener("click", exitStandaloneSection);
+      els.clearSectionButton?.addEventListener("click", clearSection);
 
-    guideRoot.add(makeCompositionGuide(diagram));
-    guideRoot.add(makeCotecticGuide(diagram));
-    if (els.diagramSummary) els.diagramSummary.textContent = "";
-    if (els.sectionPresets) {
-      const presets = diagram.checkpoints;
-      els.sectionPresets.replaceChildren(...presets.map(item => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'segment';
-        button.textContent = item.label;
-        button.dataset.sectionTemperature = String(item.t);
-        button.addEventListener('click', () => {
-          els.sectionModeButtons[0].click();
-          els.sectionTemp.value = String(item.t);
-          applySectionFromInputs();
-          enterStandaloneSection();
+      renderer.domElement.addEventListener("click", (event) => {
+        if (state.sectionStandalone || state.dragMoved) {
+          state.dragMoved = false;
+          return;
+        }
+        const hit = pickRegion(event);
+        if (hit) selectRegion(hit.object.userData.regionId);
+      });
+
+      renderer.domElement.addEventListener("pointerdown", (event) => {
+        if (!state.dragMode || state.sectionStandalone) return;
+        const hit = pickRegion(event);
+        if (!hit) return;
+        event.preventDefault();
+        const regionId = hit.object.userData.regionId;
+        selectRegion(regionId);
+        state.draggingRegionId = regionId;
+        state.dragMoved = false;
+        dragStart.set(event.clientX, event.clientY);
+        const cameraDirection = new THREE.Vector3();
+        camera.getWorldDirection(cameraDirection);
+        dragPlane.setFromNormalAndCoplanarPoint(cameraDirection, hit.point);
+        const group = regionMeshes.get(regionId)?.group;
+        if (group) dragOffset.copy(group.position).sub(regionRoot.worldToLocal(hit.point.clone()));
+        renderer.domElement.setPointerCapture?.(event.pointerId);
+      });
+
+      renderer.domElement.addEventListener("pointermove", (event) => {
+        if (!state.draggingRegionId) return;
+        event.preventDefault();
+        updatePointer(event);
+        raycaster.setFromCamera(pointer, camera);
+        if (!raycaster.ray.intersectPlane(dragPlane, dragPoint)) return;
+        const group = regionMeshes.get(state.draggingRegionId)?.group;
+        if (!group) return;
+        group.position.copy(regionRoot.worldToLocal(dragPoint)).add(dragOffset);
+        state.regionOffsets.set(state.draggingRegionId, group.position.clone());
+        if (dragStart.distanceTo(new THREE.Vector2(event.clientX, event.clientY)) > 3) state.dragMoved = true;
+      });
+
+      const endRegionDrag = (event) => {
+        if (!state.draggingRegionId) return;
+        state.draggingRegionId = null;
+        renderer.domElement.releasePointerCapture?.(event.pointerId);
+      };
+      renderer.domElement.addEventListener("pointerup", endRegionDrag);
+      renderer.domElement.addEventListener("pointercancel", endRegionDrag);
+    }
+
+    function renderDiagramOptions() {
+      if (els.diagramSelect) {
+        els.diagramSelect.innerHTML = DIAGRAMS.map((diagram) => `
+          <option value="${diagram.id}">${diagram.shortTitle || diagram.title}</option>
+        `).join("");
+        els.diagramSelect.value = state.diagramId;
+      }
+      if (els.diagramButtons) {
+        els.diagramButtons.innerHTML = DIAGRAMS.map((diagram) => `
+          <button class="ternary-diagram-btn${diagram.id === state.diagramId ? " is-active" : ""}" type="button" data-diagram-id="${diagram.id}">
+            ${diagram.shortTitle || diagram.title}
+          </button>
+        `).join("");
+        els.diagramButtons.querySelectorAll("[data-diagram-id]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (state.diagramId === btn.dataset.diagramId) return;
+            state.diagramId = btn.dataset.diagramId;
+            state.selectedId = selectedDiagram().regions[0].id;
+            state.sectionVisible = false;
+            state.sectionStandalone = false;
+            state.regionOffsets.clear();
+            disposeSceneChildren(sectionRoot);
+            renderDiagramOptions();
+            drawDiagram(true);
+          });
         });
-        return button;
-      }));
-    }
-    renderRegionControls();
-    renderLegend();
-    selectRegion(state.selectedId);
-    if (state.sectionVisible) drawSectionOverlay();
-    updateViewMode();
-    if (resetView) resetCamera();
-    renderer.render(scene, camera);
-  }
-
-  function renderRegionControls() {
-    const diagram = selectedDiagram();
-    els.regionSelect.innerHTML = diagram.regions.map((region) => `
-      <option value="${region.id}">${region.title}</option>
-    `).join("");
-    els.regionSelect.value = state.selectedId;
-
-    els.regionList.innerHTML = diagram.regions.map((region) => `
-      <button class="ternary-region-item${region.id === state.selectedId ? " is-active" : ""}" type="button" data-ternary-region="${region.id}">
-        <span>${region.title}</span>
-        <small>${region.kind} · ${region.phase}</small>
-      </button>
-    `).join("");
-
-    els.regionList.querySelectorAll("[data-ternary-region]").forEach((button) => {
-      button.addEventListener("click", () => selectRegion(button.dataset.ternaryRegion));
-    });
-  }
-
-  function renderLegend() {
-    const diagram = selectedDiagram();
-    const preferredIds = new Set(["liquid-alpha", "liquid-beta", "liquid-gamma", "alpha", "beta", "gamma", "alpha-beta-gamma"]);
-    const preferredRegions = diagram.regions.filter((region) => preferredIds.has(region.id));
-    const legendRegions = preferredRegions.length ? preferredRegions : diagram.regions.slice(0, 9);
-    els.legend.innerHTML = legendRegions
-      .map((region) => `<span><i style="background:#${region.color.toString(16).padStart(6, "0")}"></i>${region.title}</span>`)
-      .join("");
-  }
-
-  function selectRegion(regionId) {
-    const diagram = selectedDiagram();
-    const region = diagram.regions.find((item) => item.id === regionId) || diagram.regions[0];
-    state.selectedId = region.id;
-
-    els.regionSelect.value = region.id;
-    els.regionList.querySelectorAll("[data-ternary-region]").forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.ternaryRegion === region.id);
-    });
-
-    els.title.textContent = region.title;
-    els.phase.textContent = region.phase;
-    els.kind.textContent = region.kind;
-    if (els.temperature) els.temperature.textContent = region.temperature;
-    els.composition.textContent = region.composition;
-    if (els.shape) els.shape.textContent = region.shape;
-    if (els.note) els.note.textContent = region.note;
-    updateRegionStyles();
-    updateViewMode();
-    renderer.render(scene, camera);
-  }
-
-  function updateRegionStyles() {
-    regionMeshes.forEach(({ mesh, edges, liquidus, contours, region }, regionId) => {
-      const selected = regionId === state.selectedId;
-      const hidden = state.showOnlySelected && !selected;
-      const textbook = Boolean(selectedDiagram().curvedLiquidus);
-      mesh.visible = !hidden;
-      edges.visible = !hidden && (selected || (textbook && region.key !== 'L'));
-      mesh.material.color.setHex(selected ? lightenHex(region.color, 0.18) : region.color);
-      mesh.material.opacity = textbook
-        ? (selected ? (state.showOnlySelected ? 0.56 : 0.34) : region.key === 'L' ? 0 : 0.085)
-        : (selected ? 0.68 : 0.15);
-      mesh.material.emissive.setHex(selected ? region.color : 0x000000);
-      mesh.material.emissiveIntensity = selected ? 0.08 : 0;
-      mesh.renderOrder = selected ? 20 : 2;
-      edges.material.color.setHex(selected ? ternaryInkColor() : resolveTernaryLineColor(region.edgeColor ?? region.color));
-      edges.material.opacity = selected ? 0.9 : textbook ? 0.30 : 0;
-      edges.renderOrder = selected ? 21 : region.edgeRenderOrder ?? 3;
-      if (liquidus) {
-        liquidus.visible = !hidden;
-        liquidus.material.opacity = selected ? 0.94 : 0.78;
-        liquidus.renderOrder = selected ? 15 : 5;
-        contours.visible = !hidden;
-        contours.material.opacity = selected ? 0.36 : 0.16;
       }
-    });
-  }
+    }
 
-  function applySectionFromInputs() {
-    if (state.sectionMode === "horizontal") {
-      const temp = clamp(Number(els.sectionTemp.value), LOW_T, AXIS_TOP_T);
-      state.sectionTemp = temp;
-      els.sectionTemp.value = formatSectionNumber(temp);
-    } else {
-      const p1 = readCompositionPoint(els.point1A, els.point1B, els.point1C);
-      const p2 = readCompositionPoint(els.point2A, els.point2B, els.point2C);
-      if (!p1 || !p2 || compositionDistance(p1, p2) < 0.02) {
-        els.sectionStatus.textContent = "垂直截面需要两个不同的成分点，且每个点至少有一个非零成分。";
-        return;
+    function drawDiagram(resetView) {
+      disposeSceneChildren(regionRoot);
+      disposeSceneChildren(guideRoot);
+      regionMeshes.clear();
+
+      const diagram = selectedDiagram();
+      ambient.intensity = diagram.curvedLiquidus ? 0.8 : 1.55;
+      key.intensity = diagram.curvedLiquidus ? 2.65 : 2.05;
+      fill.intensity = diagram.curvedLiquidus ? 0.42 : 0.72;
+      diagram.regions.forEach((region) => {
+        const group = makeRegionGroup(region);
+        const offset = state.regionOffsets.get(region.id);
+        if (offset) group.position.copy(offset);
+        regionRoot.add(group);
+        regionMeshes.set(region.id, {
+          group,
+          mesh: group.userData.mesh,
+          edges: group.userData.edges,
+          liquidus: group.userData.liquidus,
+          contours: group.userData.contours,
+          region,
+        });
+      });
+
+      guideRoot.add(makeCompositionGuide(diagram));
+      guideRoot.add(makeCotecticGuide(diagram));
+      if (els.diagramSummary) els.diagramSummary.textContent = "";
+      if (els.sectionPresets) {
+        const presets = diagram.checkpoints || [];
+        els.sectionPresets.replaceChildren(...presets.map(item => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'segment';
+          button.textContent = item.label;
+          button.dataset.sectionTemperature = String(item.t);
+          button.addEventListener('click', () => {
+            els.sectionModeButtons[0]?.click();
+            if (els.sectionTemp) els.sectionTemp.value = String(item.t);
+            applySectionFromInputs();
+            enterStandaloneSection();
+          });
+          return button;
+        }));
       }
-      state.sectionP1 = p1;
-      state.sectionP2 = p2;
-      writeCompositionPoint([els.point1A, els.point1B, els.point1C], p1);
-      writeCompositionPoint([els.point2A, els.point2B, els.point2C], p2);
-    }
-    state.sectionVisible = true;
-    els.standaloneSectionButton.disabled = false;
-    drawSectionOverlay();
-    if (state.sectionStandalone) setStandaloneCamera();
-  }
-
-  function clearSection() {
-    if (state.sectionStandalone) exitStandaloneSection();
-    state.sectionVisible = false;
-    disposeSceneChildren(sectionRoot);
-    els.standaloneSectionButton.disabled = true;
-    els.sectionStatus.textContent = "已清除截面。";
-    renderLegend();
-    updateViewMode();
-  }
-
-  function drawSectionOverlay() {
-    disposeSceneChildren(sectionRoot);
-    const descriptor = makeSectionDescriptor();
-    if (!descriptor) return;
-
-    const planeMesh = descriptor.mode === "horizontal"
-      ? makeHorizontalSectionPlane(descriptor.temp)
-      : makeVerticalSectionPlane(descriptor.p1, descriptor.p2);
-    sectionRoot.add(planeMesh);
-
-    let segmentCount = 0;
-    const diagram = selectedDiagram();
-    const exactFields = descriptor.mode === 'horizontal' && diagram.sectionAt ? diagram.sectionAt(descriptor.temp) : null;
-    const invariant = exactFields && diagram.invariant?.interior && Math.abs(descriptor.temp - diagram.invariant.temp) < 1e-8
-      ? diagram.invariant : null;
-    if (exactFields) {
-      exactFields.forEach(field => sectionRoot.add(makeFilledSectionField(field, descriptor.temp,
-        state.sectionStandalone && !(invariant && field.id === `${diagram.id}-Labg`))));
-      if (invariant && state.sectionStandalone) sectionRoot.add(makeInvariantSectionGuide(invariant));
-      segmentCount = exactFields.length;
-      els.legend.innerHTML = exactFields.map(field => `<span><i style="background:#${field.color.toString(16).padStart(6, '0')}"></i>${field.phase}</span>`).join('');
-    } else diagram.regions.forEach((region) => {
-      const segments = intersectRegionWithSection(region, descriptor);
-      if (!segments.length) return;
-      const sectionLines = makeSectionLines(segments, region.color);
-      if (!sectionLines.children.length) return;
-      segmentCount += sectionLines.userData.segmentCount || 0;
-      sectionRoot.add(sectionLines);
-    });
-
-    if (state.sectionStandalone) {
-      sectionRoot.add(makeStandaloneSectionGuide(descriptor));
+      renderRegionControls();
+      renderLegend();
+      selectRegion(state.selectedId);
+      if (state.sectionVisible) drawSectionOverlay();
+      updateViewMode();
+      if (resetView) resetCamera();
+      renderer.render(scene, camera);
     }
 
-    els.sectionStatus.textContent = descriptor.mode === "horizontal"
-      ? `T = ${formatSectionNumber(descriptor.temp)} · ${segmentCount} ${exactFields ? '个相区' : '条相区交线'} · 归一化温度`
-      : `垂直截面 P1=${formatComposition(descriptor.p1)}，P2=${formatComposition(descriptor.p2)}，获得 ${segmentCount} 条相区交线。`;
-    updateViewMode();
-  }
+    function renderRegionControls() {
+      const diagram = selectedDiagram();
+      if (els.regionSelect) {
+        els.regionSelect.innerHTML = diagram.regions.map((region) => `
+          <option value="${region.id}">${region.title}</option>
+        `).join("");
+        els.regionSelect.value = state.selectedId;
+      }
 
-  function makeSectionDescriptor() {
-    if (state.sectionMode === "horizontal") {
+      if (els.regionList) {
+        els.regionList.innerHTML = diagram.regions.map((region) => `
+          <button class="ternary-region-item${region.id === state.selectedId ? " is-active" : ""}" type="button" data-ternary-region="${region.id}">
+            <span>${region.title}</span>
+            <small>${region.kind} · ${region.phase}</small>
+          </button>
+        `).join("");
+
+        els.regionList.querySelectorAll("[data-ternary-region]").forEach((button) => {
+          button.addEventListener("click", () => selectRegion(button.dataset.ternaryRegion));
+        });
+      }
+    }
+
+    function renderLegend() {
+      if (!els.legend) return;
+      const diagram = selectedDiagram();
+      const preferredIds = new Set(["liquid-alpha", "liquid-beta", "liquid-gamma", "alpha", "beta", "gamma", "alpha-beta-gamma"]);
+      const preferredRegions = diagram.regions.filter((region) => preferredIds.has(region.id));
+      const legendRegions = preferredRegions.length ? preferredRegions : diagram.regions.slice(0, 9);
+      els.legend.innerHTML = legendRegions
+        .map((region) => `<span><i style="background:#${region.color.toString(16).padStart(6, "0")}"></i>${region.title}</span>`)
+        .join("");
+    }
+
+    function selectRegion(regionId) {
+      const diagram = selectedDiagram();
+      const region = diagram.regions.find((item) => item.id === regionId) || diagram.regions[0];
+      state.selectedId = region.id;
+
+      if (els.regionSelect) els.regionSelect.value = region.id;
+      els.regionList?.querySelectorAll("[data-ternary-region]").forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.ternaryRegion === region.id);
+      });
+
+      if (els.title) els.title.textContent = region.title;
+      if (els.phase) els.phase.textContent = region.phase;
+      if (els.kind) els.kind.textContent = region.kind;
+      if (els.temperature) els.temperature.textContent = region.temperature;
+      if (els.composition) els.composition.textContent = region.composition;
+      if (els.shape) els.shape.textContent = region.shape;
+      if (els.note) els.note.textContent = region.note;
+      updateRegionStyles();
+      updateViewMode();
+      renderer.render(scene, camera);
+    }
+
+    function updateRegionStyles() {
+      regionMeshes.forEach(({ mesh, edges, liquidus, contours, region }, regionId) => {
+        const selected = regionId === state.selectedId;
+        const hidden = state.showOnlySelected && !selected;
+        const textbook = Boolean(selectedDiagram().curvedLiquidus);
+        mesh.visible = !hidden;
+        edges.visible = !hidden && (selected || (textbook && region.key !== 'L'));
+        mesh.material.color.setHex(selected ? lightenHex(region.color, 0.18) : region.color);
+        mesh.material.opacity = textbook
+          ? (selected ? (state.showOnlySelected ? 0.56 : 0.34) : region.key === 'L' ? 0 : 0.085)
+          : (selected ? 0.68 : 0.15);
+        mesh.material.emissive.setHex(selected ? region.color : 0x000000);
+        mesh.material.emissiveIntensity = selected ? 0.08 : 0;
+        mesh.renderOrder = selected ? 20 : 2;
+        edges.material.color.setHex(selected ? ternaryInkColor() : resolveTernaryLineColor(region.edgeColor ?? region.color));
+        edges.material.opacity = selected ? 0.9 : textbook ? 0.30 : 0;
+        edges.renderOrder = selected ? 21 : region.edgeRenderOrder ?? 3;
+        if (liquidus) {
+          liquidus.visible = !hidden;
+          liquidus.material.opacity = selected ? 0.94 : 0.78;
+          liquidus.renderOrder = selected ? 15 : 5;
+          contours.visible = !hidden;
+          contours.material.opacity = selected ? 0.36 : 0.16;
+        }
+      });
+    }
+
+    function applySectionFromInputs() {
+      if (state.sectionMode === "horizontal") {
+        const temp = clamp(Number(els.sectionTemp?.value ?? 0.42), LOW_T, AXIS_TOP_T);
+        state.sectionTemp = temp;
+        if (els.sectionTemp) els.sectionTemp.value = formatSectionNumber(temp);
+      } else {
+        const p1 = readCompositionPoint(els.point1A, els.point1B, els.point1C);
+        const p2 = readCompositionPoint(els.point2A, els.point2B, els.point2C);
+        if (!p1 || !p2 || compositionDistance(p1, p2) < 0.02) {
+          if (els.sectionStatus) els.sectionStatus.textContent = "垂直截面需要两个不同的成分点，且每个点至少有一个非零成分。";
+          return;
+        }
+        state.sectionP1 = p1;
+        state.sectionP2 = p2;
+        writeCompositionPoint([els.point1A, els.point1B, els.point1C], p1);
+        writeCompositionPoint([els.point2A, els.point2B, els.point2C], p2);
+      }
+      state.sectionVisible = true;
+      if (els.standaloneSectionButton) els.standaloneSectionButton.disabled = false;
+      drawSectionOverlay();
+      if (state.sectionStandalone) setStandaloneCamera();
+    }
+
+    function clearSection() {
+      if (state.sectionStandalone) exitStandaloneSection();
+      state.sectionVisible = false;
+      disposeSceneChildren(sectionRoot);
+      if (els.standaloneSectionButton) els.standaloneSectionButton.disabled = true;
+      if (els.sectionStatus) els.sectionStatus.textContent = "已清除截面。";
+      renderLegend();
+      updateViewMode();
+    }
+
+    function drawSectionOverlay() {
+      disposeSceneChildren(sectionRoot);
+      const descriptor = makeSectionDescriptor();
+      if (!descriptor) return;
+
+      const planeMesh = descriptor.mode === "horizontal"
+        ? makeHorizontalSectionPlane(descriptor.temp)
+        : makeVerticalSectionPlane(descriptor.p1, descriptor.p2);
+      sectionRoot.add(planeMesh);
+
+      let segmentCount = 0;
+      const diagram = selectedDiagram();
+      const exactFields = descriptor.mode === 'horizontal' && diagram.sectionAt ? diagram.sectionAt(descriptor.temp) : null;
+      const invariant = exactFields && diagram.invariant?.interior && Math.abs(descriptor.temp - diagram.invariant.temp) < 1e-8
+        ? diagram.invariant : null;
+      if (exactFields) {
+        exactFields.forEach(field => sectionRoot.add(makeFilledSectionField(field, descriptor.temp,
+          state.sectionStandalone && !(invariant && field.id === `${diagram.id}-Labg`))));
+        if (invariant && state.sectionStandalone) sectionRoot.add(makeInvariantSectionGuide(invariant));
+        segmentCount = exactFields.length;
+        if (els.legend) {
+          els.legend.innerHTML = exactFields.map(field => `<span><i style="background:#${field.color.toString(16).padStart(6, '0')}"></i>${field.phase}</span>`).join('');
+        }
+      } else diagram.regions.forEach((region) => {
+        const segments = intersectRegionWithSection(region, descriptor);
+        if (!segments.length) return;
+        const sectionLines = makeSectionLines(segments, region.color);
+        if (!sectionLines.children.length) return;
+        segmentCount += sectionLines.userData.segmentCount || 0;
+        sectionRoot.add(sectionLines);
+      });
+
+      if (state.sectionStandalone) {
+        sectionRoot.add(makeStandaloneSectionGuide(descriptor));
+      }
+
+      if (els.sectionStatus) {
+        els.sectionStatus.textContent = descriptor.mode === "horizontal"
+          ? `T = ${formatSectionNumber(descriptor.temp)} · ${segmentCount} ${exactFields ? '个相区' : '条相区交线'} · 归一化温度`
+          : `垂直截面 P1=${formatComposition(descriptor.p1)}，P2=${formatComposition(descriptor.p2)}，获得 ${segmentCount} 条相区交线。`;
+      }
+      updateViewMode();
+    }
+
+    function makeSectionDescriptor() {
+      if (state.sectionMode === "horizontal") {
+        return {
+          mode: "horizontal",
+          temp: state.sectionTemp,
+          plane: new THREE.Plane(new THREE.Vector3(0, 0, 1), -state.sectionTemp * 2.35),
+        };
+      }
+
+      const p1 = state.sectionP1;
+      const p2 = state.sectionP2;
+      const start = baryToVector(p1, LOW_T);
+      const end = baryToVector(p2, LOW_T);
+      const baseDirection = end.clone().sub(start);
+      if (baseDirection.lengthSq() < 1e-8) return null;
+      const normal = new THREE.Vector3().crossVectors(baseDirection, new THREE.Vector3(0, 0, 1)).normalize();
       return {
-        mode: "horizontal",
-        temp: state.sectionTemp,
-        plane: new THREE.Plane(new THREE.Vector3(0, 0, 1), -state.sectionTemp * 2.35),
+        mode: "vertical",
+        p1,
+        p2,
+        plane: new THREE.Plane(normal, -normal.dot(start)),
       };
     }
 
-    const p1 = state.sectionP1;
-    const p2 = state.sectionP2;
-    const start = baryToVector(p1, LOW_T);
-    const end = baryToVector(p2, LOW_T);
-    const baseDirection = end.clone().sub(start);
-    if (baseDirection.lengthSq() < 1e-8) return null;
-    const normal = new THREE.Vector3().crossVectors(baseDirection, new THREE.Vector3(0, 0, 1)).normalize();
-    return {
-      mode: "vertical",
-      p1,
-      p2,
-      plane: new THREE.Plane(normal, -normal.dot(start)),
-    };
-  }
-
-  function setDragMode(enabled) {
-    state.dragMode = Boolean(enabled) && !state.sectionStandalone;
-    state.draggingRegionId = null;
-    state.dragMoved = false;
-    controls.enabled = !state.dragMode;
-    controls.enableRotate = !state.sectionStandalone;
-    els.dragRegionButton?.classList.toggle("is-active", state.dragMode);
-    els.dragRegionButton?.setAttribute("aria-pressed", String(state.dragMode));
-    renderer.domElement.style.cursor = state.dragMode ? "grab" : "default";
-    updateViewMode();
-  }
-
-  function resetRegionPositions() {
-    state.regionOffsets.clear();
-    regionMeshes.forEach(({ group }) => group.position.set(0, 0, 0));
-  }
-
-  function updatePointer(event) {
-    const rect = renderer.domElement.getBoundingClientRect();
-    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    pointer.y = -(((event.clientY - rect.top) / rect.height) * 2 - 1);
-  }
-
-  function pickRegion(event) {
-    updatePointer(event);
-    raycaster.setFromCamera(pointer, camera);
-    const meshes = [...regionMeshes.values()]
-      .filter(item => item.mesh.visible && (item.region.key !== 'L' || item.region.id === state.selectedId))
-      .flatMap(item => [item.mesh, item.liquidus].filter(Boolean));
-    return raycaster.intersectObjects(meshes, false)[0] || null;
-  }
-
-  function enterStandaloneSection() {
-    if (!state.sectionVisible) return;
-    state.sectionStandalone = true;
-    setDragMode(false);
-    controls.enableRotate = false;
-    controls.enablePan = true;
-    drawSectionOverlay();
-    setStandaloneCamera();
-    updateViewMode();
-    if (window.matchMedia('(max-width: 820px)').matches) {
-      els.viewPanel.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    function setDragMode(enabled) {
+      state.dragMode = Boolean(enabled) && !state.sectionStandalone;
+      state.draggingRegionId = null;
+      state.dragMoved = false;
+      controls.enabled = !state.dragMode;
+      controls.enableRotate = !state.sectionStandalone;
+      els.dragRegionButton?.classList.toggle("is-active", state.dragMode);
+      els.dragRegionButton?.setAttribute("aria-pressed", String(state.dragMode));
+      renderer.domElement.style.cursor = state.dragMode ? "grab" : "default";
+      updateViewMode();
     }
-  }
 
-  function exitStandaloneSection() {
-    if (!state.sectionStandalone) return;
-    state.sectionStandalone = false;
-    controls.enableRotate = true;
-    controls.enablePan = true;
-    drawSectionOverlay();
-    renderLegend();
-    resetCamera();
-    updateViewMode();
-  }
-
-  function setStandaloneCamera() {
-    const descriptor = makeSectionDescriptor();
-    if (!descriptor) return;
-    let center;
-    cameraFrustum = 3.6;
-    if (descriptor.mode === "horizontal") {
-      const aspect = els.host.clientWidth / Math.max(1, els.host.clientHeight);
-      cameraFrustum = Math.max(2.65, 2.95 / aspect);
-      center = new THREE.Vector3(0, 0.35, descriptor.temp * 2.35);
-      camera.position.copy(center).add(new THREE.Vector3(0, 0, -7));
-      camera.up.set(0, -1, 0);
-    } else {
-      const corners = [
-        baryToVector(descriptor.p1, LOW_T),
-        baryToVector(descriptor.p2, LOW_T),
-        baryToVector(descriptor.p2, AXIS_TOP_T),
-        baryToVector(descriptor.p1, AXIS_TOP_T),
-      ];
-      center = corners.reduce((sum, point) => sum.add(point), new THREE.Vector3()).multiplyScalar(1 / corners.length);
-      const width = corners[0].distanceTo(corners[1]);
-      const height = corners[0].distanceTo(corners[3]);
-      cameraFrustum = Math.max(3.2, Math.max(width, height) * 1.35);
-      camera.position.copy(center).addScaledVector(descriptor.plane.normal, 7);
-      camera.up.set(0, 0, 1);
+    function resetRegionPositions() {
+      state.regionOffsets.clear();
+      regionMeshes.forEach(({ group }) => group.position.set(0, 0, 0));
     }
-    controls.target.copy(center);
-    camera.lookAt(center);
-    resize();
-    controls.update();
-    renderer.render(scene, camera);
-  }
 
-  function resetActiveView() {
-    if (state.sectionStandalone) setStandaloneCamera();
-    else resetCamera();
-  }
-
-  function updateViewMode() {
-    const region = selectedDiagram().regions.find((item) => item.id === state.selectedId) || selectedDiagram().regions[0];
-    regionRoot.visible = !state.sectionStandalone;
-    guideRoot.visible = !state.sectionStandalone;
-    sectionRoot.visible = state.sectionVisible;
-    // Place C at the front in the textbook spatial views; section coordinates stay unchanged.
-    root.scale.y = selectedDiagram().curvedLiquidus && !state.sectionStandalone ? -1 : 1;
-    els.viewPanel?.classList.toggle("is-section-standalone", state.sectionStandalone);
-    updateSectionInsets();
-    if (els.returnSpaceButton) els.returnSpaceButton.hidden = !state.sectionStandalone;
-    if (els.standaloneSectionButton) {
-      els.standaloneSectionButton.disabled = !state.sectionVisible;
-      els.standaloneSectionButton.textContent = state.sectionStandalone ? "返回空间图" : "独立查看";
+    function updatePointer(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      const w = Math.max(1, rect.width);
+      const h = Math.max(1, rect.height);
+      pointer.x = ((event.clientX - rect.left) / w) * 2 - 1;
+      pointer.y = -(((event.clientY - rect.top) / h) * 2 - 1);
     }
-    if (state.sectionStandalone) {
+
+    function pickRegion(event) {
+      updatePointer(event);
+      raycaster.setFromCamera(pointer, camera);
+      const meshes = [...regionMeshes.values()]
+        .filter(item => item.mesh.visible && (item.region.key !== 'L' || item.region.id === state.selectedId))
+        .flatMap(item => [item.mesh, item.liquidus].filter(Boolean));
+      return raycaster.intersectObjects(meshes, false)[0] || null;
+    }
+
+    function enterStandaloneSection() {
+      if (!state.sectionVisible) return;
+      state.sectionStandalone = true;
+      setDragMode(false);
+      controls.enableRotate = false;
+      controls.enablePan = true;
+      drawSectionOverlay();
+      setStandaloneCamera();
+      updateViewMode();
+      if (window.matchMedia('(max-width: 820px)').matches) {
+        els.viewPanel?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
+    }
+
+    function exitStandaloneSection() {
+      if (!state.sectionStandalone) return;
+      state.sectionStandalone = false;
+      controls.enableRotate = true;
+      controls.enablePan = true;
+      drawSectionOverlay();
+      renderLegend();
+      resetCamera();
+      updateViewMode();
+    }
+
+    function setStandaloneCamera() {
       const descriptor = makeSectionDescriptor();
-      els.viewModeTitle.textContent = descriptor?.mode === "horizontal" ? "水平截面" : "垂直截面";
-      els.viewModeMeta.textContent = descriptor?.mode === "horizontal"
-        ? `T = ${formatSectionNumber(descriptor.temp)}`
-        : `P1 ${formatComposition(descriptor.p1)} · P2 ${formatComposition(descriptor.p2)}`;
-    } else {
-      els.viewModeTitle.textContent = state.dragMode ? "相区分离" : "空间相图";
-      els.viewModeMeta.textContent = `${selectedDiagram().shortTitle || selectedDiagram().title} · ${region.title}`;
+      if (!descriptor) return;
+      let center;
+      cameraFrustum = 3.6;
+      if (descriptor.mode === "horizontal") {
+        const aspect = Math.max(1, els.host.clientWidth) / Math.max(1, els.host.clientHeight);
+        cameraFrustum = Math.max(2.65, 2.95 / aspect);
+        center = new THREE.Vector3(0, 0.35, descriptor.temp * 2.35);
+        camera.position.copy(center).add(new THREE.Vector3(0, 0, -7));
+        camera.up.set(0, -1, 0);
+      } else {
+        const corners = [
+          baryToVector(descriptor.p1, LOW_T),
+          baryToVector(descriptor.p2, LOW_T),
+          baryToVector(descriptor.p2, AXIS_TOP_T),
+          baryToVector(descriptor.p1, AXIS_TOP_T),
+        ];
+        center = corners.reduce((sum, point) => sum.add(point), new THREE.Vector3()).multiplyScalar(1 / corners.length);
+        const width = corners[0].distanceTo(corners[1]);
+        const height = corners[0].distanceTo(corners[3]);
+        cameraFrustum = Math.max(3.2, Math.max(width, height) * 1.35);
+        camera.position.copy(center).addScaledVector(descriptor.plane.normal, 7);
+        camera.up.set(0, 0, 1);
+      }
+      controls.target.copy(center);
+      camera.lookAt(center);
+      resize();
+      controls.update();
+      renderer.render(scene, camera);
     }
-  }
 
-  function selectedDiagram() {
-    return DIAGRAMS.find((diagram) => diagram.id === state.diagramId) || DIAGRAMS[0];
-  }
+    function resetActiveView() {
+      if (state.sectionStandalone) setStandaloneCamera();
+      else resetCamera();
+    }
 
-  function resetCamera() {
-    const textbook = Boolean(selectedDiagram().curvedLiquidus);
-    cameraFrustum = textbook ? 4.5 : 4.85;
-    camera.up.set(0, 0, 1);
-    camera.position.set(...(textbook ? [0.7, -7, 4.5] : [3.6, -4.8, 3.1]));
-    controls.target.set(0, 0, textbook ? 1.16 : 0.86);
-    camera.zoom = 1;
-    camera.lookAt(controls.target);
-    resize();
-    controls.update();
-  }
+    function updateViewMode() {
+      const region = selectedDiagram().regions.find((item) => item.id === state.selectedId) || selectedDiagram().regions[0];
+      regionRoot.visible = !state.sectionStandalone;
+      guideRoot.visible = !state.sectionStandalone;
+      sectionRoot.visible = state.sectionVisible;
+      // Place C at the front in the textbook spatial views; section coordinates stay unchanged.
+      root.scale.y = selectedDiagram().curvedLiquidus && !state.sectionStandalone ? -1 : 1;
+      els.viewPanel?.classList.toggle("is-section-standalone", state.sectionStandalone);
+      updateSectionInsets();
+      if (els.returnSpaceButton) els.returnSpaceButton.hidden = !state.sectionStandalone;
+      if (els.standaloneSectionButton) {
+        els.standaloneSectionButton.disabled = !state.sectionVisible;
+        els.standaloneSectionButton.textContent = state.sectionStandalone ? "返回空间图" : "独立查看";
+      }
+      if (state.sectionStandalone) {
+        const descriptor = makeSectionDescriptor();
+        if (els.viewModeTitle) els.viewModeTitle.textContent = descriptor?.mode === "horizontal" ? "水平截面" : "垂直截面";
+        if (els.viewModeMeta) {
+          els.viewModeMeta.textContent = descriptor?.mode === "horizontal"
+            ? `T = ${formatSectionNumber(descriptor.temp)}`
+            : `P1 ${formatComposition(descriptor.p1)} · P2 ${formatComposition(descriptor.p2)}`;
+        }
+      } else {
+        if (els.viewModeTitle) els.viewModeTitle.textContent = state.dragMode ? "相区分离" : "空间相图";
+        if (els.viewModeMeta) els.viewModeMeta.textContent = `${selectedDiagram().shortTitle || selectedDiagram().title} · ${region.title}`;
+      }
+    }
 
-  function resize() {
-    const rect = els.host.getBoundingClientRect();
-    const width = Math.max(1, rect.width);
-    const height = Math.max(1, rect.height);
-    const aspect = width / height;
-    const frustum = state.sectionStandalone && state.sectionMode === 'horizontal'
-      ? Math.max(2.65, 2.95 / aspect)
-      : selectedDiagram().curvedLiquidus && !state.sectionStandalone ? Math.max(cameraFrustum, 3.6 / aspect) : cameraFrustum;
-    renderer.setSize(width, height, false);
-    camera.left = (-frustum * aspect) / 2;
-    camera.right = (frustum * aspect) / 2;
-    camera.top = frustum / 2;
-    camera.bottom = -frustum / 2;
-    camera.updateProjectionMatrix();
-  }
+    function selectedDiagram() {
+      return DIAGRAMS.find((diagram) => diagram.id === state.diagramId) || DIAGRAMS[0];
+    }
 
-  function updateSectionInsets() {
-    if (!state.sectionStandalone) return;
-    els.viewPanel.style.setProperty('--ternary-section-footer', `${els.legend.offsetHeight + 20}px`);
-  }
+    function resetCamera() {
+      const textbook = Boolean(selectedDiagram().curvedLiquidus);
+      cameraFrustum = textbook ? 4.5 : 4.85;
+      camera.up.set(0, 0, 1);
+      camera.position.set(...(textbook ? [0.7, -7, 4.5] : [3.6, -4.8, 3.1]));
+      controls.target.set(0, 0, textbook ? 1.16 : 0.86);
+      camera.zoom = 1;
+      camera.lookAt(controls.target);
+      resize();
+      controls.update();
+    }
 
-  function exportPng() {
-    renderer.render(scene, camera);
-    downloadCanvasPngWithWatermark(renderer.domElement, `ternary-${state.diagramId}-${state.selectedId}.png`);
-  }
+    function resize() {
+      if (!els.host) return;
+      const rect = els.host.getBoundingClientRect();
+      const rawWidth = rect.width || els.host.clientWidth || els.viewPanel?.clientWidth || 720;
+      const rawHeight = rect.height || els.host.clientHeight || 520;
+      const width = Math.max(1, Math.round(rawWidth));
+      const height = Math.max(1, Math.round(rawHeight));
+      const aspect = width / height;
+      const frustum = state.sectionStandalone && state.sectionMode === 'horizontal'
+        ? Math.max(2.65, 2.95 / aspect)
+        : selectedDiagram().curvedLiquidus && !state.sectionStandalone ? Math.max(cameraFrustum, 3.6 / aspect) : cameraFrustum;
+      renderer.setSize(width, height, false);
+      camera.left = (-frustum * aspect) / 2;
+      camera.right = (frustum * aspect) / 2;
+      camera.top = frustum / 2;
+      camera.bottom = -frustum / 2;
+      camera.updateProjectionMatrix();
+    }
 
+    function updateSectionInsets() {
+      if (!state.sectionStandalone || !els.viewPanel || !els.legend) return;
+      els.viewPanel.style.setProperty('--ternary-section-footer', `${els.legend.offsetHeight + 20}px`);
+    }
+
+    function exportPng() {
+      renderer.render(scene, camera);
+      downloadCanvasPngWithWatermark(renderer.domElement, `ternary-${state.diagramId}-${state.selectedId}.png`);
+    }
+  } catch (err) {
+    console.warn("Ternary phase module initialization error:", err);
+    return { refresh: () => {} };
+  }
 }
+
+export { initTernaryPhaseModule as initTernaryPhase };
 
 export function validateTernaryPhaseDiagrams() {
   const issues = [];
@@ -1248,7 +1398,7 @@ function vectorKey(vector, decimals = 4) {
 }
 
 function readCompositionPoint(aInput, bInput, cInput) {
-  const raw = [aInput, bInput, cInput].map((input) => Math.max(0, Number(input.value) || 0));
+  const raw = [aInput, bInput, cInput].map((input) => Math.max(0, Number(input?.value) || 0));
   const sum = raw.reduce((total, value) => total + value, 0);
   if (sum <= 0) return null;
   return raw.map((value) => value / sum);
@@ -1267,7 +1417,7 @@ function writeCompositionPoint(inputs, pointValue) {
     delta += delta > 0 ? -1 : 1;
   }
   inputs.forEach((input, index) => {
-    input.value = String(Math.max(0, rounded[index]));
+    if (input) input.value = String(Math.max(0, rounded[index]));
   });
 }
 
@@ -2255,19 +2405,25 @@ function mixPoint(first, second, amount) {
 function makeTextSprite(text, position, color, scale = 0.2) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  const font = '600 64px Arial, "Microsoft YaHei", sans-serif';
-  ctx.font = font;
-  canvas.width = Math.ceil(ctx.measureText(text).width) + 20;
-  canvas.height = 90;
-  ctx.font = font;
-  ctx.fillStyle = `#${resolveTernaryLineColor(color).toString(16).padStart(6, "0")}`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.lineWidth = 5;
-  ctx.lineJoin = 'round';
-  ctx.strokeStyle = document.documentElement.dataset.theme === 'dark' ? '#191d23' : '#ffffff';
-  ctx.strokeText(text, canvas.width / 2, canvas.height / 2 + 2);
-  ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 2);
+  if (ctx) {
+    const font = '600 64px Arial, "Microsoft YaHei", sans-serif';
+    ctx.font = font;
+    canvas.width = Math.ceil(ctx.measureText(text).width) + 20;
+    canvas.height = 90;
+    ctx.font = font;
+    ctx.fillStyle = `#${resolveTernaryLineColor(color).toString(16).padStart(6, "0")}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.lineWidth = 5;
+    ctx.lineJoin = 'round';
+    const theme = document.documentElement.dataset.theme;
+    ctx.strokeStyle = theme === 'dark' ? '#191d23' : theme === 'gray' ? '#f1f5f9' : '#ffffff';
+    ctx.strokeText(text, canvas.width / 2, canvas.height / 2 + 2);
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 2);
+  } else {
+    canvas.width = 120;
+    canvas.height = 90;
+  }
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false, depthTest: false, toneMapped: false }));
@@ -2285,15 +2441,24 @@ function lightenHex(color, amount) {
 }
 
 function ternarySceneBackground() {
-  return document.documentElement.dataset.theme === "dark" ? 0x0f1724 : 0xf3f7fa;
+  const theme = document.documentElement.dataset.theme;
+  if (theme === "dark") return 0x0f1724;
+  if (theme === "gray") return 0xe2e8f0;
+  return 0xf3f7fa;
 }
 
 function ternaryInkColor() {
-  return document.documentElement.dataset.theme === "dark" ? 0xd7e3ed : 0x263238;
+  const theme = document.documentElement.dataset.theme;
+  if (theme === "dark") return 0xd7e3ed;
+  if (theme === "gray") return 0x1e293b;
+  return 0x263238;
 }
 
 function ternaryGridColor() {
-  return document.documentElement.dataset.theme === "dark" ? 0x46586e : 0x78909c;
+  const theme = document.documentElement.dataset.theme;
+  if (theme === "dark") return 0x46586e;
+  if (theme === "gray") return 0x64748b;
+  return 0x78909c;
 }
 
 function resolveTernaryLineColor(color) {

@@ -8965,3 +8965,425 @@ html[data-theme="dark"] .dislocation-view-badge {
   font-size: 14px !important;
   font-weight: 800 !important;
 }
+
+
+/* ==========================================================================
+   2026-11 Client Feedback & De-Similarization Comprehensive Overrides
+   1. "白 / 灰 / 黑" 3-Mode Pure Text Theme Switcher & Gray Theme Palette
+   2. Typical Structures 2-Column Compact Matrix Cards (Distinct from Competitor)
+   3. Miller Indices 2-in-1 Merged Single-Screen Workspace
+   4. Iron-Carbon One-Screen Fit (No Scrollbar) & 3 Colored Isothermal Reaction Boxes
+   5. Stereographic Projection 4 Distinct Colored Display Toggles
+   6. Dislocation 3-Stage Tabs (起始 / 交割 / 结果)
+   ========================================================================== */
+
+/* --- 1. Pure Text Theme Switcher (白 / 灰 / 黑) --- */
+.theme-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  border: 1px solid var(--line, #cbd5e1);
+  background: var(--panel-soft, #f1f5f9);
+}
+
+.theme-mode-btn {
+  min-width: 30px;
+  height: 26px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-soft, #475569);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.theme-mode-btn:hover {
+  color: var(--ink, #0f172a);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.theme-mode-btn.is-active {
+  background: var(--primary, #4f46e5);
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.32);
+}
+
+/* --- Gray Theme ("灰") Global Variables & Surfaces --- */
+html[data-theme="gray"] {
+  --bg: #d8dee6;
+  --workspace-bg: #dce2ea;
+  --panel: #e8edf3;
+  --panel-soft: #dfe5ec;
+  --surface: #e8edf3;
+  --surface-hover: #d5dce6;
+  --ink: #1e293b;
+  --ink-soft: #334155;
+  --muted: #475569;
+  --line: #bcc6d4;
+  --line-strong: #94a3b8;
+  --grid-line: rgba(71, 85, 105, 0.09);
+  --primary: #3b82f6;
+  --accent: #4f46e5;
+}
+
+html[data-theme="gray"] body,
+html[data-theme="gray"] .app-layout,
+html[data-theme="gray"] .app-main-content,
+html[data-theme="gray"] .page-container,
+html[data-theme="gray"] .module-view {
+  background-color: #dce2ea !important;
+  color: #1e293b !important;
+}
+
+html[data-theme="gray"] .app-sidebar,
+html[data-theme="gray"] .app-topbar {
+  background-color: #e4e9f0 !important;
+  border-color: #c2ccd8 !important;
+}
+
+html[data-theme="gray"] .home-card,
+html[data-theme="gray"] .home-stat-card,
+html[data-theme="gray"] .structure-card,
+html[data-theme="gray"] .structure-view-panel,
+html[data-theme="gray"] .interstitial-card,
+html[data-theme="gray"] .interstitial-view-panel,
+html[data-theme="gray"] .crystal-module .control-panel,
+html[data-theme="gray"] .crystal-module .viewer-panel,
+html[data-theme="gray"] .crystal-module .control-section,
+html[data-theme="gray"] .crystal-module .training-section,
+html[data-theme="gray"] .bp-intro-card,
+html[data-theme="gray"] .bp-sliders-card,
+html[data-theme="gray"] .bp-diagram-card,
+html[data-theme="gray"] .bp-analysis-card,
+html[data-theme="gray"] .fe-chart-panel,
+html[data-theme="gray"] .fe-card,
+html[data-theme="gray"] .fe-composition-strip,
+html[data-theme="gray"] .fe-reactions-container,
+html[data-theme="gray"] .ternary-card,
+html[data-theme="gray"] .ternary-view-panel,
+html[data-theme="gray"] .stereo-card,
+html[data-theme="gray"] .stereo-view-panel,
+html[data-theme="gray"] .dislocation-card,
+html[data-theme="gray"] .dislocation-view-panel,
+html[data-theme="gray"] .fc-filter-card,
+html[data-theme="gray"] .fc-card-display,
+html[data-theme="gray"] .module-footer {
+  background-color: #e8edf3 !important;
+  border-color: #c2ccd8 !important;
+  color: #1e293b !important;
+}
+
+html[data-theme="gray"] .fe-chart-shell,
+html[data-theme="gray"] .bp-meta-card,
+html[data-theme="gray"] .fc-answer-panel {
+  background-color: #dfe5ec !important;
+  border-color: #bcc6d4 !important;
+}
+
+/* --- 2. Typical Structures: 2-Column Matrix Cards (Distinct from Competitor) --- */
+.structure-three-col-layout {
+  grid-template-columns: 310px minmax(0, 1fr) 310px !important;
+  gap: 14px !important;
+  min-height: 600px !important;
+}
+
+@media (max-width: 1180px) {
+  .structure-three-col-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+.structure-column-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  max-height: 490px !important;
+  overflow-y: auto !important;
+  padding: 2px !important;
+}
+
+.structure-column-list .structure-list-item {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  min-height: 68px !important;
+  padding: 9px 10px !important;
+  border-radius: 10px !important;
+  border: 1.5px solid var(--line, #dbe3ec) !important;
+  background: linear-gradient(180deg, var(--panel, #ffffff) 0%, var(--panel-soft, #f8fafc) 100%) !important;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04) !important;
+  transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease !important;
+  overflow: hidden !important;
+}
+
+.structure-column-list .structure-list-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  opacity: 0.35;
+  transition: opacity 0.15s ease;
+}
+
+#ionicStructureList.structure-column-list .structure-list-item::before {
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+}
+
+.structure-column-list .structure-list-item:hover {
+  transform: translateY(-1px) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 5px 12px rgba(37, 99, 235, 0.1) !important;
+}
+
+.structure-column-list .structure-list-item:hover::before,
+.structure-column-list .structure-list-item.is-active::before {
+  opacity: 1;
+}
+
+.structure-column-list .structure-list-item.is-active {
+  border-color: #2563eb !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(79, 70, 229, 0.06) 100%) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* --- 3. Miller Indices: 2-in-1 Merged Single-Screen Layout --- */
+.crystal-module .workspace {
+  min-height: calc(100vh - 130px) !important;
+  align-items: stretch !important;
+}
+
+.crystal-module .control-panel {
+  gap: 8px !important;
+  padding: 12px !important;
+}
+
+.crystal-module .control-section,
+.crystal-module .training-section {
+  padding: 10px 12px !important;
+  gap: 6px !important;
+}
+
+.crystal-module .training-actions {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* --- 4. Iron-Carbon Phase Diagram: One-Screen Fit & 3 Distinct Colored Reaction Boxes --- */
+.iron-carbon-module {
+  padding: 10px 14px !important;
+}
+
+.fe-workspace {
+  gap: 12px !important;
+  align-items: start !important;
+}
+
+.fe-chart-panel {
+  padding: 12px 14px !important;
+  gap: 8px !important;
+}
+
+.fe-panel-head {
+  padding-bottom: 4px !important;
+  margin-bottom: 0 !important;
+}
+
+.fe-panel-head h2 {
+  font-size: 18px !important;
+}
+
+.fe-chart-shell {
+  padding: 6px 8px !important;
+  overflow: hidden !important;
+}
+
+.fe-chart-host {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.fe-chart-host svg {
+  width: 100% !important;
+  height: auto !important;
+  max-height: calc(100vh - 330px) !important;
+  min-height: 290px !important;
+  display: block !important;
+}
+
+.fe-composition-strip {
+  padding: 8px 12px !important;
+  margin-top: 2px !important;
+}
+
+.fe-reactions-container {
+  margin-top: 4px !important;
+  padding: 10px 12px !important;
+}
+
+.fe-reactions-title {
+  margin-bottom: 6px !important;
+  font-size: 13px !important;
+}
+
+.fe-reactions-grid {
+  gap: 8px !important;
+}
+
+/* Three Isothermal Reaction Boxes with Distinct Background & Border Colors */
+.fe-reaction-card {
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.fe-reaction-card.fe-peritectic {
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%) !important;
+  border: 1.5px solid #38bdf8 !important;
+  border-left: 4px solid #0284c7 !important;
+  color: #0c4a6e !important;
+}
+
+.fe-reaction-card.fe-peritectic strong {
+  color: #0369a1 !important;
+}
+
+.fe-reaction-card.fe-peritectic p {
+  color: #075985 !important;
+}
+
+.fe-reaction-card.fe-eutectic {
+  background: linear-gradient(135deg, #fef3c7 0%, #ffedd5 100%) !important;
+  border: 1.5px solid #fbbf24 !important;
+  border-left: 4px solid #d97706 !important;
+  color: #78350f !important;
+}
+
+.fe-reaction-card.fe-eutectic strong {
+  color: #b45309 !important;
+}
+
+.fe-reaction-card.fe-eutectic p {
+  color: #92400e !important;
+}
+
+.fe-reaction-card.fe-eutectoid {
+  background: linear-gradient(135deg, #f3e8ff 0%, #fae8ff 100%) !important;
+  border: 1.5px solid #c084fc !important;
+  border-left: 4px solid #9333ea !important;
+  color: #581c87 !important;
+}
+
+.fe-reaction-card.fe-eutectoid strong {
+  color: #7e22ce !important;
+}
+
+.fe-reaction-card.fe-eutectoid p {
+  color: #6b21a8 !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-peritectic {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, rgba(30, 58, 138, 0.28) 100%) !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  border-left-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-peritectic strong {
+  color: #7dd3fc !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-peritectic p {
+  color: #bae6fd !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-eutectic {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.22) 0%, rgba(154, 52, 18, 0.28) 100%) !important;
+  border-color: rgba(251, 191, 36, 0.5) !important;
+  border-left-color: #fbbf24 !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-eutectic strong {
+  color: #fde68a !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-eutectic p {
+  color: #fef3c7 !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-eutectoid {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.22) 0%, rgba(131, 24, 67, 0.28) 100%) !important;
+  border-color: rgba(192, 132, 252, 0.5) !important;
+  border-left-color: #c084fc !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-eutectoid strong {
+  color: #e9d5ff !important;
+}
+
+html[data-theme="dark"] .fe-reaction-card.fe-eutectoid p {
+  color: #f3e8ff !important;
+}
+
+/* --- 5. Stereographic Projection: 4 Distinct Colored Display Toggles --- */
+.stereo-toggle-grid .stereo-check.is-poles {
+  background: linear-gradient(135deg, #e0f7fa 0%, #ccfbf1 100%) !important;
+  border: 1.5px solid #2dd4bf !important;
+  color: #115e59 !important;
+}
+
+.stereo-toggle-grid .stereo-check.is-labels {
+  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%) !important;
+  border: 1.5px solid #60a5fa !important;
+  color: #1e3a8a !important;
+}
+
+.stereo-toggle-grid .stereo-check.is-zones {
+  background: linear-gradient(135deg, #fef3c7 0%, #ffedd5 100%) !important;
+  border: 1.5px solid #fbbf24 !important;
+  color: #92400e !important;
+}
+
+.stereo-toggle-grid .stereo-check.is-plane {
+  background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%) !important;
+  border: 1.5px solid #c084fc !important;
+  color: #6b21a8 !important;
+}
+
+html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-poles {
+  background: rgba(20, 184, 166, 0.18) !important;
+  border-color: rgba(45, 212, 191, 0.45) !important;
+  color: #99f6e4 !important;
+}
+
+html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-labels {
+  background: rgba(59, 130, 246, 0.18) !important;
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  color: #bfdbfe !important;
+}
+
+html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-zones {
+  background: rgba(245, 158, 11, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.45) !important;
+  color: #fde68a !important;
+}
+
+html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-plane {
+  background: rgba(168, 85, 247, 0.18) !important;
+  border-color: rgba(192, 132, 252, 0.45) !important;
+  color: #e9d5ff !important;
+}
+
+/* --- 6. Dislocation Intersection: 3-Stage Tabs Grid --- */
+.dislocation-stage-tabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}

@@ -62,7 +62,7 @@ export function initStereographicProjectionModule() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = isDarkTheme() ? 1.16 : 1.04;
+  renderer.toneMappingExposure = stereoToneExposure();
   els.host.appendChild(renderer.domElement);
 
   const camera = new THREE.PerspectiveCamera(36, 1, 0.05, 100);
@@ -100,7 +100,8 @@ export function initStereographicProjectionModule() {
   );
   scene.add(modelRoot);
 
-  scene.add(new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2));
+  const hemisphere = new THREE.HemisphereLight(0xf1f5f9, 0x9ca3af, 1.2);
+  scene.add(hemisphere);
   const keyLight = new THREE.DirectionalLight(0xe2e8f0, 1.4);
   keyLight.position.set(5, -6, 8);
   scene.add(keyLight);
@@ -124,7 +125,7 @@ export function initStereographicProjectionModule() {
   }
   window.addEventListener("resize", resize);
   window.addEventListener("mstool:themechange", () => {
-    renderer.toneMappingExposure = isDarkTheme() ? 1.16 : 1.04;
+    renderer.toneMappingExposure = stereoToneExposure();
     rebuildScene();
   });
 
@@ -197,7 +198,9 @@ export function initStereographicProjectionModule() {
 
   function rebuildScene() {
     const palette = currentPalette();
+    const theme = currentTheme();
     scene.background = new THREE.Color(palette.background);
+    hemisphere.groundColor.set(theme === "dark" ? 0x26354a : theme === "gray" ? 0x7c8b9e : 0x9ca3af);
     clearGroup(sphereRoot);
     clearGroup(planeRoot);
     clearGroup(planeCurveRoot);
@@ -724,7 +727,6 @@ export function initStereographicProjectionModule() {
       `stereographic-3d-${suffix}.png`,
     );
   }
-
 }
 
 function stereographicProjection(unitVector, radius) {
@@ -1046,9 +1048,10 @@ function formatMillerSpaced(indices, open, close) {
 }
 
 function currentPalette() {
-  if (isDarkTheme()) {
+  const theme = currentTheme();
+  if (theme === "dark") {
     return {
-      background: "#05080e",
+      background: "#12161f",
       sphereSurface: "#475569",
       sphereWire: "#334155",
       sphereGrid: "#38bdf8",
@@ -1075,10 +1078,45 @@ function currentPalette() {
       pole: "#60a5fa",
       poleMajor: "#a78bfa",
       label: "#f8fafc",
-      labelStroke: "rgba(5, 8, 14, 0.95)",
+      labelStroke: "rgba(18, 22, 31, 0.95)",
       selectedPole: "#fbbf24",
       projection: "#f43f5e",
       source: "#94a3b8",
+    };
+  }
+  if (theme === "gray") {
+    return {
+      background: "#dce2ea",
+      sphereSurface: "#475569",
+      sphereWire: "#64748b",
+      sphereGrid: "#0369a1",
+      sphereOpacity: 0.06,
+      wireOpacity: 0.26,
+      gridOpacity: 0.30,
+      plane: "#64748b",
+      planeOpacity: 0.18,
+      planeGrid: "#94a3b8",
+      planeGridOpacity: 0.42,
+      planeOutline: "#475569",
+      planeOutlineOpacity: 0.72,
+      standardCurve: "#1d4ed8",
+      standardCurveMajor: "#1e3a8a",
+      standardCurveOpacity: 0.62,
+      standardCurveMajorOpacity: 0.88,
+      standardPole: "#0369a1",
+      standardPoleMajor: "#3730a3",
+      standardLabel: "#0f172a",
+      zone: "#6d28d9",
+      zoneMajor: "#5b21b6",
+      zoneOpacity: 0.38,
+      zoneMajorOpacity: 0.68,
+      pole: "#1d4ed8",
+      poleMajor: "#4338ca",
+      label: "#0f172a",
+      labelStroke: "rgba(220, 226, 234, 0.96)",
+      selectedPole: "#b45309",
+      projection: "#be123c",
+      source: "#475569",
     };
   }
   return {
@@ -1144,8 +1182,19 @@ function clearGroup(group) {
   geometries.forEach((geometry) => geometry.dispose());
 }
 
+function currentTheme() {
+  return document.documentElement.dataset.theme || "light";
+}
+
 function isDarkTheme() {
-  return document.documentElement.dataset.theme === "dark";
+  return currentTheme() === "dark";
+}
+
+function stereoToneExposure() {
+  const theme = currentTheme();
+  if (theme === "dark") return 1.16;
+  if (theme === "gray") return 1.02;
+  return 1.04;
 }
 
 function firstNonzero(...values) {

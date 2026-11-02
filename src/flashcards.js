@@ -41,6 +41,69 @@ export async function initFlashcardsModule() {
     } catch (e) {}
   }
 
+  function parseChapterNum(ch) {
+    if (!ch) return 9999;
+    const m = String(ch).match(/第([一二三四五六七八九十百零\d]+)章/);
+    if (!m) return 9999;
+    const s = m[1];
+    if (/^\d+$/.test(s)) return parseInt(s, 10);
+    const map = { 零: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+    if (s === "十") return 10;
+    if (s.startsWith("十")) return 10 + (map[s[1]] || 0);
+    if (s.endsWith("十")) return (map[s[0]] || 1) * 10;
+    if (s.includes("十")) {
+      const [tens, ones] = s.split("十");
+      return (map[tens] || 1) * 10 + (map[ones] || 0);
+    }
+    return map[s] ?? 9999;
+  }
+
+  // Fisher-Yates shuffle
+  function shuffleArray(arr) {
+    const copy = [...arr];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  // Group questions by chapter (preserving textbook chapter order) and shuffle within each chapter
+  function groupAndShuffleByChapter(...lists) {
+    const chapterMap = new Map();
+    const chapterMeta = new Map();
+    lists.forEach((list, sourceIdx) => {
+      if (!Array.isArray(list)) return;
+      for (const q of list) {
+        if (!q) continue;
+        const ch = q.chapter || "未分类章节";
+        if (!chapterMap.has(ch)) {
+          chapterMap.set(ch, []);
+          chapterMeta.set(ch, {
+            sourceIdx,
+            orderIdx: chapterMeta.size,
+            chapterNum: parseChapterNum(ch)
+          });
+        }
+        chapterMap.get(ch).push(q);
+      }
+    });
+
+    const sortedChapters = Array.from(chapterMap.keys()).sort((a, b) => {
+      const metaA = chapterMeta.get(a);
+      const metaB = chapterMeta.get(b);
+      if (metaA.sourceIdx !== metaB.sourceIdx) return metaA.sourceIdx - metaB.sourceIdx;
+      if (metaA.chapterNum !== metaB.chapterNum) return metaA.chapterNum - metaB.chapterNum;
+      return metaA.orderIdx - metaB.orderIdx;
+    });
+
+    const result = [];
+    for (const ch of sortedChapters) {
+      result.push(...shuffleArray(chapterMap.get(ch)));
+    }
+    return result;
+  }
+
   // Fetch JSON files
   async function loadData() {
     try {
@@ -51,7 +114,10 @@ export async function initFlashcardsModule() {
         ]);
         const list1 = Array.isArray(res1) ? res1.slice(0, 1056) : [];
         const list2 = Array.isArray(res2) ? res2.slice(0, 254) : [];
-        questionsData.caikeji = [...list1, ...list2];
+        const fallback = typeof window !== "undefined" && Array.isArray(window.CARDS_DATA) ? window.CARDS_DATA : [];
+        questionsData.caikeji = list1.length || list2.length
+          ? groupAndShuffleByChapter(list1, list2)
+          : groupAndShuffleByChapter(fallback);
         questionsData.metallurgy = [];
       }
     } catch (e) {
@@ -60,6 +126,24 @@ export async function initFlashcardsModule() {
   }
 
   await loadData();
+
+  // Ensure #fcChapterSelect exists in DOM right before #fcTypeSelect in .fc-controls-row
+  let chSelectEl = root.querySelector("#fcChapterSelect");
+  if (!chSelectEl) {
+    chSelectEl = document.createElement("select");
+    chSelectEl.id = "fcChapterSelect";
+    chSelectEl.className = "fc-select";
+    chSelectEl.setAttribute("aria-label", "章节筛选");
+    const typeSelectEl = root.querySelector("#fcTypeSelect");
+    const controlsRow = root.querySelector(".fc-controls-row") || typeSelectEl?.parentElement;
+    if (controlsRow && typeSelectEl && typeSelectEl.parentElement === controlsRow) {
+      controlsRow.insertBefore(chSelectEl, typeSelectEl);
+    } else if (typeSelectEl && typeSelectEl.parentElement) {
+      typeSelectEl.parentElement.insertBefore(chSelectEl, typeSelectEl);
+    } else if (controlsRow) {
+      controlsRow.prepend(chSelectEl);
+    }
+  }
 
   function getCurrentBank() {
     return [...questionsData.caikeji, ...questionsData.metallurgy];
@@ -131,7 +215,9 @@ export async function initFlashcardsModule() {
     if (chSelect && chSelect.dataset.lastSubj !== state.subject) {
       chSelect.dataset.lastSubj = state.subject;
       const chapters = getChapters();
-      chSelect.innerHTML = chapters.map(ch => `<option value="${escapeHtml(ch)}">${escapeHtml(ch)}</option>`).join("");
+      chSelect.innerHTML = chapters
+        .map(ch => `<option value="${escapeHtml(ch)}">${ch === "全部" ? "全部章节" : escapeHtml(ch)}</option>`)
+        .join("");
       chSelect.value = state.currentChapter = "全部";
     }
 
@@ -170,7 +256,15 @@ export async function initFlashcardsModule() {
 
     // Render Question Card
     const p = state.progress[currentQ.id] || {};
-    root.querySelector("#fcChapterBadge").textContent = currentQ.chapter || "材料专业课";
+    const chapterBadge = root.querySelector("#fcChapterBadge");
+    if (chapterBadge) {
+      chapterBadge.textContent = currentQ.chapter || "材料专业课";
+      chapterBadge.style.background = "linear-gradient(135deg, #3b82f6 0%, #6366f1 100%)";
+      chapterBadge.style.color = "#ffffff";
+      chapterBadge.style.borderColor = "rgba(99, 102, 241, 0.4)";
+      chapterBadge.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.28)";
+      chapterBadge.style.fontWeight = "600";
+    }
     root.querySelector("#fcTypeBadge").textContent = currentQ.type || "综合题";
     root.querySelector("#fcIndexText").textContent = `第 ${state.currentIndex + 1} / ${filtered.length} 题`;
 

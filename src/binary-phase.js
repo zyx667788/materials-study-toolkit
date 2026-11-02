@@ -1,5 +1,52 @@
 import { downloadSvgPngWithWatermark } from "./export-watermark.js?v=20261008-phase-audit-motion";
 
+function getBinaryPalette() {
+  const theme = document.documentElement.dataset.theme || "light";
+  if (theme === "dark") {
+    return {
+      plotBg: "#0f172a",
+      grid: "#1e293b",
+      border: "#334155",
+      axis: "#94a3b8",
+      tick: "#94a3b8",
+      title: "#e2e8f0",
+      badgeBg: "#1e293b",
+      badgeText: "#34d399",
+      tieStroke: "#64748b",
+      textMuted: "#cbd5e1",
+      regionOpacity: "0.28",
+    };
+  }
+  if (theme === "gray") {
+    return {
+      plotBg: "#e2e8f0",
+      grid: "#cbd5e1",
+      border: "#94a3b8",
+      axis: "#334155",
+      tick: "#475569",
+      title: "#0f172a",
+      badgeBg: "#f8fafc",
+      badgeText: "#065f46",
+      tieStroke: "#64748b",
+      textMuted: "#334155",
+      regionOpacity: "0.65",
+    };
+  }
+  return {
+    plotBg: "#ffffff",
+    grid: "#f1f5f9",
+    border: "#cbd5e1",
+    axis: "#475569",
+    tick: "#64748b",
+    title: "#334155",
+    badgeBg: "#ffffff",
+    badgeText: "#065f46",
+    tieStroke: "#94a3b8",
+    textMuted: "#475569",
+    regionOpacity: "0.75",
+  };
+}
+
 export function initBinaryPhaseModule() {
   const root = document.querySelector("#binaryPhaseModule");
   if (!root) return { refresh: () => {} };
@@ -84,6 +131,7 @@ export function initBinaryPhaseModule() {
     systemKey: "cuni",
     w: 40.0,
     t: 1250,
+    selectedRegion: null,
   };
 
   const els = {
@@ -108,25 +156,31 @@ export function initBinaryPhaseModule() {
   };
 
   function updateSystem(key) {
+    if (!SYSTEMS[key]) return;
     state.systemKey = key;
     const sys = SYSTEMS[key];
     state.w = sys.defaultW;
     state.t = sys.defaultT;
+    state.selectedRegion = null;
 
-    els.wSlider.min = sys.wMin;
-    els.wSlider.max = sys.wMax;
-    els.wSlider.step = 0.1;
-    els.wSlider.value = state.w;
+    if (els.wSlider) {
+      els.wSlider.min = sys.wMin;
+      els.wSlider.max = sys.wMax;
+      els.wSlider.step = 0.1;
+      els.wSlider.value = state.w;
+    }
 
-    els.tSlider.min = sys.tMin;
-    els.tSlider.max = sys.tMax;
-    els.tSlider.step = 1;
-    els.tSlider.value = state.t;
+    if (els.tSlider) {
+      els.tSlider.min = sys.tMin;
+      els.tSlider.max = sys.tMax;
+      els.tSlider.step = 1;
+      els.tSlider.value = state.t;
+    }
 
-    els.wMinLabel.textContent = sys.elementA;
-    els.wMaxLabel.textContent = sys.elementB;
-    els.tMinLabel.textContent = `${sys.tMin}℃ (${sys.elementA}熔点)`;
-    els.tMaxLabel.textContent = `${sys.tMax}℃ (${sys.elementB}熔点)`;
+    if (els.wMinLabel) els.wMinLabel.textContent = sys.elementA;
+    if (els.wMaxLabel) els.wMaxLabel.textContent = sys.elementB;
+    if (els.tMinLabel) els.tMinLabel.textContent = `${sys.tMin}℃ (${sys.elementA}熔点)`;
+    if (els.tMaxLabel) els.tMaxLabel.textContent = `${sys.tMax}℃ (${sys.elementB}熔点)`;
 
     els.tabs.forEach(tab => {
       tab.classList.toggle("is-active", tab.dataset.sys === key);
@@ -140,8 +194,8 @@ export function initBinaryPhaseModule() {
     const w = parseFloat(state.w);
     const t = parseFloat(state.t);
 
-    els.wReadout.textContent = `${w.toFixed(1)}%${sys.elementB}`;
-    els.tReadout.textContent = `${Math.round(t)}℃`;
+    if (els.wReadout) els.wReadout.textContent = `${w.toFixed(1)}%${sys.elementB}`;
+    if (els.tReadout) els.tReadout.textContent = `${Math.round(t)}℃`;
 
     if (state.systemKey === "cuni") {
       renderCuNi(w, t, sys);
@@ -186,36 +240,55 @@ export function initBinaryPhaseModule() {
     sPercent = Math.max(0, Math.min(100, sPercent));
 
     // Update Right Panel
-    els.phaseTitle.textContent = `${sys.name} · 相组成`;
-    els.phaseBar.innerHTML = `
-      <div class="bp-bar-seg" style="width:${lPercent}%;background:#2563eb;">${lPercent > 8 ? `液相 L (${cL ? cL.toFixed(1) : '-'}%Ni) ${lPercent.toFixed(1)}%` : ''}</div>
-      <div class="bp-bar-seg" style="width:${sPercent}%;background:#d97706;">${sPercent > 8 ? `固相 α (${cS ? cS.toFixed(1) : '-'}%Ni) ${sPercent.toFixed(1)}%` : ''}</div>
-    `;
+    if (els.phaseTitle) els.phaseTitle.textContent = `${sys.name} · 相组成`;
+    if (els.phaseBar) {
+      els.phaseBar.innerHTML = `
+        <div class="bp-bar-seg" style="width:${lPercent}%;background:#2563eb;">${lPercent > 8 ? `液相 L (${cL ? cL.toFixed(1) : '-'}%Ni) ${lPercent.toFixed(1)}%` : ''}</div>
+        <div class="bp-bar-seg" style="width:${sPercent}%;background:#d97706;">${sPercent > 8 ? `固相 α (${cS ? cS.toFixed(1) : '-'}%Ni) ${sPercent.toFixed(1)}%` : ''}</div>
+      `;
+    }
 
-    els.microTitle.textContent = `组织组成物`;
-    els.microBar.innerHTML = `
-      <div class="bp-bar-seg" style="width:${sPercent}%;background:#d97706;">${sPercent > 8 ? `α 晶粒 (先结晶) ${sPercent.toFixed(1)}%` : ''}</div>
-      <div class="bp-bar-seg" style="width:${lPercent}%;background:#2563eb;">${lPercent > 8 ? `剩余液相 ${lPercent.toFixed(1)}%` : ''}</div>
-    `;
+    if (els.microTitle) els.microTitle.textContent = `组织组成物`;
+    if (els.microBar) {
+      els.microBar.innerHTML = `
+        <div class="bp-bar-seg" style="width:${sPercent}%;background:#d97706;">${sPercent > 8 ? `α 晶粒 (先结晶) ${sPercent.toFixed(1)}%` : ''}</div>
+        <div class="bp-bar-seg" style="width:${lPercent}%;background:#2563eb;">${lPercent > 8 ? `剩余液相 ${lPercent.toFixed(1)}%` : ''}</div>
+      `;
+    }
 
-    els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Ni</strong>`;
-    els.stateCard.innerHTML = `<span class="bp-meta-label">状态</span><strong>${phaseState}</strong>`;
-    els.tempCard.innerHTML = `<span class="bp-meta-label">相变温度</span><strong>液 ${Math.round(TL)}℃ / 固 ${Math.round(TS)}℃<br>${cL !== null ? `C_L=${cL.toFixed(1)}%` : ''} ${cS !== null ? `C_S=${cS.toFixed(1)}%` : ''}</strong>`;
+    if (els.compCard) els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Ni</strong>`;
+    if (els.stateCard) els.stateCard.innerHTML = `<span class="bp-meta-label">状态</span><strong>${phaseState}</strong>`;
+    if (els.tempCard) els.tempCard.innerHTML = `<span class="bp-meta-label">相变温度</span><strong>液 ${Math.round(TL)}℃ / 固 ${Math.round(TS)}℃<br>${cL !== null ? `C_L=${cL.toFixed(1)}%` : ''} ${cS !== null ? `C_S=${cS.toFixed(1)}%` : ''}</strong>`;
 
     drawDiagramCuNi(w, t, sys, cL, cS, TL, TS);
   }
 
   function drawDiagramCuNi(w, t, sys, cL, cS, TL, TS) {
+    if (!els.svg) return;
+    const palette = getBinaryPalette();
     // Map w: [0, 100] -> [70, 670], t: [900, 1500] -> [350, 40]
     const mapX = (val) => 70 + (val / 100) * 600;
     const mapY = (val) => 350 - ((val - 900) / 600) * 310;
 
     let liquidPath = `M ${mapX(0)} ${mapY(sys.meltingA)}`;
     let solidPath = `M ${mapX(0)} ${mapY(sys.meltingA)}`;
+    const liquidPoints = [[mapX(0), mapY(sys.meltingA)]];
+    const solidPoints = [[mapX(0), mapY(sys.meltingA)]];
     for (let curW = 1; curW <= 100; curW += 2) {
-      liquidPath += ` L ${mapX(curW)} ${mapY(sys.liquidus(curW))}`;
-      solidPath += ` L ${mapX(curW)} ${mapY(sys.solidus(curW))}`;
+      const lx = mapX(curW), ly = mapY(sys.liquidus(curW));
+      const sx = mapX(curW), sy = mapY(sys.solidus(curW));
+      liquidPath += ` L ${lx} ${ly}`;
+      solidPath += ` L ${sx} ${sy}`;
+      liquidPoints.push([lx, ly]);
+      solidPoints.push([sx, sy]);
     }
+
+    const regionFill = (id, color) =>
+      state.selectedRegion === id ? `fill="${color}" fill-opacity="${palette.regionOpacity}"` : `fill="transparent" fill-opacity="0"`;
+
+    const polyLiquid = [[70, 40], [670, 40], ...[...liquidPoints].reverse()].map(p => p.join(",")).join(" ");
+    const polyTwoPhase = [...liquidPoints, ...[...solidPoints].reverse()].map(p => p.join(",")).join(" ");
+    const polySolid = [...solidPoints, [670, 350], [70, 350]].map(p => p.join(",")).join(" ");
 
     const curX = mapX(w);
     const curY = mapY(t);
@@ -228,23 +301,30 @@ export function initBinaryPhaseModule() {
         <line x1="${lx}" y1="${curY}" x2="${sx}" y2="${curY}" stroke="#10b981" stroke-width="2.5" stroke-dasharray="4 4" />
         <circle cx="${lx}" cy="${curY}" r="4" fill="#2563eb" />
         <circle cx="${sx}" cy="${curY}" r="4" fill="#d97706" />
-        <line x1="${lx}" y1="${curY}" x2="${lx}" y2="350" stroke="#94a3b8" stroke-dasharray="3 3" />
-        <line x1="${sx}" y1="${curY}" x2="${sx}" y2="350" stroke="#94a3b8" stroke-dasharray="3 3" />
+        <line x1="${lx}" y1="${curY}" x2="${lx}" y2="350" stroke="${palette.tieStroke}" stroke-dasharray="3 3" />
+        <line x1="${sx}" y1="${curY}" x2="${sx}" y2="350" stroke="${palette.tieStroke}" stroke-dasharray="3 3" />
       `;
     }
 
     els.svg.innerHTML = `
       <defs>
         <pattern id="bpGrid" width="60" height="31" patternUnits="userSpaceOnUse">
-          <path d="M 60 0 L 0 0 0 31" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+          <path d="M 60 0 L 0 0 0 31" fill="none" stroke="${palette.grid}" stroke-width="1"/>
         </pattern>
       </defs>
-      <rect x="70" y="40" width="600" height="310" fill="url(#bpGrid)" stroke="#cbd5e1" />
+      <rect class="bp-plot-bg" x="70" y="40" width="600" height="310" fill="${palette.plotBg}" />
+      <rect x="70" y="40" width="600" height="310" fill="url(#bpGrid)" stroke="${palette.border}" />
+
+      <g class="bp-regions">
+        <polygon data-bp-region="cuni-L" points="${polyLiquid}" ${regionFill("cuni-L", "#dbeafe")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="cuni-La" points="${polyTwoPhase}" ${regionFill("cuni-La", "#d1fae5")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="cuni-a" points="${polySolid}" ${regionFill("cuni-a", "#fee2e2")} stroke="none" style="cursor:pointer;" />
+      </g>
       
       <!-- Axis Lines -->
-      <line x1="70" y1="350" x2="670" y2="350" stroke="#475569" stroke-width="2"/>
-      <line x1="70" y1="40" x2="70" y2="350" stroke="#475569" stroke-width="2"/>
-      <line x1="670" y1="40" x2="670" y2="350" stroke="#475569" stroke-width="2"/>
+      <line x1="70" y1="350" x2="670" y2="350" stroke="${palette.axis}" stroke-width="2"/>
+      <line x1="70" y1="40" x2="70" y2="350" stroke="${palette.axis}" stroke-width="2"/>
+      <line x1="670" y1="40" x2="670" y2="350" stroke="${palette.axis}" stroke-width="2"/>
 
       <!-- Phase curves -->
       <path d="${liquidPath}" fill="none" stroke="#2563eb" stroke-width="3"/>
@@ -254,8 +334,8 @@ export function initBinaryPhaseModule() {
       <text x="350" y="110" font-size="14" fill="#2563eb" font-weight="bold" text-anchor="middle">L 液相</text>
       <text x="350" y="240" font-size="13" fill="#047857" font-weight="bold" text-anchor="middle">L + α</text>
       <text x="490" y="310" font-size="14" fill="#dc2626" font-weight="bold" text-anchor="middle">α 固溶体</text>
-      <text x="75" y="${mapY(sys.meltingA) + 16}" font-size="11" fill="#475569">Cu ${sys.meltingA}℃</text>
-      <text x="665" y="${mapY(1455) - 6}" font-size="11" fill="#475569" text-anchor="end">Ni 1455℃</text>
+      <text x="75" y="${mapY(sys.meltingA) + 16}" font-size="11" fill="${palette.textMuted}">Cu ${sys.meltingA}℃</text>
+      <text x="665" y="${mapY(1455) - 6}" font-size="11" fill="${palette.textMuted}" text-anchor="end">Ni 1455℃</text>
 
       <!-- Tie line -->
       ${tieLineSvg}
@@ -264,27 +344,28 @@ export function initBinaryPhaseModule() {
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <line x1="70" y1="${curY}" x2="670" y2="${curY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <circle cx="${curX}" cy="${curY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
-      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="#065f46" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Ni / ${Math.round(t)}℃</text>
+      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="${palette.badgeBg}" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
+      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="${palette.badgeText}" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Ni / ${Math.round(t)}℃</text>
 
       <!-- Axes Tick Labels -->
-      <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">0 (Cu)</text>
-      <text x="220" y="370" font-size="12" fill="#64748b" text-anchor="middle">25</text>
-      <text x="370" y="370" font-size="12" fill="#64748b" text-anchor="middle">50</text>
-      <text x="520" y="370" font-size="12" fill="#64748b" text-anchor="middle">75</text>
-      <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">100 (Ni)</text>
-      <text x="370" y="405" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Ni) / %</text>
+      <text x="70" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">0 (Cu)</text>
+      <text x="220" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">25</text>
+      <text x="370" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">50</text>
+      <text x="520" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">75</text>
+      <text x="670" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">100 (Ni)</text>
+      <text x="370" y="405" font-size="13" fill="${palette.title}" font-weight="bold" text-anchor="middle">成分 w(Ni) / %</text>
 
-      <text x="60" y="354" font-size="11" fill="#64748b" text-anchor="end">900</text>
-      <text x="60" y="250" font-size="11" fill="#64748b" text-anchor="end">1100</text>
-      <text x="60" y="146" font-size="11" fill="#64748b" text-anchor="end">1300</text>
-      <text x="60" y="44" font-size="11" fill="#64748b" text-anchor="end">1500</text>
-      <text x="45" y="25" font-size="13" fill="#334155" font-weight="bold">T / ℃</text>
+      <text x="60" y="354" font-size="11" fill="${palette.tick}" text-anchor="end">900</text>
+      <text x="60" y="250" font-size="11" fill="${palette.tick}" text-anchor="end">1100</text>
+      <text x="60" y="146" font-size="11" fill="${palette.tick}" text-anchor="end">1300</text>
+      <text x="60" y="44" font-size="11" fill="${palette.tick}" text-anchor="end">1500</text>
+      <text x="45" y="25" font-size="13" fill="${palette.title}" font-weight="bold">T / ℃</text>
     `;
   }
 
   function renderPbSn(w, t, sys) {
     // Eutectic Pb-Sn logic
+    const palette = getBinaryPalette();
     const mapX = (val) => 70 + (val / 100) * 600;
     const mapY = (val) => 350 - ((val - 20) / 340) * 310;
 
@@ -380,36 +461,54 @@ export function initBinaryPhaseModule() {
     betaPercent = Math.max(0, Math.min(100, betaPercent));
     lPercent = Math.max(0, Math.min(100, lPercent));
 
-    els.phaseTitle.textContent = `${sys.name} · 相组成`;
-    els.phaseBar.innerHTML = `
-      ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent.toFixed(1)}%;background:#2563eb;">${lPercent > 8 ? `液相 L ${lPercent.toFixed(1)}%` : ''}</div>` : ''}
-      ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent.toFixed(1)}%;background:#d97706;">${alphaPercent > 8 ? `α 相 ${alphaPercent.toFixed(1)}%` : ''}</div>` : ''}
-      ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent.toFixed(1)}%;background:#7c3aed;">${betaPercent > 8 ? `β 相 ${betaPercent.toFixed(1)}%` : ''}</div>` : ''}
-    `;
+    if (els.phaseTitle) els.phaseTitle.textContent = `${sys.name} · 相组成`;
+    if (els.phaseBar) {
+      els.phaseBar.innerHTML = `
+        ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent.toFixed(1)}%;background:#2563eb;">${lPercent > 8 ? `液相 L ${lPercent.toFixed(1)}%` : ''}</div>` : ''}
+        ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent.toFixed(1)}%;background:#d97706;">${alphaPercent > 8 ? `α 相 ${alphaPercent.toFixed(1)}%` : ''}</div>` : ''}
+        ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent.toFixed(1)}%;background:#7c3aed;">${betaPercent > 8 ? `β 相 ${betaPercent.toFixed(1)}%` : ''}</div>` : ''}
+      `;
+    }
 
-    els.microTitle.textContent = `组织组成物`;
-    els.microBar.innerHTML = microSegments
-      .filter((seg) => seg.percent > 0)
-      .map((seg) => `
-        <div class="bp-bar-seg" style="width:${seg.percent.toFixed(1)}%;background:${seg.color};">
-          ${seg.percent > 8 ? `${seg.label} ${seg.percent.toFixed(1)}%` : ''}
-        </div>
-      `).join("");
+    if (els.microTitle) els.microTitle.textContent = `组织组成物`;
+    if (els.microBar) {
+      els.microBar.innerHTML = microSegments
+        .filter((seg) => seg.percent > 0)
+        .map((seg) => `
+          <div class="bp-bar-seg" style="width:${seg.percent.toFixed(1)}%;background:${seg.color};">
+            ${seg.percent > 8 ? `${seg.label} ${seg.percent.toFixed(1)}%` : ''}
+          </div>
+        `).join("");
+    }
 
-    els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Sn</strong>`;
-    els.stateCard.innerHTML = `<span class="bp-meta-label">状态</span><strong>${phaseState}</strong>`;
-    els.tempCard.innerHTML = `<span class="bp-meta-label">特征温度</span><strong>共晶线 183℃<br>共晶成分 61.9%Sn</strong>`;
+    if (els.compCard) els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Sn</strong>`;
+    if (els.stateCard) els.stateCard.innerHTML = `<span class="bp-meta-label">状态</span><strong>${phaseState}</strong>`;
+    if (els.tempCard) els.tempCard.innerHTML = `<span class="bp-meta-label">特征温度</span><strong>共晶线 183℃<br>共晶成分 61.9%Sn</strong>`;
 
+    if (!els.svg) return;
     const curX = mapX(w);
     const curY = mapY(t);
+    const regionFill = (id, color) =>
+      state.selectedRegion === id ? `fill="${color}" fill-opacity="${palette.regionOpacity}"` : `fill="transparent" fill-opacity="0"`;
+    const pts = (arr) => arr.map(([c, temp]) => `${mapX(c)},${mapY(temp)}`).join(" ");
 
     els.svg.innerHTML = `
       <defs>
         <pattern id="bpGrid2" width="60" height="31" patternUnits="userSpaceOnUse">
-          <path d="M 60 0 L 0 0 0 31" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+          <path d="M 60 0 L 0 0 0 31" fill="none" stroke="${palette.grid}" stroke-width="1"/>
         </pattern>
       </defs>
-      <rect x="70" y="40" width="600" height="310" fill="url(#bpGrid2)" stroke="#cbd5e1" />
+      <rect class="bp-plot-bg" x="70" y="40" width="600" height="310" fill="${palette.plotBg}" />
+      <rect x="70" y="40" width="600" height="310" fill="url(#bpGrid2)" stroke="${palette.border}" />
+
+      <g class="bp-regions">
+        <polygon data-bp-region="pbsn-L" points="${pts([[0, 360], [100, 360], [100, 232], [61.9, 183], [0, 327.5]])}" ${regionFill("pbsn-L", "#dbeafe")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="pbsn-La" points="${pts([[0, 327.5], [61.9, 183], [19.2, 183]])}" ${regionFill("pbsn-La", "#fef3c7")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="pbsn-Lb" points="${pts([[61.9, 183], [100, 232], [97.5, 183]])}" ${regionFill("pbsn-Lb", "#ede9fe")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="pbsn-a" points="${pts([[0, 327.5], [19.2, 183], [2, 20], [0, 20]])}" ${regionFill("pbsn-a", "#ffedd5")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="pbsn-b" points="${pts([[100, 232], [100, 20], [99, 20], [97.5, 183]])}" ${regionFill("pbsn-b", "#f3e8ff")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="pbsn-ab" points="${pts([[19.2, 183], [97.5, 183], [99, 20], [2, 20]])}" ${regionFill("pbsn-ab", "#fce7f3")} stroke="none" style="cursor:pointer;" />
+      </g>
       
       <!-- Liquidus & Solvus -->
       <line x1="${mapX(0)}" y1="${mapY(327.5)}" x2="${mapX(61.9)}" y2="${mapY(183)}" stroke="#2563eb" stroke-width="3"/>
@@ -428,28 +527,29 @@ export function initBinaryPhaseModule() {
       <text x="${mapX(61.9)}" y="${mapY(183) + 20}" font-size="11" fill="#dc2626" font-weight="bold" text-anchor="middle">E: 183℃ 共晶线 (61.9% Sn)</text>
       <text x="120" y="320" font-size="13" fill="#d97706" font-weight="bold">α</text>
       <text x="640" y="320" font-size="13" fill="#7c3aed" font-weight="bold">β</text>
-      <text x="370" y="300" font-size="14" fill="#475569" font-weight="bold" text-anchor="middle">α + β</text>
+      <text x="370" y="300" font-size="14" fill="${palette.textMuted}" font-weight="bold" text-anchor="middle">α + β</text>
 
       <!-- Current Point -->
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <line x1="70" y1="${curY}" x2="670" y2="${curY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <circle cx="${curX}" cy="${curY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
-      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="#065f46" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Sn / ${Math.round(t)}℃</text>
+      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="${palette.badgeBg}" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
+      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="${palette.badgeText}" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Sn / ${Math.round(t)}℃</text>
 
       <!-- Labels -->
-      <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">0 (Pb)</text>
-      <text x="${mapX(19.2)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">19.2</text>
-      <text x="${mapX(61.9)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">61.9</text>
-      <line x1="${mapX(97.5)}" y1="350" x2="${mapX(97.5)}" y2="382" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 2"/>
-      <text x="${mapX(97.5)}" y="394" font-size="10" fill="#64748b" text-anchor="middle">97.5</text>
-      <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">100 (Sn)</text>
-      <text x="370" y="405" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Sn) / %</text>
+      <text x="70" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">0 (Pb)</text>
+      <text x="${mapX(19.2)}" y="370" font-size="11" fill="${palette.tick}" text-anchor="middle">19.2</text>
+      <text x="${mapX(61.9)}" y="370" font-size="11" fill="${palette.tick}" text-anchor="middle">61.9</text>
+      <line x1="${mapX(97.5)}" y1="350" x2="${mapX(97.5)}" y2="382" stroke="${palette.tieStroke}" stroke-width="1" stroke-dasharray="2 2"/>
+      <text x="${mapX(97.5)}" y="394" font-size="10" fill="${palette.tick}" text-anchor="middle">97.5</text>
+      <text x="670" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">100 (Sn)</text>
+      <text x="370" y="405" font-size="13" fill="${palette.title}" font-weight="bold" text-anchor="middle">成分 w(Sn) / %</text>
     `;
   }
 
   function renderPtAg(w, t, sys) {
     // Dynamic Peritectic Pt-Ag logic with full lever-rule calculations
+    const palette = getBinaryPalette();
     const mapX = (val) => 70 + (val / 100) * 600;
     const mapY = (val) => 350 - ((val - 400) / 1400) * 310;
 
@@ -591,36 +691,54 @@ export function initBinaryPhaseModule() {
     betaPercent = Math.max(0, Math.min(100, betaPercent));
     lPercent = Math.max(0, Math.min(100, lPercent));
 
-    els.phaseTitle.textContent = `${sys.name} · 相组成`;
-    els.phaseBar.innerHTML = `
-      ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent.toFixed(1)}%;background:#2563eb;">${lPercent > 8 ? `液相 L ${lPercent.toFixed(1)}%` : ''}</div>` : ''}
-      ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent.toFixed(1)}%;background:#d97706;">${alphaPercent > 8 ? `α 相 ${alphaPercent.toFixed(1)}%` : ''}</div>` : ''}
-      ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent.toFixed(1)}%;background:#7c3aed;">${betaPercent > 8 ? `β 相 ${betaPercent.toFixed(1)}%` : ''}</div>` : ''}
-    `;
+    if (els.phaseTitle) els.phaseTitle.textContent = `${sys.name} · 相组成`;
+    if (els.phaseBar) {
+      els.phaseBar.innerHTML = `
+        ${lPercent > 0 ? `<div class="bp-bar-seg" style="width:${lPercent.toFixed(1)}%;background:#2563eb;">${lPercent > 8 ? `液相 L ${lPercent.toFixed(1)}%` : ''}</div>` : ''}
+        ${alphaPercent > 0 ? `<div class="bp-bar-seg" style="width:${alphaPercent.toFixed(1)}%;background:#d97706;">${alphaPercent > 8 ? `α 相 ${alphaPercent.toFixed(1)}%` : ''}</div>` : ''}
+        ${betaPercent > 0 ? `<div class="bp-bar-seg" style="width:${betaPercent.toFixed(1)}%;background:#7c3aed;">${betaPercent > 8 ? `β 相 ${betaPercent.toFixed(1)}%` : ''}</div>` : ''}
+      `;
+    }
 
-    els.microTitle.textContent = `组织组成物分析`;
-    els.microBar.innerHTML = microSegments
-      .filter((seg) => seg.percent > 0)
-      .map((seg) => `
-        <div class="bp-bar-seg" style="width:${seg.percent.toFixed(1)}%;background:${seg.color};">
-          ${seg.percent > 8 ? `${seg.label} ${seg.percent.toFixed(1)}%` : ''}
-        </div>
-      `).join("");
+    if (els.microTitle) els.microTitle.textContent = `组织组成物分析`;
+    if (els.microBar) {
+      els.microBar.innerHTML = microSegments
+        .filter((seg) => seg.percent > 0)
+        .map((seg) => `
+          <div class="bp-bar-seg" style="width:${seg.percent.toFixed(1)}%;background:${seg.color};">
+            ${seg.percent > 8 ? `${seg.label} ${seg.percent.toFixed(1)}%` : ''}
+          </div>
+        `).join("");
+    }
 
-    els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Ag</strong>`;
-    els.stateCard.innerHTML = `<span class="bp-meta-label">平衡状态</span><strong>${phaseState}</strong>`;
-    els.tempCard.innerHTML = `<span class="bp-meta-label">包晶特征反应</span><strong>包晶线 1186℃<br>L(66.3%) + α(10.5%) → β(42.5%)</strong>`;
+    if (els.compCard) els.compCard.innerHTML = `<span class="bp-meta-label">合金成分</span><strong>${w.toFixed(1)}%Ag</strong>`;
+    if (els.stateCard) els.stateCard.innerHTML = `<span class="bp-meta-label">平衡状态</span><strong>${phaseState}</strong>`;
+    if (els.tempCard) els.tempCard.innerHTML = `<span class="bp-meta-label">包晶特征反应</span><strong>包晶线 1186℃<br>L(66.3%) + α(10.5%) → β(42.5%)</strong>`;
 
+    if (!els.svg) return;
     const curX = mapX(w);
     const curY = mapY(t);
+    const regionFill = (id, color) =>
+      state.selectedRegion === id ? `fill="${color}" fill-opacity="${palette.regionOpacity}"` : `fill="transparent" fill-opacity="0"`;
+    const pts = (arr) => arr.map(([c, temp]) => `${mapX(c)},${mapY(temp)}`).join(" ");
 
     els.svg.innerHTML = `
       <defs>
         <pattern id="bpGrid3" width="60" height="31" patternUnits="userSpaceOnUse">
-          <path d="M 60 0 L 0 0 0 31" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+          <path d="M 60 0 L 0 0 0 31" fill="none" stroke="${palette.grid}" stroke-width="1"/>
         </pattern>
       </defs>
-      <rect x="70" y="40" width="600" height="310" fill="url(#bpGrid3)" stroke="#cbd5e1" />
+      <rect class="bp-plot-bg" x="70" y="40" width="600" height="310" fill="${palette.plotBg}" />
+      <rect x="70" y="40" width="600" height="310" fill="url(#bpGrid3)" stroke="${palette.border}" />
+
+      <g class="bp-regions">
+        <polygon data-bp-region="ptag-L" points="${pts([[0, 1800], [100, 1800], [100, 962], [66.3, 1186], [0, 1769]])}" ${regionFill("ptag-L", "#dbeafe")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="ptag-La" points="${pts([[0, 1769], [66.3, 1186], [10.5, 1186]])}" ${regionFill("ptag-La", "#d1fae5")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="ptag-Lb" points="${pts([[42.5, 1186], [66.3, 1186], [100, 962]])}" ${regionFill("ptag-Lb", "#ede9fe")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="ptag-a" points="${pts([[0, 1769], [10.5, 1186], [2, 400], [0, 400]])}" ${regionFill("ptag-a", "#ffedd5")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="ptag-ab" points="${pts([[10.5, 1186], [42.5, 1186], [55, 400], [2, 400]])}" ${regionFill("ptag-ab", "#fef3c7")} stroke="none" style="cursor:pointer;" />
+        <polygon data-bp-region="ptag-b" points="${pts([[42.5, 1186], [100, 962], [100, 400], [55, 400]])}" ${regionFill("ptag-b", "#f3e8ff")} stroke="none" style="cursor:pointer;" />
+      </g>
       
       <!-- Liquidus -->
       <line x1="${mapX(0)}" y1="${mapY(1769)}" x2="${mapX(66.3)}" y2="${mapY(1186)}" stroke="#2563eb" stroke-width="3"/>
@@ -629,7 +747,7 @@ export function initBinaryPhaseModule() {
       <!-- Peritectic Line at 1186 -->
       <line x1="${mapX(10.5)}" y1="${mapY(1186)}" x2="${mapX(66.3)}" y2="${mapY(1186)}" stroke="#dc2626" stroke-width="2.5"/>
       <circle cx="${mapX(42.5)}" cy="${mapY(1186)}" r="4" fill="#dc2626" />
-      <rect x="${mapX(42.5) - 130}" y="${mapY(1186) - 22}" width="260" height="18" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#dc2626" stroke-width="0.75"/>
+      <rect x="${mapX(42.5) - 130}" y="${mapY(1186) - 22}" width="260" height="18" rx="4" class="bp-svg-badge-bg" fill="${palette.badgeBg}" fill-opacity="0.92" stroke="#dc2626" stroke-width="0.75"/>
       <text x="${mapX(42.5)}" y="${mapY(1186) - 9}" font-size="11" fill="#dc2626" font-weight="bold" text-anchor="middle">包晶线 1186℃: L(66.3%) + α(10.5%) → β(42.5%)</text>
 
       <!-- Solidus & Solvus -->
@@ -641,7 +759,7 @@ export function initBinaryPhaseModule() {
       <!-- Labels inside diagram -->
       <text x="350" y="90" font-size="14" fill="#2563eb" font-weight="bold" text-anchor="middle">L 液相</text>
       <text x="300" y="190" font-size="13" fill="#047857" font-weight="bold">L + α</text>
-      <text x="350" y="270" font-size="14" fill="#475569" font-weight="bold" text-anchor="middle">α + β</text>
+      <text x="350" y="270" font-size="14" fill="${palette.textMuted}" font-weight="bold" text-anchor="middle">α + β</text>
       <text x="120" y="320" font-size="13" fill="#d97706" font-weight="bold">α</text>
       <text x="620" y="320" font-size="13" fill="#7c3aed" font-weight="bold">β</text>
 
@@ -652,16 +770,16 @@ export function initBinaryPhaseModule() {
       <line x1="${curX}" y1="40" x2="${curX}" y2="350" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <line x1="70" y1="${curY}" x2="670" y2="${curY}" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4"/>
       <circle cx="${curX}" cy="${curY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
-      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="#ffffff" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
-      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="#065f46" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Ag / ${Math.round(t)}℃</text>
+      <rect x="${Math.min(540, Math.max(75, curX - 60))}" y="${curY > 80 ? curY - 24 : curY + 10}" width="128" height="20" rx="4" class="bp-svg-badge-bg" fill="${palette.badgeBg}" fill-opacity="0.92" stroke="#10b981" stroke-width="1"/>
+      <text x="${Math.min(540, Math.max(75, curX - 60)) + 64}" y="${curY > 80 ? curY - 10 : curY + 24}" font-size="11" fill="${palette.badgeText}" font-weight="bold" text-anchor="middle">${w.toFixed(1)}%Ag / ${Math.round(t)}℃</text>
 
       <!-- Labels -->
-      <text x="70" y="370" font-size="12" fill="#64748b" text-anchor="middle">0 (Pt)</text>
-      <text x="${mapX(10.5)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">10.5</text>
-      <text x="${mapX(42.5)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">42.5</text>
-      <text x="${mapX(66.3)}" y="370" font-size="11" fill="#64748b" text-anchor="middle">66.3</text>
-      <text x="670" y="370" font-size="12" fill="#64748b" text-anchor="middle">100 (Ag)</text>
-      <text x="370" y="405" font-size="13" fill="#334155" font-weight="bold" text-anchor="middle">成分 w(Ag) / %</text>
+      <text x="70" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">0 (Pt)</text>
+      <text x="${mapX(10.5)}" y="370" font-size="11" fill="${palette.tick}" text-anchor="middle">10.5</text>
+      <text x="${mapX(42.5)}" y="370" font-size="11" fill="${palette.tick}" text-anchor="middle">42.5</text>
+      <text x="${mapX(66.3)}" y="370" font-size="11" fill="${palette.tick}" text-anchor="middle">66.3</text>
+      <text x="670" y="370" font-size="12" fill="${palette.tick}" text-anchor="middle">100 (Ag)</text>
+      <text x="370" y="405" font-size="13" fill="${palette.title}" font-weight="bold" text-anchor="middle">成分 w(Ag) / %</text>
     `;
   }
 
@@ -670,18 +788,30 @@ export function initBinaryPhaseModule() {
     tab.addEventListener("click", () => updateSystem(tab.dataset.sys));
   });
 
-  els.wSlider.addEventListener("input", e => {
+  els.wSlider?.addEventListener("input", e => {
     state.w = parseFloat(e.target.value);
     render();
   });
 
-  els.tSlider.addEventListener("input", e => {
+  els.tSlider?.addEventListener("input", e => {
     state.t = parseFloat(e.target.value);
     render();
   });
 
+  els.svg?.addEventListener("click", (event) => {
+    const regionPoly = event.target.closest("[data-bp-region]");
+    if (regionPoly) {
+      state.selectedRegion = regionPoly.dataset.bpRegion;
+      render();
+    }
+  });
+
   els.exportBtn?.addEventListener("click", () => {
-    downloadSvgPngWithWatermark(els.svg, `${SYSTEMS[state.systemKey].name}.png`);
+    if (els.svg) downloadSvgPngWithWatermark(els.svg, `${SYSTEMS[state.systemKey].name}.png`);
+  });
+
+  window.addEventListener("mstool:themechange", () => {
+    render();
   });
 
   updateSystem("cuni");

@@ -227,7 +227,7 @@ export function initInterstitialLatticeModule() {
           els.atomRadius.max = definition.tangentRadius.toFixed(3);
           state.atomRadius = Math.min(definition.tangentRadius * 0.42, definition.tangentRadius);
           els.atomRadius.value = state.atomRadius.toFixed(3);
-          els.atomRadiusValue.value = state.atomRadius.toFixed(2);
+          if (els.atomRadiusValue) els.atomRadiusValue.value = state.atomRadius.toFixed(2);
         }
         drawLattice(true);
       });
@@ -246,7 +246,7 @@ export function initInterstitialLatticeModule() {
 
     els.atomRadius?.addEventListener("input", () => {
       state.atomRadius = Number(els.atomRadius.value);
-      els.atomRadiusValue.value = state.atomRadius.toFixed(2);
+      if (els.atomRadiusValue) els.atomRadiusValue.value = state.atomRadius.toFixed(2);
       const definition = LATTICES[state.lattice];
       if (els.ratioReadout && definition.tangentRadius) {
         const ratio = (state.atomRadius / definition.tangentRadius).toFixed(3);
@@ -310,19 +310,19 @@ export function initInterstitialLatticeModule() {
   }
 
   function updateInfo(definition) {
-    els.centerLabel.textContent = definition.centerLabel;
-    els.title.textContent = definition.title;
-    els.atomCount.textContent = definition.atomCount;
-    els.coordination.textContent = definition.coordination;
-    els.octaCount.textContent = definition.octaCount;
-    els.tetraCount.textContent = definition.tetraCount;
-    els.closePlaneLabel.textContent = definition.closePlane;
-    els.closeDirectionLabel.textContent = definition.closeDirection;
+    if (els.centerLabel) els.centerLabel.textContent = definition.centerLabel;
+    if (els.title) els.title.textContent = definition.title;
+    if (els.atomCount) els.atomCount.textContent = definition.atomCount;
+    if (els.coordination) els.coordination.textContent = definition.coordination;
+    if (els.octaCount) els.octaCount.textContent = definition.octaCount;
+    if (els.tetraCount) els.tetraCount.textContent = definition.tetraCount;
+    if (els.closePlaneLabel) els.closePlaneLabel.textContent = definition.closePlane;
+    if (els.closeDirectionLabel) els.closeDirectionLabel.textContent = definition.closeDirection;
     if (els.closePlaneReadout) els.closePlaneReadout.textContent = definition.closePlane;
     if (els.closeDirectionReadout) els.closeDirectionReadout.textContent = definition.closeDirection;
     if (els.note) els.note.textContent = definition.note;
-    els.viewerCode.textContent = definition.code;
-    els.viewerName.textContent = definition.name;
+    if (els.viewerCode) els.viewerCode.textContent = definition.code;
+    if (els.viewerName) els.viewerName.textContent = definition.name;
     if (els.viewerStats) els.viewerStats.textContent = `(${definition.atomCount} 原子)`;
     if (els.ratioReadout && definition.tangentRadius) {
       const ratio = (state.atomRadius / definition.tangentRadius).toFixed(3);
@@ -336,10 +336,11 @@ export function initInterstitialLatticeModule() {
   }
 
   function applySceneTheme() {
+    const theme = currentTheme();
+    const dark = theme === "dark";
     scene.background = new THREE.Color(sceneBackground());
-    const dark = isDarkTheme();
-    hemisphere.groundColor.set(dark ? 0x26354a : 0x9ca3af);
-    renderer.toneMappingExposure = dark ? 1.2 : 1.08;
+    hemisphere.groundColor.set(dark ? 0x26354a : theme === "gray" ? 0x7c8b9e : 0x9ca3af);
+    renderer.toneMappingExposure = dark ? 1.2 : theme === "gray" ? 1.04 : 1.08;
   }
 
   function resetCamera(model) {
@@ -367,7 +368,6 @@ export function initInterstitialLatticeModule() {
     renderer.render(scene, camera);
     downloadCanvasPngWithWatermark(renderer.domElement, `lattice-${state.lattice}-interstitial.png`);
   }
-
 }
 
 function buildBccModel() {
@@ -608,21 +608,23 @@ function makeCellEdges(edges) {
   const positions = edges.flatMap(([start, end]) => [...start.toArray(), ...end.toArray()]);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  const theme = currentTheme();
   const material = new THREE.LineBasicMaterial({
     color: themeInkColor(),
     transparent: true,
-    opacity: isDarkTheme() ? 0.72 : 0.58,
+    opacity: theme === "dark" ? 0.72 : theme === "gray" ? 0.66 : 0.58,
   });
   return new THREE.LineSegments(geometry, material);
 }
 
 function makeGroundGrid(z) {
-  const color = isDarkTheme() ? 0x4b5563 : 0xd1d5db;
+  const theme = currentTheme();
+  const color = theme === "dark" ? 0x4b5563 : theme === "gray" ? 0x94a3b8 : 0xd1d5db;
   const grid = new THREE.GridHelper(7.2, 18, color, color);
   grid.rotation.x = Math.PI / 2;
   grid.position.z = z;
   grid.material.transparent = true;
-  grid.material.opacity = isDarkTheme() ? 0.2 : 0.28;
+  grid.material.opacity = theme === "dark" ? 0.2 : theme === "gray" ? 0.32 : 0.28;
   grid.material.depthWrite = false;
   return grid;
 }
@@ -708,12 +710,13 @@ function makePackingPlane(points, color) {
   }
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
+  const theme = currentTheme();
   const plane = new THREE.Mesh(
     geometry,
     new THREE.MeshBasicMaterial({
       color,
       transparent: true,
-      opacity: isDarkTheme() ? 0.22 : 0.16,
+      opacity: theme === "dark" ? 0.22 : theme === "gray" ? 0.20 : 0.16,
       side: THREE.DoubleSide,
       depthWrite: false,
     }),
@@ -857,14 +860,24 @@ function disposeChildren(group) {
   group.clear();
 }
 
+function currentTheme() {
+  return document.documentElement.dataset.theme || "light";
+}
+
 function isDarkTheme() {
-  return document.documentElement.dataset.theme === "dark";
+  return currentTheme() === "dark";
 }
 
 function sceneBackground() {
-  return isDarkTheme() ? 0x111318 : 0xfafafa;
+  const theme = currentTheme();
+  if (theme === "dark") return 0x12161f;
+  if (theme === "gray") return 0xdce2ea;
+  return 0xf8fafc;
 }
 
 function themeInkColor() {
-  return isDarkTheme() ? 0xd7e3ed : 0x263442;
+  const theme = currentTheme();
+  if (theme === "dark") return 0xd7e3ed;
+  if (theme === "gray") return 0x1e293b;
+  return 0x263442;
 }

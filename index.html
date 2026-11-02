@@ -23,7 +23,7 @@
         const storageKey = "mstool.theme.v1";
         try {
           const savedTheme = localStorage.getItem(storageKey);
-          const theme = savedTheme === "light" || savedTheme === "dark"
+          const theme = savedTheme === "light" || savedTheme === "dark" || savedTheme === "gray"
             ? savedTheme
             : window.matchMedia("(prefers-color-scheme: dark)").matches
               ? "dark"
@@ -130,9 +130,11 @@
             <span id="examCountdownBadge" class="exam-countdown-badge"><span class="countdown-long-prefix">🎯 2027考研倒计时: </span><span class="countdown-short-prefix">🎯 </span><strong id="examCountdownDays">--</strong>天</span>
             <span class="version-badge">v5.0 · Academic Edition</span>
             <span id="visitOrdinalText" class="visit-ordinal-badge">第 20,000+ 位研友</span>
-            <button id="themeToggle" class="theme-toggle" type="button" aria-label="切换模式" aria-pressed="false" title="切换模式（工作/休息）">
-              <span id="themeToggleIcon" aria-hidden="true">☾</span>
-            </button>
+            <div id="themeToggle" class="theme-switcher" role="group" aria-label="切换页面颜色模式（白/灰/黑）">
+              <button type="button" class="theme-mode-btn" data-theme-mode="light">白</button>
+              <button type="button" class="theme-mode-btn" data-theme-mode="gray">灰</button>
+              <button type="button" class="theme-mode-btn" data-theme-mode="dark">黑</button>
+            </div>
           </div>
         </header>
 
@@ -259,8 +261,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>扫码加入研友交流圈</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -270,7 +272,7 @@
           <!-- 左侧：原子晶体 / 单质 -->
           <aside class="structure-control-panel structure-panel-left" aria-label="原子晶体与视图参数">
             <section class="structure-card structure-head-card">
-              <span class="fe-kicker">单质与碳材料</span>
+              <span class="fe-kicker">单质</span>
               <h2>原子晶体 / 单质</h2>
             </section>
 
@@ -282,8 +284,7 @@
               <label class="control-label">视图参数</label>
               <div class="structure-tools">
                 <button id="structureRepeatButton" class="ghost-button is-active" type="button" data-repeat="2" aria-pressed="true">2×2×2</button>
-                <button id="structureBondButton" class="ghost-button is-active" type="button">近邻连接</button>
-                <button id="structureExportButton" class="ghost-button" type="button">导出图片</button>
+                <button id="structureBondButton" class="ghost-button is-active" type="button">直线连接</button>
               </div>
               <label class="slider-field" for="atomScaleRange">
                 <span>原子半径</span>
@@ -319,8 +320,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img class="module-qr-image" src="./assets/wechat-qr.png" alt="考研资料与交流答疑二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img class="module-qr-image" src="./assets/qq-group-qr.png" alt="考研资料与交流答疑二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -427,7 +428,6 @@
             <div id="interstitialViewerHost" class="interstitial-viewer-host"></div>
             <div class="interstitial-view-actions">
               <button id="interstitialResetButton" class="viewer-icon-button" type="button" aria-label="复位视角">↺</button>
-              <button id="interstitialExportButton" class="viewer-icon-button" type="button" aria-label="导出图片" title="导出图片">⇩</button>
             </div>
             <div class="interstitial-view-badge" aria-live="polite">
               <strong id="interstitialViewerCode">HCP</strong>
@@ -449,21 +449,14 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
           <section id="crystalModule" class="module-view crystal-module" data-module-panel="crystal">
         <div class="workspace">
           <aside class="control-panel" aria-label="晶体绘图与识图训练控制">
-            <section class="control-section crystal-workflow-section">
-              <label class="control-label">演练模式</label>
-              <div class="segmented workflow-segmented" role="group" aria-label="演练模式">
-                <button class="segment is-active" type="button" data-crystal-workflow="draw" aria-pressed="true">自由交互绘图</button>
-                <button class="segment" type="button" data-crystal-workflow="training" aria-pressed="false">识图自测实训</button>
-              </div>
-            </section>
 
             <section class="control-section mode-section">
               <label class="control-label">投影几何目标</label>
@@ -481,7 +474,25 @@
               </div>
             </section>
 
-            <section id="crystalTrainingSection" class="training-section is-hidden" aria-live="polite">
+            <section class="control-section index-section">
+              <label class="control-label" for="indexInput">指数（空格分隔）</label>
+              <div class="input-row">
+                <input
+                  id="indexInput"
+                  class="index-input"
+                  type="text"
+                  value="1 1 1"
+                  placeholder="例如 1 1 1"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button id="drawButton" class="primary-button" type="button">重绘</button>
+              </div>
+              <p id="indexHint" class="input-hint">立方晶面：h k l，例如 1 1 1</p>
+              <div id="exampleChips" class="chip-row" aria-label="示例指数"></div>
+            </section>
+
+            <section id="crystalTrainingSection" class="training-section" aria-live="polite">
               <div class="training-head">
                 <div class="training-question">
                   <span id="trainingQuestionNumber">第 1 题</span>
@@ -505,29 +516,11 @@
               <p id="trainingCoordinateText" class="training-coordinate is-hidden"></p>
               <p id="trainingFeedback" class="training-feedback" data-state="idle">尚未作答</p>
               <div class="training-actions">
-                <button id="trainingNextButton" class="ghost-button" type="button">换一题</button>
+                <button id="trainingNextButton" class="ghost-button" type="button">下一个</button>
               </div>
             </section>
 
-            <section class="control-section index-section">
-              <label class="control-label" for="indexInput">指数（空格分隔）</label>
-              <div class="input-row">
-                <input
-                  id="indexInput"
-                  class="index-input"
-                  type="text"
-                  value="1 1 1"
-                  placeholder="例如 1 1 1"
-                  autocomplete="off"
-                  spellcheck="false"
-                />
-                <button id="drawButton" class="primary-button" type="button">重绘</button>
-              </div>
-              <p id="indexHint" class="input-hint">立方晶面：h k l，例如 1 1 1</p>
-              <div id="exampleChips" class="chip-row" aria-label="示例指数"></div>
-            </section>
-
-            <section id="planeLayerSection" class="control-section compact-section layer-section">
+            <section id="planeLayerSection" class="control-section compact-section layer-section is-hidden" hidden>
               <label class="control-label" for="layerInput">层位</label>
               <div class="input-row">
                 <input id="layerInput" class="small-input" type="number" step="1" value="1" />
@@ -535,7 +528,7 @@
               </div>
             </section>
 
-            <section class="readout-panel" aria-live="polite">
+            <section class="readout-panel is-hidden" aria-live="polite" hidden>
               <div class="status-row">
                 <span id="statusDot" class="status-dot"></span>
                 <span id="statusText">已绘制晶面 (1 1 1)</span>
@@ -557,8 +550,7 @@
             </section>
 
             <section class="control-section tool-section">
-              <button id="resetButton" class="ghost-button" type="button">复位视角</button>
-              <button id="exportButton" class="ghost-button" type="button">导出图片</button>
+              <button id="resetButton" class="ghost-button" type="button" style="width:100%;">初始状态</button>
             </section>
           </aside>
 
@@ -577,8 +569,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -650,8 +642,6 @@
                 <div id="bpCardState" class="bp-meta-card"></div>
                 <div id="bpCardTemp" class="bp-meta-card"></div>
               </div>
-
-              <button id="bpExportBtn" class="primary-button" type="button" style="width:100%;margin-top:auto;">导出图片</button>
             </div>
           </div>
         </div>
@@ -662,8 +652,8 @@
             <span>数据抽取自《材料科学基础》相关教材 · 本网页由研乐材料考研团队开发</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -681,7 +671,6 @@
                   <span>w<sub>C</sub>%</span>
                   <input id="carbonInput" type="number" min="0" max="6.69" step="0.0001" value="0.77" inputmode="decimal" />
                 </label>
-                <button id="feExportButton" class="ghost-button" type="button">导出图片</button>
               </div>
             </div>
 
@@ -795,8 +784,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -900,8 +889,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -926,19 +915,19 @@
             <section class="stereo-card stereo-display-card">
               <label class="control-label">显示</label>
               <div class="stereo-toggle-grid">
-                <label class="stereo-check">
+                <label class="stereo-check is-poles">
                   <input type="checkbox" data-stereo-toggle="showPoles" checked />
                   <span>极点</span>
                 </label>
-                <label class="stereo-check">
+                <label class="stereo-check is-labels">
                   <input type="checkbox" data-stereo-toggle="showLabels" checked />
                   <span>指数</span>
                 </label>
-                <label class="stereo-check">
+                <label class="stereo-check is-zones">
                   <input type="checkbox" data-stereo-toggle="showZones" checked />
                   <span>晶带线</span>
                 </label>
-                <label class="stereo-check">
+                <label class="stereo-check is-plane">
                   <input type="checkbox" data-stereo-toggle="showPlane" checked />
                   <span>投影面</span>
                 </label>
@@ -953,7 +942,6 @@
 
             <section class="stereo-card stereo-tools-card">
               <button id="stereoResetButton" class="ghost-button" type="button">复位取向</button>
-              <button id="stereoExportButton" class="ghost-button" type="button">导出图片</button>
             </section>
           </aside>
 
@@ -979,8 +967,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -1086,10 +1074,9 @@
             <div id="dislocationViewerHost" class="dislocation-viewer-host"></div>
             <div class="dislocation-view-actions">
               <button id="dislocationResetButton" class="viewer-icon-button" type="button" aria-label="复位视角" title="复位视角"><img class="tool-icon" src="./assets/icons/rotate-ccw.svg" alt="" /></button>
-              <button id="dislocationExportButton" class="viewer-icon-button" type="button" aria-label="导出图片" title="导出图片"><img class="tool-icon" src="./assets/icons/download.svg" alt="" /></button>
             </div>
             <div class="dislocation-view-badge" aria-live="polite">
-              <strong id="dislocationViewerStage">初始位置</strong>
+              <strong id="dislocationViewerStage">起始位置</strong>
               <span id="dislocationViewerCaption">A 沿 v 方向滑移，B 固定。</span>
             </div>
             <div class="dislocation-legend" aria-label="位错颜色图例">
@@ -1101,8 +1088,7 @@
             </div>
             <div class="dislocation-timeline" aria-label="位错交割播放控制">
               <div class="segmented dislocation-stage-tabs" role="group" aria-label="交割阶段">
-                <button class="segment is-active" type="button" data-dislocation-stage="initial" aria-pressed="true">初始</button>
-                <button class="segment" type="button" data-dislocation-stage="approach" aria-pressed="false">接近</button>
+                <button class="segment is-active" type="button" data-dislocation-stage="initial" aria-pressed="true">起始</button>
                 <button class="segment" type="button" data-dislocation-stage="cross" aria-pressed="false">交割</button>
                 <button class="segment" type="button" data-dislocation-stage="result" aria-pressed="false">结果</button>
               </div>
@@ -1119,8 +1105,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -1131,6 +1117,9 @@
               <button class="fc-subj-tab is-active" data-subject="all" type="button">考研核心真题精选 (1310题)</button>
             </div>
             <div class="fc-controls-row">
+              <select id="fcChapterSelect" class="fc-select" aria-label="章节筛选">
+                <option value="全部">全部章节</option>
+              </select>
               <select id="fcTypeSelect" class="fc-select" aria-label="题型筛选">
                 <option value="全部">全部题型</option>
               </select>
@@ -1196,8 +1185,8 @@
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
-            <img src="./assets/app-qrcode.svg" alt="考研交流二维码" />
-            <figcaption>考研资料与交流答疑</figcaption>
+            <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
+            <figcaption>QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>

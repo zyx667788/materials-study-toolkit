@@ -593,7 +593,7 @@ export function initTernaryPhaseModule() {
               <strong class="ternary-region-name">${region.title}</strong>
               <span class="ternary-region-pill">${region.kind}</span>
             </div>
-            <p class="ternary-region-detail">${region.phase}</p>
+            <p class="ternary-region-detail">${region.shape ? region.shape : ('平衡相：' + region.phase)}</p>
           </button>
         `;
         }).join("");

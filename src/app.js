@@ -862,12 +862,12 @@ function updateSections() {
 function updateInputHint() {
   const hints = {
     cubic: {
-      plane: "立方晶面：h k l，例如 1 1 1",
-      direction: "立方晶向：u v w，例如 1 -1 0",
+      plane: "立方晶面：例如 1 1 1",
+      direction: "立方晶向：例如 1 -1 0",
     },
     hex: {
-      plane: "六方晶面：h k i l，例如 1 0 -1 0",
-      direction: "六方晶向：u v t w，例如 2 -1 -1 0",
+      plane: "六方晶面：例如 1 0 -1 0",
+      direction: "六方晶向：例如 2 -1 -1 0",
     },
   };
   const placeholders = {

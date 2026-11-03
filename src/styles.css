@@ -10135,3 +10135,223 @@ html[data-theme="gray"] .mem-select option {
   background-color: #f1f5f9 !important;
   color: #0f172a !important;
 }
+
+
+/* =========================================================
+   13. CRYSTALLOGRAPHY CONTROLS REFACTORING (MILLER INDICES)
+   ========================================================= */
+
+.crystal-module .control-label {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--ink, #1e293b) !important;
+  letter-spacing: 0.2px !important;
+  margin-bottom: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+.crystal-module .control-label::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 3.5px !important;
+  height: 12px !important;
+  background: var(--primary, #2563eb) !important;
+  border-radius: 2px !important;
+}
+
+.crystal-module .mode-section .control-label::before {
+  background: linear-gradient(180deg, #0284c7 0%, #d97706 100%) !important;
+}
+
+.crystal-module .system-section .control-label::before {
+  background: #7c3aed !important;
+}
+
+/* Modern Rounded Container */
+.crystal-module .segmented {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  padding: 5px !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+  border-radius: 12px !important;
+  background: var(--surface-sunken, #f1f5f9) !important;
+  gap: 6px !important;
+  box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+html[data-theme="dark"] .crystal-module .segmented {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="gray"] .crystal-module .segmented {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Base Segment Button */
+.crystal-module .segment {
+  min-height: 44px !important;
+  padding: 6px 12px !important;
+  border: 1.5px solid transparent !important;
+  border-radius: 9px !important;
+  color: var(--muted, #64748b) !important;
+  background: transparent !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: none !important;
+  user-select: none !important;
+}
+
+.crystal-module .segment:hover:not(.is-active) {
+  background: rgba(255, 255, 255, 0.65) !important;
+  color: var(--ink, #0f172a) !important;
+}
+
+html[data-theme="dark"] .crystal-module .segment:hover:not(.is-active) {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f8fafc !important;
+}
+
+/* Base Active Segment */
+.crystal-module .segment.is-active {
+  background: var(--surface, #ffffff) !important;
+  color: var(--ink, #0f172a) !important;
+  border-color: rgba(203, 213, 225, 0.9) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(-0.5px) !important;
+}
+
+html[data-theme="dark"] .crystal-module .segment.is-active {
+  background: #0f172a !important;
+  border-color: #475569 !important;
+  color: #f8fafc !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Micro badges and icons */
+.crystal-module .seg-icon {
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease !important;
+}
+
+.crystal-module .segment:hover .seg-icon {
+  transform: scale(1.12) !important;
+}
+
+.crystal-module .seg-pill {
+  font-family: var(--font-mono, monospace) !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  padding: 2px 6.5px !important;
+  border-radius: 5px !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0.2px !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* A. 学习模式个性化设计 */
+.crystal-module [data-crystal-workflow="draw"].is-active {
+  color: #2563eb !important;
+  border-color: rgba(37, 99, 235, 0.38) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%) !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.12) !important;
+}
+
+.crystal-module [data-crystal-workflow="draw"].is-active .seg-icon {
+  stroke: #2563eb !important;
+}
+
+.crystal-module [data-crystal-workflow="training"].is-active {
+  color: #7c3aed !important;
+  border-color: rgba(124, 58, 237, 0.38) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%) !important;
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.12) !important;
+}
+
+.crystal-module [data-crystal-workflow="training"].is-active .seg-icon {
+  stroke: #7c3aed !important;
+}
+
+/* B. 投影几何目标（晶面 / 晶向）特色化设计 */
+.crystal-module .mode-segmented .segment {
+  min-height: 46px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+
+.crystal-module .seg-pill.is-plane {
+  background: rgba(2, 132, 199, 0.12) !important;
+  color: #0284c7 !important;
+}
+
+.crystal-module [data-mode="plane"].is-active {
+  color: #0369a1 !important;
+  border-color: rgba(2, 132, 199, 0.48) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%) !important;
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.16) !important;
+}
+
+.crystal-module [data-mode="plane"].is-active .seg-pill.is-plane {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(2, 132, 199, 0.35) !important;
+}
+
+.crystal-module .seg-pill.is-direction {
+  background: rgba(217, 119, 6, 0.12) !important;
+  color: #d97706 !important;
+}
+
+.crystal-module [data-mode="direction"].is-active {
+  color: #b45309 !important;
+  border-color: rgba(217, 119, 6, 0.48) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%) !important;
+  box-shadow: 0 3px 12px rgba(217, 119, 6, 0.16) !important;
+}
+
+.crystal-module [data-mode="direction"].is-active .seg-pill.is-direction {
+  background: #d97706 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35) !important;
+}
+
+/* C. 点阵坐标系（立方 / 六方）特色化设计 */
+.crystal-module .seg-pill.is-system {
+  background: rgba(100, 116, 139, 0.12) !important;
+  color: #64748b !important;
+}
+
+.crystal-module [data-system="cubic"].is-active,
+.crystal-module [data-system="hex"].is-active {
+  color: #1e293b !important;
+  border-color: rgba(79, 70, 229, 0.4) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+  box-shadow: 0 3px 10px rgba(79, 70, 229, 0.12) !important;
+}
+
+.crystal-module [data-system].is-active .seg-pill.is-system {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.3) !important;
+}
+
+html[data-theme="dark"] .crystal-module [data-system="cubic"].is-active,
+html[data-theme="dark"] .crystal-module [data-system="hex"].is-active {
+  color: #f1f5f9 !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+  border-color: rgba(99, 102, 241, 0.5) !important;
+}

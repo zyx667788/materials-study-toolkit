@@ -9,7 +9,7 @@ export async function initFlashcardsModule() {
   };
 
   let state = {
-    subject: "caikeji", // 'caikeji' | 'metallurgy'
+    subject: "all", // 'all'
     currentChapter: "全部",
     currentType: "全部",
     filterStatus: "all", // 'all' | 'unanswered' | 'weak' | 'favorite'
@@ -112,8 +112,8 @@ export async function initFlashcardsModule() {
           fetch("data/caikeji_questions.json").then(r => r.json()).catch(() => []),
           fetch("data/metallurgy_questions.json").then(r => r.json()).catch(() => [])
         ]);
-        const list1 = Array.isArray(res1) ? res1.slice(0, 1056) : [];
-        const list2 = Array.isArray(res2) ? res2.slice(0, 254) : [];
+        const list1 = Array.isArray(res1) ? res1 : [];
+        const list2 = Array.isArray(res2) ? res2 : [];
         const fallback = typeof window !== "undefined" && Array.isArray(window.CARDS_DATA) ? window.CARDS_DATA : [];
         questionsData.caikeji = list1.length || list2.length
           ? groupAndShuffleByChapter(list1, list2)
@@ -223,7 +223,7 @@ export async function initFlashcardsModule() {
 
     // Update subject toggle
     root.querySelectorAll(".fc-subj-tab").forEach(tab => {
-      tab.classList.toggle("is-active", tab.dataset.subject === state.subject);
+      tab.classList.toggle("is-active", tab.dataset.subject === "all" || tab.dataset.subject === state.subject);
     });
 
     // Populate Chapter dropdown if needed

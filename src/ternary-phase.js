@@ -10,11 +10,6 @@ const SECTION_NODE_DECIMALS = 3;
 const SECTION_SIMPLIFY_TOLERANCE = 0.008;
 const SECTION_SMOOTH_SAMPLE_LIMIT = 220;
 
-const TEMP_LABELS = {
-  low: "低温",
-  eutectic: "三元共晶温度 TE",
-  high: "温度 T",
-};
 
 const DIAGRAMS = [...createEutecticDiagrams(), ...createTextbookDiagrams()];
 
@@ -1097,7 +1092,7 @@ function makeStandaloneSectionGuide(descriptor) {
     addSegment(baryToVector(midpoint, LOW_T), baryToVector(midpoint, AXIS_TOP_T));
     group.add(makeTextSprite("P1", corners[0].clone().add(new THREE.Vector3(0, 0, -0.1)), 0x0284c7, 0.18));
     group.add(makeTextSprite("P2", corners[1].clone().add(new THREE.Vector3(0, 0, -0.1)), 0xd97706, 0.18));
-    group.add(makeTextSprite("T", corners[3].clone().add(new THREE.Vector3(0, 0, 0.12)), ternaryInkColor(), 0.18));
+
   }
 
   const geometry = new THREE.BufferGeometry();

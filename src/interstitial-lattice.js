@@ -17,13 +17,13 @@ const LATTICES = {
     code: "BCC",
     name: "体心立方",
     title: "体心立方 BCC",
-    centerLabel: "体心原子",
+    centerLabel: "顶点与体心骨架原子",
     atomCount: "2",
     coordination: "8",
     octaCount: "6",
     tetraCount: "12",
-    closePlane: "{110}",
-    closeDirection: "⟨111⟩",
+    closePlane: "(110)",
+    closeDirection: "[111]",
     note: "BCC 没有严格意义上的完全密排面，{110} 是原子面密度最大的晶面族，⟨111⟩ 为密排方向。间隙数量按一个晶胞折合计算。",
     tangentRadius: Math.sqrt(3) / 2,
     build: buildBccModel,
@@ -32,13 +32,13 @@ const LATTICES = {
     code: "FCC",
     name: "面心立方",
     title: "面心立方 FCC",
-    centerLabel: "面心原子",
+    centerLabel: "顶点与面心骨架原子",
     atomCount: "4",
     coordination: "12",
     octaCount: "4",
     tetraCount: "8",
-    closePlane: "{111}",
-    closeDirection: "⟨110⟩",
+    closePlane: "(111)",
+    closeDirection: "[110]",
     note: "FCC 的密排面为 {111}，密排方向为 ⟨110⟩。每个晶胞含 4 个八面体位和 8 个四面体位。",
     tangentRadius: 1 / Math.sqrt(2),
     build: buildFccModel,
@@ -47,13 +47,13 @@ const LATTICES = {
     code: "HCP",
     name: "六方密排",
     title: "六方密排 HCP",
-    centerLabel: "密排层原子",
+    centerLabel: "密排层骨架原子",
     atomCount: "6",
     coordination: "12",
     octaCount: "6",
     tetraCount: "12",
     closePlane: "(0001)",
-    closeDirection: "⟨112̄0⟩",
+    closeDirection: "[112̄0]",
     note: "HCP 的密排面为基面 (0001)，密排方向为 ⟨112̄0⟩。模型采用理想轴比 c/a = 1.633。",
     tangentRadius: 0.66,
     build: buildHcpModel,
@@ -251,6 +251,15 @@ export function initInterstitialLatticeModule() {
     els.toggleButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const key = button.dataset.interstitialToggle;
+        if (key === "latticeAtoms") {
+          const next = !(state.visible.vertices || state.visible.centers);
+          state.visible.vertices = next;
+          state.visible.centers = next;
+          button.classList.toggle("is-active", next);
+          button.setAttribute("aria-pressed", String(next));
+          drawLattice(false);
+          return;
+        }
         if (!(key in state.visible)) return;
         state.visible[key] = !state.visible[key];
         button.classList.toggle("is-active", state.visible[key]);

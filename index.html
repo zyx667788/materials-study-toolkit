@@ -34,7 +34,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261103-v9-video-ego-verified" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261103-v10-all-feedback-done" />
     <script type="importmap">
       {
         "imports": {
@@ -75,7 +75,7 @@
           <div class="sidebar-group-title">晶体结构</div>
           <button class="nav-item" data-module="typical-structures" type="button" role="tab">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
-            <span>典型结构</span>
+            <span>晶体结构</span>
           </button>
           <button class="nav-item" data-module="interstitial" type="button" role="tab">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -153,7 +153,7 @@
         <div class="home-hero">
           <span class="home-eyebrow">YANLE MATERIALS LAB · INTERACTIVE LEARNING SUITE</span>
           <h2 class="home-title">研乐 · 材料考研数字化交互学习平台</h2>
-          <p class="home-desc">立足《材料科学基础》核心考纲 · 专为材料考研学子打造的三维空间晶体学与平衡转变仿真系统</p>
+          <p class="home-desc">研乐材料考研——材料考研领域“头等舱”</p>
         </div>
 
         <div class="home-grid">
@@ -168,7 +168,7 @@
             <h3 class="home-card-title">晶体结构与间隙</h3>
             <p class="home-card-desc">体心/面心/密排等典型晶胞模型、八面体/四面体间隙与半径比计算</p>
             <div class="home-actions-wrap">
-              <button class="home-action-btn" data-nav-target="typical-structures" type="button">典型结构 →</button>
+              <button class="home-action-btn" data-nav-target="typical-structures" type="button">晶体结构 →</button>
               <button class="home-action-btn" data-nav-target="interstitial" type="button">点阵 / 间隙 →</button>
             </div>
           </div>
@@ -361,19 +361,12 @@
             <section class="interstitial-card interstitial-switch-card">
               <label class="control-label">显示</label>
               <div class="interstitial-switch-grid">
-                <div class="interstitial-switch-row">
-                  <button class="interstitial-switch is-active is-lattice" type="button" data-interstitial-toggle="vertices" aria-pressed="true">
+                <div class="interstitial-switch-row is-single-switch">
+                  <button class="interstitial-switch is-active is-lattice" type="button" data-interstitial-toggle="latticeAtoms" aria-pressed="true" style="grid-column: 1 / -1; width: 100%;">
                     <span class="switch-dot"></span>
                     <div class="switch-info">
-                      <span class="switch-title">顶点原子</span>
-                      <span class="switch-sub">晶格角顶骨架</span>
-                    </div>
-                  </button>
-                  <button class="interstitial-switch is-active is-center" type="button" data-interstitial-toggle="centers" aria-pressed="true">
-                    <span class="switch-dot"></span>
-                    <div class="switch-info">
-                      <span id="interstitialCenterLabel" class="switch-title">体心原子</span>
-                      <span class="switch-sub">空间中心原子</span>
+                      <span class="switch-title">点阵原子</span>
+                      <span id="interstitialCenterLabel" class="switch-sub">顶点与体心骨架原子</span>
                     </div>
                   </button>
                 </div>
@@ -381,14 +374,14 @@
                   <button class="interstitial-switch is-active is-octa" type="button" data-interstitial-toggle="octaOutline" aria-pressed="true">
                     <span class="switch-dot"></span>
                     <div class="switch-info">
-                      <span class="switch-title">八面体轮廓</span>
+                      <span class="switch-title">八面体间隙</span>
                       <span class="switch-sub">配位多面体</span>
                     </div>
                   </button>
                   <button class="interstitial-switch is-octa" type="button" data-interstitial-toggle="octaAtoms" aria-pressed="false">
                     <span class="switch-dot"></span>
                     <div class="switch-info">
-                      <span class="switch-title">八面体填隙</span>
+                      <span class="switch-title">八面体间隙中心</span>
                       <span class="switch-sub">间隙位置原子</span>
                     </div>
                   </button>
@@ -397,14 +390,14 @@
                   <button class="interstitial-switch is-active is-tetra" type="button" data-interstitial-toggle="tetraOutline" aria-pressed="true">
                     <span class="switch-dot"></span>
                     <div class="switch-info">
-                      <span class="switch-title">四面体轮廓</span>
+                      <span class="switch-title">四面体间隙</span>
                       <span class="switch-sub">配位多面体</span>
                     </div>
                   </button>
                   <button class="interstitial-switch is-tetra" type="button" data-interstitial-toggle="tetraAtoms" aria-pressed="false">
                     <span class="switch-dot"></span>
                     <div class="switch-info">
-                      <span class="switch-title">四面体填隙</span>
+                      <span class="switch-title">四面体间隙中心</span>
                       <span class="switch-sub">间隙位置原子</span>
                     </div>
                   </button>
@@ -414,14 +407,14 @@
                     <span class="switch-dot"></span>
                     <div class="switch-info">
                       <span class="switch-title">密排晶面</span>
-                      <span id="interstitialClosePlaneLabel" class="switch-sub">{110}</span>
+                      <span id="interstitialClosePlaneLabel" class="switch-sub">(110)</span>
                     </div>
                   </button>
                   <button class="interstitial-switch is-packing-direction" type="button" data-interstitial-toggle="closeDirection" aria-pressed="false">
                     <span class="switch-dot"></span>
                     <div class="switch-info">
                       <span class="switch-title">密排晶向</span>
-                      <span id="interstitialCloseDirectionLabel" class="switch-sub">⟨111⟩</span>
+                      <span id="interstitialCloseDirectionLabel" class="switch-sub">[111]</span>
                     </div>
                   </button>
                 </div>
@@ -454,11 +447,11 @@
               <dl class="interstitial-packing-meta">
                 <div>
                   <dt>密排面</dt>
-                  <dd id="interstitialClosePlaneReadout">{110}</dd>
+                  <dd id="interstitialClosePlaneReadout">(110)</dd>
                 </div>
                 <div>
                   <dt>密排方向</dt>
-                  <dd id="interstitialCloseDirectionReadout">⟨111⟩</dd>
+                  <dd id="interstitialCloseDirectionReadout">[111]</dd>
                 </div>
               </dl>
             </section>
@@ -940,9 +933,9 @@
             <section class="stereo-card stereo-density-card">
               <label class="control-label">投影指数阶数</label>
               <div class="segmented stereo-density" role="group" aria-label="投影指数阶数">
-                <button class="segment" type="button" data-stereo-order="1" aria-pressed="false">低阶基准</button>
-                <button class="segment is-active" type="button" data-stereo-order="2" aria-pressed="true">核心密网</button>
-                <button class="segment" type="button" data-stereo-order="3" aria-pressed="false">高阶全谱</button>
+                <button class="segment" type="button" data-stereo-order="1" aria-pressed="false">模型一</button>
+                <button class="segment is-active" type="button" data-stereo-order="2" aria-pressed="true">模型二</button>
+                <button class="segment" type="button" data-stereo-order="3" aria-pressed="false">模型三</button>
               </div>
             </section>
 
@@ -1228,6 +1221,6 @@
       </div>
     </div>
 
-    <script type="module" src="./src/app.js?v=20261103-v9-video-ego-verified"></script>
+    <script type="module" src="./src/app.js?v=20261103-v10-all-feedback-done"></script>
   </body>
 </html><!-- auto-deploy test -->

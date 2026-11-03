@@ -2333,9 +2333,7 @@ function makeCompositionGuide(diagram) {
     { text: "A", point: [1.07, -0.035, -0.035], color: 0x0284c7, scale: 0.24 },
     { text: "B", point: [-0.035, 1.07, -0.035], color: 0xd97706, scale: 0.24 },
     { text: "C", point: [-0.035, -0.035, 1.07], color: 0x7c3aed, scale: 0.24 },
-    { text: TEMP_LABELS.low, vector: baryToVector([1.2, -0.12, -0.08], 0.02), color: 0x607d8b, scale: 0.18 },
     { text: diagram?.axisTemps?.specialLabel || "TE", vector: baryToVector([1.2, -0.12, -0.08], diagram?.axisTemps?.special ?? 0.32), color: 0xc44536, scale: 0.18 },
-    { text: "T", vector: baryToVector([1.2, -0.12, -0.08], AXIS_TOP_T), color: ternaryInkColor(), scale: 0.18 },
   ].forEach((label) => {
     const position = label.vector || baryToVector(label.point, 0);
     group.add(makeTextSprite(label.text, position, label.color, label.scale || 0.18));

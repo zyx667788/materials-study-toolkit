@@ -246,7 +246,7 @@ function wireModuleNav() {
 
     const TITLES = {
       home: { title: '首页导航', desc: '选择模块进入对应工具' },
-      'typical-structures': { title: '典型晶体结构', desc: '晶体结构 · 晶胞模型与结构参数' },
+      'typical-structures': { title: '晶体结构', desc: '晶体结构与典型材料空间模型' },
       interstitial: { title: '点阵间隙', desc: '晶体结构 · 间隙位置与半径比' },
       crystal: { title: '密勒指数', desc: '晶体学 · 晶面、晶向、镜面绘制与识图训练' },
       'binary-phase': { title: '二元相图', desc: '相图 · 匀晶与共晶相图、杠杆定律计算' },

@@ -9390,30 +9390,26 @@ html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-plane {
 
 /* --- 7. Miller Indices: Two-in-One Floating Training HUD --- */
 .crystal-training-hud {
-  position: absolute !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: 20px !important;
-  left: 16px !important;
-  width: 280px !important;
-  max-width: calc(100% - 28px) !important;
-  z-index: 20 !important;
+  position: static !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 14px !important;
+  z-index: 1 !important;
   background: var(--panel) !important;
   border: 1px solid var(--line-strong) !important;
   border-radius: 10px !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
   padding: 12px 14px !important;
   gap: 8px !important;
 }
 
-@media (max-width: 820px) {
-  .crystal-training-hud {
-    position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin-top: 12px !important;
-    box-shadow: none !important;
-  }
+.crystal-training-hud.is-hidden {
+  display: none !important;
+}
+
+/* 隐藏三元相图画布右下角的小悬浮图标（自动旋转按钮） */
+#ternaryPhaseModule .viewer-rotation-actions {
+  display: none !important;
 }
 
 /* --- 8. Dislocation Reactions: Distinct Colored Card Backgrounds for Dislocation A and B --- */

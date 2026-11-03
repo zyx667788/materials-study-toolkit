@@ -34,7 +34,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261103-v12-mobile-1317" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261103-v13-ui-feedback-fix" />
     <script type="importmap">
       {
         "imports": {
@@ -568,18 +568,9 @@
             <section class="control-section tool-section">
               <button id="resetButton" class="ghost-button" type="button" style="width:100%;">初始状态</button>
             </section>
-          </aside>
 
-          <section class="viewer-panel" aria-label="三维晶胞视图">
-            <div id="sceneHost" class="scene-host"></div>
-            <div class="legend" aria-label="颜色图例">
-              <span><i class="swatch swatch-cell"></i>晶胞</span>
-              <span><i class="swatch swatch-plane"></i>晶面</span>
-              <span><i class="swatch swatch-direction"></i>晶向</span>
-            </div>
-
-            <!-- 右侧自主识图训练悬浮卡片 -->
-            <section id="crystalTrainingSection" class="training-section crystal-training-hud" aria-live="polite">
+            <!-- 自主识图训练控制卡片（置于初始状态下方） -->
+                        <section id="crystalTrainingSection" class="training-section crystal-training-hud" aria-live="polite">
               <div class="training-head">
                 <div class="training-question">
                   <span id="trainingQuestionNumber">第 1 题</span>
@@ -606,6 +597,17 @@
                 <button id="trainingNextButton" class="ghost-button" type="button">下一个</button>
               </div>
             </section>
+          </aside>
+
+          <section class="viewer-panel" aria-label="三维晶胞视图">
+            <div id="sceneHost" class="scene-host"></div>
+            <div class="legend" aria-label="颜色图例">
+              <span><i class="swatch swatch-cell"></i>晶胞</span>
+              <span><i class="swatch swatch-plane"></i>晶面</span>
+              <span><i class="swatch swatch-direction"></i>晶向</span>
+            </div>
+
+            
           </section>
         </div>
         <footer class="module-footer">
@@ -700,7 +702,7 @@
             <div class="fe-panel-head">
               <div>
                 <h2>铁碳相图</h2>
-                <p>Fe-Fe<sub>3</sub>C · 质量分数 w<sub>C</sub>%</p>
+                <p>Fe-Fe<sub>3</sub>C</p>
               </div>
               <div class="fe-panel-actions">
                 <label class="fe-carbon-field" for="carbonInput">
@@ -1230,6 +1232,6 @@
       </div>
     </div>
 
-    <script type="module" src="./src/app.js?v=20261103-v12-mobile-1317"></script>
+    <script type="module" src="./src/app.js?v=20261103-v13-ui-feedback-fix"></script>
   </body>
 </html><!-- auto-deploy test -->

@@ -604,7 +604,9 @@ export function initTernaryPhaseModule() {
       const diagram = selectedDiagram();
       const preferredIds = new Set(["liquid-alpha", "liquid-beta", "liquid-gamma", "alpha", "beta", "gamma", "alpha-beta-gamma"]);
       const preferredRegions = diagram.regions.filter((region) => preferredIds.has(region.id));
-      const legendRegions = preferredRegions.length ? preferredRegions : diagram.regions.slice(0, 9);
+      const candidateRegions = preferredRegions.length ? preferredRegions : diagram.regions;
+      const legendRegions = candidateRegions
+        .filter((region) => region.key !== "L" && region.title !== "L" && region.phase !== "L");
       els.legend.innerHTML = legendRegions
         .map((region) => `<span><i style="background:#${region.color.toString(16).padStart(6, "0")}"></i>${region.title}</span>`)
         .join("");
@@ -713,7 +715,7 @@ export function initTernaryPhaseModule() {
         if (invariant && state.sectionStandalone) sectionRoot.add(makeInvariantSectionGuide(invariant));
         segmentCount = exactFields.length;
         if (els.legend) {
-          els.legend.innerHTML = exactFields.map(field => `<span><i style="background:#${field.color.toString(16).padStart(6, '0')}"></i>${field.phase}</span>`).join('');
+          els.legend.innerHTML = exactFields.filter(f => f.phase !== "L").map(field => `<span><i style="background:#${field.color.toString(16).padStart(6, '0')}"></i>${field.phase}</span>`).join('');
         }
       } else diagram.regions.forEach((region) => {
         const segments = intersectRegionWithSection(region, descriptor);

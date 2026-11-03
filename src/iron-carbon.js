@@ -539,7 +539,7 @@ function renderChartSvg() {
 
       <g class="fe-chart-labels">
         ${labels.map((label) => `<text x="${sx(label.c)}" y="${sy(label.t)}">${svgChemicalMarkup(label.text)}</text>`).join("")}
-        <text class="fe-peritectic-label" data-region-trigger="peritectic" x="${sx(0.56)}" y="${sy(1495) - 6}" text-anchor="start" style="cursor: pointer;">包晶点 1495℃ (包晶区)</text>
+        
         <text x="${sx(0.77)}" y="${sy(727) - 12}" text-anchor="middle">共析点 0.77% / 727℃</text>
         <text x="${sx(4.3)}" y="${sy(1148) - 12}" text-anchor="middle">共晶点 4.3% / 1148℃</text>
         <text x="${sx(2.11)}" y="${sy(1148) + 24}" text-anchor="middle">2.11%</text>

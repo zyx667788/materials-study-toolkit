@@ -410,7 +410,10 @@ function buildBccModel() {
     outlineTetraSites: [[0.5, 0.25, 0], [0.25, 0.5, 0]],
     packing: {
       plane: [[0, 0, 0], [1, 1, 0], [1, 1, 1], [0, 0, 1]],
-      direction: [[0, 0, 0], [1, 1, 1]],
+      direction: [
+        [[0, 0, 0], [1, 1, 1]],
+        [[1, 1, 0], [0, 0, 1]],
+      ],
     },
   });
 }
@@ -472,7 +475,9 @@ function buildCubicModel(spec) {
     outlineTetraSites: spec.outlineTetraSites.map(converter),
     packing: {
       plane: spec.packing.plane.map(converter),
-      direction: spec.packing.direction.map(converter),
+      direction: Array.isArray(spec.packing.direction[0]) && Array.isArray(spec.packing.direction[0][0])
+        ? spec.packing.direction.map(pair => pair.map(converter))
+        : spec.packing.direction.map(converter),
     },
     extendedHosts,
     cellEdges,
@@ -764,39 +769,47 @@ function makePackingPlane(points, color) {
   return group;
 }
 
-function makePackingDirection([start, end], color) {
+function makePackingDirection(input, color) {
   const group = new THREE.Group();
-  const direction = end.clone().sub(start);
-  const length = direction.length();
-  if (length < 1e-8) return group;
-  direction.normalize();
-  const coneLength = Math.min(0.3, length * 0.18);
-  const shaftLength = Math.max(0.08, length - coneLength);
-  const material = new THREE.MeshStandardMaterial({
-    color,
-    roughness: 0.34,
-    metalness: 0.04,
-    emissive: color,
-    emissiveIntensity: isDarkTheme() ? 0.2 : 0.06,
-    depthTest: false,
-    depthWrite: false,
-  });
-  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, shaftLength, 16), material);
-  shaft.position.copy(start).addScaledVector(direction, shaftLength / 2);
-  shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-  shaft.renderOrder = 30;
-  group.add(shaft);
+  if (!input) return group;
+  const pairs = (Array.isArray(input[0]) && Array.isArray(input[0][0])) || (Array.isArray(input[0]) && input[0][0] instanceof THREE.Vector3)
+    ? input
+    : [input];
 
-  const head = new THREE.Mesh(new THREE.ConeGeometry(0.12, coneLength, 20), material);
-  head.position.copy(start).addScaledVector(direction, shaftLength + coneLength / 2);
-  head.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-  head.renderOrder = 31;
-  group.add(head);
+  for (const [start, end] of pairs) {
+    if (!start || !end) continue;
+    const direction = end.clone().sub(start);
+    const length = direction.length();
+    if (length < 1e-8) continue;
+    direction.normalize();
+    const coneLength = Math.min(0.3, length * 0.18);
+    const shaftLength = Math.max(0.08, length - coneLength);
+    const material = new THREE.MeshStandardMaterial({
+      color,
+      roughness: 0.34,
+      metalness: 0.04,
+      emissive: color,
+      emissiveIntensity: isDarkTheme() ? 0.2 : 0.06,
+      depthTest: false,
+      depthWrite: false,
+    });
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, shaftLength, 16), material);
+    shaft.position.copy(start).addScaledVector(direction, shaftLength / 2);
+    shaft.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+    shaft.renderOrder = 30;
+    group.add(shaft);
 
-  const origin = new THREE.Mesh(new THREE.SphereGeometry(0.065, 20, 12), material);
-  origin.position.copy(start);
-  origin.renderOrder = 31;
-  group.add(origin);
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.12, coneLength, 20), material);
+    head.position.copy(start).addScaledVector(direction, shaftLength + coneLength / 2);
+    head.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+    head.renderOrder = 31;
+    group.add(head);
+
+    const origin = new THREE.Mesh(new THREE.SphereGeometry(0.065, 20, 12), material);
+    origin.position.copy(start);
+    origin.renderOrder = 31;
+    group.add(origin);
+  }
   return group;
 }
 

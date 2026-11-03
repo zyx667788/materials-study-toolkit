@@ -6,15 +6,15 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta id="themeColorMeta" name="theme-color" content="#f0f6fc" />
-    <title>材料实验室 · 材料专业学术教学系统</title>
+    <title>研乐 · 材料考研数字化交互学习平台</title>
     <meta name="description" content="研乐材料实验室：材料专业可视化教学系统。包含3D典型晶体结构、点阵间隙、密勒指数、二元相图、铁碳相图、三元相图、极射投影、记忆卡片与真题刷题系统。" />
     <meta name="keywords" content="材料科学基础,材料实验室,研乐,晶体结构,密勒指数,二元相图,铁碳相图,三元相图,极射投影,考研题库" />
-    <meta property="og:title" content="材料实验室 · 材料专业可视化教学系统" />
+    <meta property="og:title" content="研乐 · 材料考研数字化交互学习平台" />
     <meta property="og:description" content="四大板块、八个交互工具，全交互式3D三元相图、铁碳相图杠杆定律实时计算系统。" />
     <meta property="og:type" content="website" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="材料实验室" />
+    <meta name="apple-mobile-web-app-title" content="研乐材料研学" />
     <link rel="icon" type="image/svg+xml" href="./assets/app-logo.svg" />
     <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
     <script src="./vendor/katex/katex.min.js"></script>
@@ -34,7 +34,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261103-v8-video-feedback" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261103-v9-video-ego-verified" />
     <script type="importmap">
       {
         "imports": {
@@ -491,6 +491,14 @@
           <section id="crystalModule" class="module-view crystal-module" data-module-panel="crystal">
         <div class="workspace">
           <aside class="control-panel" aria-label="晶体绘图与识图训练控制">
+
+            <section class="control-section crystal-workflow-section">
+              <label class="control-label">学习模式</label>
+              <div class="segmented workflow-segmented" role="group" aria-label="学习模式">
+                <button class="segment is-active" type="button" data-crystal-workflow="draw" aria-pressed="true">自由绘图</button>
+                <button class="segment" type="button" data-crystal-workflow="training" aria-pressed="false">识图训练</button>
+              </div>
+            </section>
 
             <section class="control-section mode-section">
               <label class="control-label">投影几何目标</label>
@@ -1220,6 +1228,6 @@
       </div>
     </div>
 
-    <script type="module" src="./src/app.js?v=20261102-v7-mobile"></script>
+    <script type="module" src="./src/app.js?v=20261103-v9-video-ego-verified"></script>
   </body>
 </html><!-- auto-deploy test -->

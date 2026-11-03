@@ -848,11 +848,12 @@ function formatVisitOrdinal(totalVisits) {
 }
 
 function updateSections() {
-  els.crystalModule?.classList.remove("is-training");
-  els.trainingSection?.classList.remove("is-hidden");
-  els.indexSection?.classList.remove("is-hidden");
-  els.readoutPanel?.classList.remove("is-hidden");
-  if (state.mode === "plane") {
+  const isTraining = state.workflow === "training";
+  els.crystalModule?.classList.toggle("is-training", isTraining);
+  els.trainingSection?.classList.toggle("is-hidden", !isTraining);
+  els.indexSection?.classList.toggle("is-hidden", isTraining);
+  els.readoutPanel?.classList.toggle("is-hidden", isTraining);
+  if (!isTraining && state.mode === "plane") {
     els.planeLayerSection?.classList.remove("is-hidden");
   } else {
     els.planeLayerSection?.classList.add("is-hidden");

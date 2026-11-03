@@ -194,6 +194,9 @@ export function initInterstitialLatticeModule() {
   scene.add(rim);
 
   wireUi();
+  const initDef = LATTICES[state.lattice];
+  const initialCenterEl = document.querySelector("#interstitialCenterLabel");
+  if (initialCenterEl && initDef?.centerLabel) initialCenterEl.textContent = initDef.centerLabel;
   applySceneTheme();
   drawLattice(true);
   resize();
@@ -223,6 +226,18 @@ export function initInterstitialLatticeModule() {
         state.lattice = lattice;
         els.latticeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
         const definition = LATTICES[lattice];
+        const centerLabelEl = document.querySelector("#interstitialCenterLabel");
+        if (centerLabelEl && definition.centerLabel) {
+          centerLabelEl.textContent = definition.centerLabel;
+        }
+        const planeEl = document.querySelector("#interstitialPlaneReadout");
+        if (planeEl && definition.closePlane) {
+          planeEl.textContent = definition.closePlane;
+        }
+        const dirEl = document.querySelector("#interstitialDirectionReadout");
+        if (dirEl && definition.closeDirection) {
+          dirEl.textContent = definition.closeDirection;
+        }
         if (els.atomRadius && definition.tangentRadius) {
           els.atomRadius.max = definition.tangentRadius.toFixed(3);
           state.atomRadius = Math.min(definition.tangentRadius * 0.42, definition.tangentRadius);

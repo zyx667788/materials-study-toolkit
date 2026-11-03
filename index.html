@@ -34,7 +34,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261102-v7-mobile" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261103-v8-video-feedback" />
     <script type="importmap">
       {
         "imports": {
@@ -49,10 +49,18 @@
       <!-- 左侧固定侧边栏 -->
       <aside id="appSidebar" class="app-sidebar">
         <div class="sidebar-brand">
-          <div class="sidebar-logo">研乐</div>
+          <div class="sidebar-logo">
+            <svg class="brand-poly-icon" viewBox="0 0 24 24" fill="none">
+              <polygon points="12 2 21 7.5 21 16.5 12 22 3 16.5 3 7.5" stroke="currentColor" stroke-width="1.8" fill="rgba(255,255,255,0.18)"/>
+              <line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="1.2"/>
+              <line x1="3" y1="7.5" x2="21" y2="16.5" stroke="currentColor" stroke-width="1"/>
+              <line x1="3" y1="16.5" x2="21" y2="7.5" stroke="currentColor" stroke-width="1"/>
+            </svg>
+            <span class="logo-text">研乐</span>
+          </div>
           <div class="sidebar-brand-text">
-            <strong>材料实验室</strong>
-            <span>YANLE MATERIALS LAB</span>
+            <strong>材料数字实验室 <span class="brand-live-dot" title="在线"></span></strong>
+            <span>YANLE · 考研研学空间</span>
           </div>
           <button id="sidebarCloseBtn" class="sidebar-close-btn" type="button" aria-label="关闭侧边栏">✕</button>
         </div>
@@ -143,9 +151,9 @@
       <!-- 首页导航模块 -->
       <section id="homeOverviewModule" class="module-view home-module" data-module-panel="home">
         <div class="home-hero">
-          <span class="home-eyebrow">MATERIALS SCIENCE · PHASE DIAGRAM · PROJECTION</span>
-          <h2 class="home-title">材料考研可视化学习平台</h2>
-          <p class="home-desc">基于《材料科学基础》权威教材 · 学术级交互工具，严格匹配教材数据与晶体学公式</p>
+          <span class="home-eyebrow">YANLE MATERIALS LAB · INTERACTIVE LEARNING SUITE</span>
+          <h2 class="home-title">研乐 · 材料考研数字化交互学习平台</h2>
+          <p class="home-desc">立足《材料科学基础》核心考纲 · 专为材料考研学子打造的三维空间晶体学与平衡转变仿真系统</p>
         </div>
 
         <div class="home-grid">
@@ -272,8 +280,8 @@
           <!-- 左侧：原子晶体 / 单质 -->
           <aside class="structure-control-panel structure-panel-left" aria-label="原子晶体与视图参数">
             <section class="structure-card structure-head-card">
-              <span class="fe-kicker">单质</span>
-              <h2>原子晶体 / 单质</h2>
+              <span class="fe-kicker">单质结构</span>
+              <h2>碳系微构与典型原子晶体</h2>
             </section>
 
             <section class="structure-card structure-list-card">
@@ -305,8 +313,8 @@
           <!-- 右侧：离子晶体 / 化合物 -->
           <aside class="structure-control-panel structure-panel-right" aria-label="离子晶体列表">
             <section class="structure-card structure-head-card">
-              <span class="fe-kicker">化合物</span>
-              <h2>离子晶体 / 化合物</h2>
+              <span class="fe-kicker">化合物结构</span>
+              <h2>典型离子与化合物晶系</h2>
             </section>
             <section class="structure-card structure-list-card">
               <div id="ionicStructureList" class="structure-column-list" aria-label="离子晶体列表"></div>
@@ -353,38 +361,70 @@
             <section class="interstitial-card interstitial-switch-card">
               <label class="control-label">显示</label>
               <div class="interstitial-switch-grid">
-                <button class="interstitial-switch is-active is-lattice" type="button" data-interstitial-toggle="vertices" aria-pressed="true">
-                  <strong>点阵</strong>
-                  <span>顶点原子</span>
-                </button>
-                <button class="interstitial-switch is-active is-center" type="button" data-interstitial-toggle="centers" aria-pressed="true">
-                  <strong>点阵</strong>
-                  <span id="interstitialCenterLabel">体心原子</span>
-                </button>
-                <button class="interstitial-switch is-active is-octa" type="button" data-interstitial-toggle="octaOutline" aria-pressed="true">
-                  <strong>八面体</strong>
-                  <span>间隙轮廓</span>
-                </button>
-                <button class="interstitial-switch is-octa" type="button" data-interstitial-toggle="octaAtoms" aria-pressed="false">
-                  <strong>八面体</strong>
-                  <span>填隙原子</span>
-                </button>
-                <button class="interstitial-switch is-active is-tetra" type="button" data-interstitial-toggle="tetraOutline" aria-pressed="true">
-                  <strong>四面体</strong>
-                  <span>间隙轮廓</span>
-                </button>
-                <button class="interstitial-switch is-tetra" type="button" data-interstitial-toggle="tetraAtoms" aria-pressed="false">
-                  <strong>四面体</strong>
-                  <span>填隙原子</span>
-                </button>
-                <button class="interstitial-switch is-packing-plane" type="button" data-interstitial-toggle="closePlane" aria-pressed="false">
-                  <strong>密排面</strong>
-                  <span id="interstitialClosePlaneLabel">{110}</span>
-                </button>
-                <button class="interstitial-switch is-packing-direction" type="button" data-interstitial-toggle="closeDirection" aria-pressed="false">
-                  <strong>密排方向</strong>
-                  <span id="interstitialCloseDirectionLabel">⟨111⟩</span>
-                </button>
+                <div class="interstitial-switch-row">
+                  <button class="interstitial-switch is-active is-lattice" type="button" data-interstitial-toggle="vertices" aria-pressed="true">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">顶点原子</span>
+                      <span class="switch-sub">晶格角顶骨架</span>
+                    </div>
+                  </button>
+                  <button class="interstitial-switch is-active is-center" type="button" data-interstitial-toggle="centers" aria-pressed="true">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span id="interstitialCenterLabel" class="switch-title">体心原子</span>
+                      <span class="switch-sub">空间中心原子</span>
+                    </div>
+                  </button>
+                </div>
+                <div class="interstitial-switch-row">
+                  <button class="interstitial-switch is-active is-octa" type="button" data-interstitial-toggle="octaOutline" aria-pressed="true">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">八面体轮廓</span>
+                      <span class="switch-sub">配位多面体</span>
+                    </div>
+                  </button>
+                  <button class="interstitial-switch is-octa" type="button" data-interstitial-toggle="octaAtoms" aria-pressed="false">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">八面体填隙</span>
+                      <span class="switch-sub">间隙位置原子</span>
+                    </div>
+                  </button>
+                </div>
+                <div class="interstitial-switch-row">
+                  <button class="interstitial-switch is-active is-tetra" type="button" data-interstitial-toggle="tetraOutline" aria-pressed="true">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">四面体轮廓</span>
+                      <span class="switch-sub">配位多面体</span>
+                    </div>
+                  </button>
+                  <button class="interstitial-switch is-tetra" type="button" data-interstitial-toggle="tetraAtoms" aria-pressed="false">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">四面体填隙</span>
+                      <span class="switch-sub">间隙位置原子</span>
+                    </div>
+                  </button>
+                </div>
+                <div class="interstitial-switch-row">
+                  <button class="interstitial-switch is-packing-plane" type="button" data-interstitial-toggle="closePlane" aria-pressed="false">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">密排晶面</span>
+                      <span id="interstitialClosePlaneLabel" class="switch-sub">{110}</span>
+                    </div>
+                  </button>
+                  <button class="interstitial-switch is-packing-direction" type="button" data-interstitial-toggle="closeDirection" aria-pressed="false">
+                    <span class="switch-dot"></span>
+                    <div class="switch-info">
+                      <span class="switch-title">密排晶向</span>
+                      <span id="interstitialCloseDirectionLabel" class="switch-sub">⟨111⟩</span>
+                    </div>
+                  </button>
+                </div>
               </div>
             </section>
 
@@ -434,13 +474,7 @@
               <span id="interstitialViewerName">六方密排</span>
               <span id="interstitialViewerStats" class="interstitial-viewer-stats">(6原子)</span>
             </div>
-            <div class="interstitial-legend" aria-label="点阵和间隙颜色图例">
-              <span><i class="interstitial-swatch swatch-lattice"></i>点阵原子</span>
-              <span><i class="interstitial-swatch swatch-octa"></i>八面体间隙</span>
-              <span><i class="interstitial-swatch swatch-tetra"></i>四面体间隙</span>
-              <span><i class="interstitial-swatch swatch-packing-plane"></i>密排面</span>
-              <span><i class="interstitial-swatch swatch-packing-direction"></i>密排方向</span>
-            </div>
+            
           </section>
         </div>
         <footer class="module-footer">
@@ -619,12 +653,7 @@
           <div class="bp-main-layout">
             <div class="bp-diagram-card">
               <svg id="bpSvg" class="bp-svg-canvas" viewBox="0 0 720 420" width="100%" height="auto"></svg>
-              <div class="bp-legend-row">
-                <span class="bp-legend-dot" style="background:#2563eb;"></span> 液相线 L
-                <span class="bp-legend-dot" style="background:#dc2626;"></span> 固相线 / 固溶线
-                <span class="bp-legend-dot" style="background:#10b981;"></span> 杠杆结线
-                <span class="bp-legend-dot" style="background:#7c3aed;"></span> 特征相区
-              </div>
+              
             </div>
 
             <div class="bp-analysis-card">
@@ -726,7 +755,7 @@
                   <dd id="regionStructure">单相奥氏体</dd>
                 </div>
               </dl>
-              <p id="regionNote" class="fe-note">奥氏体是碳溶于 γ-Fe 中形成的间隙固溶体。</p>
+              <p id="regionNote" class="fe-note">奥氏体（γ-Fe 固溶体）：碳原子溶入面心立方晶格形成的间隙固溶相，具备优良塑性与变形能力。</p>
             </section>
 
             <section class="fe-card fe-room-card">
@@ -734,7 +763,7 @@
                 <span class="fe-kicker">室温相与组织含量计算</span>
                 <h3 id="roomTitle">共析钢 · 0.77% C</h3>
               </div>
-              <p class="fe-room-method">室温相按 α + Fe<sub>3</sub>C 杠杆定律计算，组织按合金类型分段计算</p>
+              <p class="fe-room-method">遵循相平衡热力学与相区杠杆法则测算平衡态相与显微组织相对含量</p>
               <div class="fe-quantity-section fe-phase-quantity">
                 <div class="fe-quantity-heading">
                   <strong>室温相组成比例 (总计 100%)</strong>
@@ -792,7 +821,7 @@
             <section class="ternary-card ternary-head-card">
               <span class="fe-kicker">三元相图</span>
               <h2>空间相区查看</h2>
-              <p>A-B-C 成分三角形 · 归一化温度 · 教材示意模型</p>
+              <p>三元相图空间立体模型 · 等温截面与三相平衡反应路线三维解析</p>
             </section>
 
             <section class="ternary-card ternary-diagram-card">
@@ -895,38 +924,38 @@
         <div class="stereo-workspace">
           <aside class="stereo-control-panel" aria-label="极射投影控制">
             <section class="stereo-card stereo-head-card">
-              <span class="fe-kicker">极射赤面投影</span>
-              <h2>立方晶系标准投影</h2>
-              <p>[001] 标准取向 · 圆面低指数标准投影 · 晶面极点与晶带大圆</p>
+              <span class="fe-kicker">球极赤面投影 · 三维透视</span>
+              <h2>标准立方赤面投影网</h2>
+              <p>[001] 极射赤面投影空间坐标系 · 动态呈现极射射线、对称极点与特征大圆晶带截交</p>
             </section>
 
             <section class="stereo-card stereo-density-card">
-              <label class="control-label">指数密度</label>
-              <div class="segmented stereo-density" role="group" aria-label="指数密度">
-                <button class="segment" type="button" data-stereo-order="1" aria-pressed="false">基础</button>
-                <button class="segment is-active" type="button" data-stereo-order="2" aria-pressed="true">常用</button>
-                <button class="segment" type="button" data-stereo-order="3" aria-pressed="false">密集</button>
+              <label class="control-label">投影指数阶数</label>
+              <div class="segmented stereo-density" role="group" aria-label="投影指数阶数">
+                <button class="segment" type="button" data-stereo-order="1" aria-pressed="false">低阶基准</button>
+                <button class="segment is-active" type="button" data-stereo-order="2" aria-pressed="true">核心密网</button>
+                <button class="segment" type="button" data-stereo-order="3" aria-pressed="false">高阶全谱</button>
               </div>
             </section>
 
             <section class="stereo-card stereo-display-card">
-              <label class="control-label">显示</label>
+              <label class="control-label">显示图元</label>
               <div class="stereo-toggle-grid">
                 <label class="stereo-check is-poles">
                   <input type="checkbox" data-stereo-toggle="showPoles" checked />
-                  <span>极点</span>
+                  <span>晶面极点</span>
                 </label>
                 <label class="stereo-check is-labels">
                   <input type="checkbox" data-stereo-toggle="showLabels" checked />
-                  <span>指数</span>
+                  <span>晶面指数</span>
                 </label>
                 <label class="stereo-check is-zones">
                   <input type="checkbox" data-stereo-toggle="showZones" checked />
-                  <span>晶带线</span>
+                  <span>特征晶带</span>
                 </label>
                 <label class="stereo-check is-plane">
                   <input type="checkbox" data-stereo-toggle="showPlane" checked />
-                  <span>投影面</span>
+                  <span>赤道基面</span>
                 </label>
               </div>
             </section>
@@ -1002,7 +1031,7 @@
                   <span>A 扭折 / B 割阶</span>
                 </button>
               </div>
-              <p class="dislocation-relative-note">动画中位错 A 运动；按相对运动原理，两条位错所得台阶段的判定不变。本模型适用于两个不同且相交滑移面上的位错交割。</p>
+              <p class="dislocation-relative-note">基于位错相对运动参考系：位错 A 沿滑移面迁移穿透位错 B，动态判定割阶与扭折几何构型及滑移阻力。</p>
             </section>
 
             <section class="dislocation-card dislocation-vector-card is-a">

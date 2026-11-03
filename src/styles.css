@@ -9871,3 +9871,269 @@ html[data-theme="gray"] :is(.structure-view-badge, .interstitial-view-badge, .st
     font-size: 13.5px !important;
   }
 }
+
+
+/* =========================================================
+   INNOVATIVE BRANDING & SPATIAL FORM (YANLE 2026)
+   ========================================================= */
+.sidebar-brand {
+  padding: 16px 14px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+}
+
+.sidebar-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  position: relative;
+  flex-shrink: 0;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
+  cursor: pointer;
+}
+
+.sidebar-logo:hover {
+  transform: translateY(-2px) scale(1.05) rotate(3deg);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-logo .brand-poly-icon {
+  width: 22px;
+  height: 22px;
+  stroke: #ffffff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.sidebar-logo .logo-text {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-top: -2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-brand-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-brand-text strong {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.2;
+}
+
+.sidebar-brand-text .brand-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  display: inline-block;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+
+.sidebar-brand-text span {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.4px;
+  display: block;
+  margin-top: 3px;
+}
+
+/* =========================================================
+   DIFFERENTIATED INTERSTITIAL CONTROLS
+   ========================================================= */
+.interstitial-switch-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.interstitial-switch-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.interstitial-switch {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  min-height: 48px !important;
+  padding: 8px 12px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  background: var(--surface, rgba(255, 255, 255, 0.9)) !important;
+  color: var(--ink) !important;
+  cursor: pointer !important;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-align: left !important;
+  opacity: 0.72;
+}
+
+.interstitial-switch:hover {
+  opacity: 0.95;
+  border-color: #6366f1 !important;
+  background: rgba(99, 102, 241, 0.05) !important;
+  transform: translateY(-1px);
+}
+
+.interstitial-switch.is-active {
+  opacity: 1 !important;
+  border-color: #4f46e5 !important;
+  background: rgba(79, 70, 229, 0.08) !important;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.16) !important;
+}
+
+.interstitial-switch .switch-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.interstitial-switch.is-lattice .switch-dot { background: #2563eb; box-shadow: 0 0 6px rgba(37, 99, 235, 0.6); }
+.interstitial-switch.is-center .switch-dot { background: #d97706; box-shadow: 0 0 6px rgba(217, 119, 6, 0.6); }
+.interstitial-switch.is-octa .switch-dot { background: #8b5cf6; box-shadow: 0 0 6px rgba(139, 92, 246, 0.6); }
+.interstitial-switch.is-tetra .switch-dot { background: #ec4899; box-shadow: 0 0 6px rgba(236, 72, 153, 0.6); }
+.interstitial-switch.is-packing-plane .switch-dot { background: #059669; box-shadow: 0 0 6px rgba(5, 150, 105, 0.6); }
+.interstitial-switch.is-packing-direction .switch-dot { background: #0284c7; box-shadow: 0 0 6px rgba(2, 132, 199, 0.6); }
+
+.interstitial-switch .switch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.interstitial-switch .switch-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.interstitial-switch .switch-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   DIFFERENTIATED STEREOGRAPHIC CONTROLS
+   ========================================================= */
+.stereo-toggle-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.stereo-check {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 9px 12px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 9px !important;
+  background: var(--surface, rgba(255, 255, 255, 0.85)) !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  transition: all 0.16s ease !important;
+}
+
+.stereo-check:hover {
+  border-color: #6366f1 !important;
+  background: rgba(99, 102, 241, 0.05) !important;
+}
+
+.stereo-check input[type="checkbox"] {
+  accent-color: #4f46e5;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   POLISHED SELECT & DROPDOWNS (ANTI-NATIVE GRAY CLIPPING)
+   ========================================================= */
+.fc-select, .mem-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px center !important;
+  padding-right: 30px !important;
+  background-color: var(--surface, #ffffff) !important;
+  color: var(--ink, #0f172a) !important;
+  border: 1px solid var(--line, #e2e8f0) !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+.fc-select option, .mem-select option {
+  background-color: var(--surface, #ffffff) !important;
+  color: var(--ink, #0f172a) !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+}
+
+html[data-theme="dark"] .fc-select,
+html[data-theme="dark"] .mem-select {
+  background-color: #111827 !important;
+  color: #f1f5f9 !important;
+  border-color: #374151 !important;
+}
+
+html[data-theme="dark"] .fc-select option,
+html[data-theme="dark"] .mem-select option {
+  background-color: #111827 !important;
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="gray"] .fc-select,
+html[data-theme="gray"] .mem-select {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme="gray"] .fc-select option,
+html[data-theme="gray"] .mem-select option {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}

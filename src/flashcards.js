@@ -152,7 +152,8 @@ export async function initFlashcardsModule() {
   function getChapters() {
     const bank = getCurrentBank();
     const set = new Set(bank.map(q => q.chapter).filter(Boolean));
-    return ["全部", ...Array.from(set)];
+    const sorted = Array.from(set).sort((a, b) => parseChapterNum(a) - parseChapterNum(b));
+    return ["全部", ...sorted];
   }
 
   function getTypes() {

@@ -24,10 +24,10 @@ const STRUCTURES = [
   {
     id: "diamond-c",
     category: "atomic",
-    title: "金刚石 C",
+    title: "金刚石 Diamond",
     formula: "C",
     badge: "Fd-3m",
-    crystalTag: "立方 · 四面体共价",
+    crystalTag: "金刚石结构 · 四面体",
     mpId: "mp-66",
     mpUrl: "https://next-gen.materialsproject.org/materials/mp-66",
     spaceGroup: "Fd-3m (227)",
@@ -718,67 +718,83 @@ function ensureStructureCardFallbackStyles() {
   style.id = "structure-card-matrix-fallback";
   style.textContent = `
     :where(#atomicStructureList, #ionicStructureList) {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
     }
     :where(.structure-list-item) {
       display: flex;
       flex-direction: column;
       align-items: stretch;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--line, rgba(226, 232, 240, 0.8));
+      background: var(--surface, rgba(255, 255, 255, 0.85));
       text-align: left;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+    :where(.structure-list-item:hover) {
+      border-color: rgba(99, 102, 241, 0.45);
+      background: var(--surface-hover, rgba(248, 250, 252, 0.95));
+      transform: translateX(2px);
+    }
+    :where(.structure-list-item.is-active) {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.08);
+      box-shadow: 0 0 0 1px #6366f1, 0 3px 10px rgba(99, 102, 241, 0.15);
     }
     :where(.structure-item-head) {
       display: flex;
       align-items: center;
-      gap: 5px;
+      justify-content: space-between;
+      gap: 8px;
       width: 100%;
-      min-width: 0;
     }
     :where(.structure-item-index) {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      opacity: 0.55;
+      color: #6366f1;
+      opacity: 0.85;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
     }
     :where(.structure-item-title) {
       flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink, #0f172a);
+      white-space: normal;
+      line-height: 1.3;
     }
     :where(.structure-item-badge) {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(59, 130, 246, 0.12);
-      color: inherit;
-      opacity: 0.85;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(99, 102, 241, 0.12);
+      color: #4f46e5;
       flex-shrink: 0;
     }
     :where(.structure-item-meta) {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 4px;
-      font-size: 10.5px;
-      opacity: 0.72;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted, #64748b);
       width: 100%;
-      min-width: 0;
     }
     :where(.structure-item-tag) {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space: normal;
+      line-height: 1.25;
     }
     :where(.structure-item-coord) {
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
+      font-weight: 600;
     }
   `;
   document.head.appendChild(style);

@@ -34,7 +34,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261103-v14-refined-controls" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261103-v15-stereo-switches" />
     <script type="importmap">
       {
         "imports": {
@@ -971,21 +971,29 @@
             <section class="stereo-card stereo-display-card">
               <label class="control-label">显示图元</label>
               <div class="stereo-toggle-grid">
-                <label class="stereo-check is-poles">
+                <label class="stereo-check is-poles is-active">
                   <input type="checkbox" data-stereo-toggle="showPoles" checked />
-                  <span>晶面极点</span>
+                  <span class="stereo-dot"></span>
+                  <span class="stereo-label">晶面极点</span>
+                  <span class="stereo-switch-ui" aria-hidden="true"><span class="stereo-switch-knob"></span></span>
                 </label>
-                <label class="stereo-check is-labels">
+                <label class="stereo-check is-labels is-active">
                   <input type="checkbox" data-stereo-toggle="showLabels" checked />
-                  <span>晶面指数</span>
+                  <span class="stereo-dot"></span>
+                  <span class="stereo-label">晶面指数</span>
+                  <span class="stereo-switch-ui" aria-hidden="true"><span class="stereo-switch-knob"></span></span>
                 </label>
-                <label class="stereo-check is-zones">
+                <label class="stereo-check is-zones is-active">
                   <input type="checkbox" data-stereo-toggle="showZones" checked />
-                  <span>特征晶带</span>
+                  <span class="stereo-dot"></span>
+                  <span class="stereo-label">特征晶带</span>
+                  <span class="stereo-switch-ui" aria-hidden="true"><span class="stereo-switch-knob"></span></span>
                 </label>
-                <label class="stereo-check is-plane">
+                <label class="stereo-check is-plane is-active">
                   <input type="checkbox" data-stereo-toggle="showPlane" checked />
-                  <span>赤道基面</span>
+                  <span class="stereo-dot"></span>
+                  <span class="stereo-label">赤道基面</span>
+                  <span class="stereo-switch-ui" aria-hidden="true"><span class="stereo-switch-knob"></span></span>
                 </label>
               </div>
             </section>
@@ -1250,6 +1258,6 @@
       </div>
     </div>
 
-    <script type="module" src="./src/app.js?v=20261103-v14-refined-controls"></script>
+    <script type="module" src="./src/app.js?v=20261103-v15-stereo-switches"></script>
   </body>
 </html><!-- auto-deploy test -->

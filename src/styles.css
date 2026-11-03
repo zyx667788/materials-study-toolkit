@@ -9334,54 +9334,7 @@ html[data-theme="dark"] .fe-reaction-card.fe-eutectoid p {
   color: #f3e8ff !important;
 }
 
-/* --- 5. Stereographic Projection: 4 Distinct Colored Display Toggles --- */
-.stereo-toggle-grid .stereo-check.is-poles {
-  background: linear-gradient(135deg, #e0f7fa 0%, #ccfbf1 100%) !important;
-  border: 1.5px solid #2dd4bf !important;
-  color: #115e59 !important;
-}
-
-.stereo-toggle-grid .stereo-check.is-labels {
-  background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%) !important;
-  border: 1.5px solid #60a5fa !important;
-  color: #1e3a8a !important;
-}
-
-.stereo-toggle-grid .stereo-check.is-zones {
-  background: linear-gradient(135deg, #fef3c7 0%, #ffedd5 100%) !important;
-  border: 1.5px solid #fbbf24 !important;
-  color: #92400e !important;
-}
-
-.stereo-toggle-grid .stereo-check.is-plane {
-  background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%) !important;
-  border: 1.5px solid #c084fc !important;
-  color: #6b21a8 !important;
-}
-
-html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-poles {
-  background: rgba(20, 184, 166, 0.18) !important;
-  border-color: rgba(45, 212, 191, 0.45) !important;
-  color: #99f6e4 !important;
-}
-
-html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-labels {
-  background: rgba(59, 130, 246, 0.18) !important;
-  border-color: rgba(96, 165, 250, 0.45) !important;
-  color: #bfdbfe !important;
-}
-
-html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-zones {
-  background: rgba(245, 158, 11, 0.18) !important;
-  border-color: rgba(251, 191, 36, 0.45) !important;
-  color: #fde68a !important;
-}
-
-html[data-theme="dark"] .stereo-toggle-grid .stereo-check.is-plane {
-  background: rgba(168, 85, 247, 0.18) !important;
-  border-color: rgba(192, 132, 252, 0.45) !important;
-  color: #e9d5ff !important;
-}
+/* --- 5. Stereographic Projection: Refactored below --- */
 
 /* --- 6. Dislocation Intersection: 3-Stage Tabs Grid --- */
 .dislocation-stage-tabs {
@@ -10048,41 +10001,7 @@ html[data-theme="gray"] :is(.structure-view-badge, .interstitial-view-badge, .st
   text-overflow: ellipsis;
 }
 
-/* =========================================================
-   DIFFERENTIATED STEREOGRAPHIC CONTROLS
-   ========================================================= */
-.stereo-toggle-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 8px !important;
-}
-
-.stereo-check {
-  display: flex !important;
-  align-items: center !important;
-  gap: 9px !important;
-  padding: 9px 12px !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 9px !important;
-  background: var(--surface, rgba(255, 255, 255, 0.85)) !important;
-  cursor: pointer !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  color: var(--ink) !important;
-  transition: all 0.16s ease !important;
-}
-
-.stereo-check:hover {
-  border-color: #6366f1 !important;
-  background: rgba(99, 102, 241, 0.05) !important;
-}
-
-.stereo-check input[type="checkbox"] {
-  accent-color: #4f46e5;
-  width: 15px;
-  height: 15px;
-  cursor: pointer;
-}
+/* --- Differentiated Stereographic Controls: Refactored below --- */
 
 /* =========================================================
    POLISHED SELECT & DROPDOWNS (ANTI-NATIVE GRAY CLIPPING)
@@ -10354,4 +10273,260 @@ html[data-theme="dark"] .crystal-module [data-system="hex"].is-active {
   color: #f1f5f9 !important;
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
   border-color: rgba(99, 102, 241, 0.5) !important;
+}
+
+
+/* =========================================================
+   14. STEREOGRAPHIC PROJECTION: PREMIUM MICRO-SWITCH TOGGLES
+   ========================================================= */
+
+.stereo-display-card .control-label {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--ink, #1e293b) !important;
+  letter-spacing: 0.2px !important;
+  margin-bottom: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+}
+
+.stereo-display-card .control-label::before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 3.5px !important;
+  height: 12px !important;
+  background: linear-gradient(180deg, #0d9488 0%, #7c3aed 100%) !important;
+  border-radius: 2px !important;
+}
+
+.stereo-toggle-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.stereo-check {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 44px !important;
+  padding: 6px 10px 6px 11px !important;
+  border: 1.5px solid rgba(203, 213, 225, 0.85) !important;
+  border-radius: 10px !important;
+  background: var(--surface, #ffffff) !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  gap: 8px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Hide native checkbox completely */
+.stereo-check input[type="checkbox"] {
+  position: absolute !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+}
+
+/* Indicator dot */
+.stereo-check .stereo-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+  background: #cbd5e1 !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Label text */
+.stereo-check .stereo-label {
+  flex: 1 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--muted, #64748b) !important;
+  letter-spacing: 0.2px !important;
+  white-space: nowrap !important;
+  transition: color 0.2s ease !important;
+}
+
+/* Miniature Switch Track */
+.stereo-check .stereo-switch-ui {
+  display: inline-block !important;
+  width: 32px !important;
+  height: 18px !important;
+  border-radius: 999px !important;
+  background: #cbd5e1 !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+  transition: background-color 0.24s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Miniature Switch Knob */
+.stereo-check .stereo-switch-knob {
+  display: block !important;
+  width: 14px !important;
+  height: 14px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  position: absolute !important;
+  top: 2px !important;
+  left: 2px !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transform: translateX(0) !important;
+}
+
+/* Hover on Inactive */
+.stereo-check:hover:not(.is-active):not(:has(input:checked)) {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.7) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Active State Base */
+.stereo-check.is-active,
+.stereo-check:has(input:checked) {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(-0.5px) !important;
+}
+
+.stereo-check.is-active .stereo-switch-knob,
+.stereo-check:has(input:checked) .stereo-switch-knob {
+  transform: translateX(14px) !important;
+}
+
+/* 1. 晶面极点 (Poles: Teal) */
+.stereo-check.is-poles.is-active,
+.stereo-check.is-poles:has(input:checked) {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%) !important;
+  border: 1.5px solid #14b8a6 !important;
+}
+.stereo-check.is-poles.is-active .stereo-label,
+.stereo-check.is-poles:has(input:checked) .stereo-label {
+  color: #0f766e !important;
+}
+.stereo-check.is-poles.is-active .stereo-dot,
+.stereo-check.is-poles:has(input:checked) .stereo-dot {
+  background: #0d9488 !important;
+  box-shadow: 0 0 7px rgba(13, 148, 136, 0.7) !important;
+}
+.stereo-check.is-poles.is-active .stereo-switch-ui,
+.stereo-check.is-poles:has(input:checked) .stereo-switch-ui {
+  background: #0d9488 !important;
+}
+
+/* 2. 晶面指数 (Labels: Royal Blue) */
+.stereo-check.is-labels.is-active,
+.stereo-check.is-labels:has(input:checked) {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%) !important;
+  border: 1.5px solid #3b82f6 !important;
+}
+.stereo-check.is-labels.is-active .stereo-label,
+.stereo-check.is-labels:has(input:checked) .stereo-label {
+  color: #1d4ed8 !important;
+}
+.stereo-check.is-labels.is-active .stereo-dot,
+.stereo-check.is-labels:has(input:checked) .stereo-dot {
+  background: #2563eb !important;
+  box-shadow: 0 0 7px rgba(37, 99, 235, 0.7) !important;
+}
+.stereo-check.is-labels.is-active .stereo-switch-ui,
+.stereo-check.is-labels:has(input:checked) .stereo-switch-ui {
+  background: #2563eb !important;
+}
+
+/* 3. 特征晶带 (Zones: Amber / Gold) */
+.stereo-check.is-zones.is-active,
+.stereo-check.is-zones:has(input:checked) {
+  background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%) !important;
+  border: 1.5px solid #f59e0b !important;
+}
+.stereo-check.is-zones.is-active .stereo-label,
+.stereo-check.is-zones:has(input:checked) .stereo-label {
+  color: #b45309 !important;
+}
+.stereo-check.is-zones.is-active .stereo-dot,
+.stereo-check.is-zones:has(input:checked) .stereo-dot {
+  background: #d97706 !important;
+  box-shadow: 0 0 7px rgba(217, 119, 6, 0.7) !important;
+}
+.stereo-check.is-zones.is-active .stereo-switch-ui,
+.stereo-check.is-zones:has(input:checked) .stereo-switch-ui {
+  background: #d97706 !important;
+}
+
+/* 4. 赤道基面 (Plane: Purple) */
+.stereo-check.is-plane.is-active,
+.stereo-check.is-plane:has(input:checked) {
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%) !important;
+  border: 1.5px solid #a855f7 !important;
+}
+.stereo-check.is-plane.is-active .stereo-label,
+.stereo-check.is-plane:has(input:checked) .stereo-label {
+  color: #7e22ce !important;
+}
+.stereo-check.is-plane.is-active .stereo-dot,
+.stereo-check.is-plane:has(input:checked) .stereo-dot {
+  background: #7c3aed !important;
+  box-shadow: 0 0 7px rgba(124, 58, 237, 0.7) !important;
+}
+.stereo-check.is-plane.is-active .stereo-switch-ui,
+.stereo-check.is-plane:has(input:checked) .stereo-switch-ui {
+  background: #7c3aed !important;
+}
+
+/* Dark Theme Adjustments */
+html[data-theme="dark"] .stereo-check {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+html[data-theme="dark"] .stereo-check .stereo-switch-ui {
+  background: #475569 !important;
+}
+html[data-theme="dark"] .stereo-check.is-poles.is-active,
+html[data-theme="dark"] .stereo-check.is-poles:has(input:checked) {
+  background: linear-gradient(135deg, #042f2e 0%, #115e59 100%) !important;
+  border-color: #14b8a6 !important;
+}
+html[data-theme="dark"] .stereo-check.is-poles.is-active .stereo-label,
+html[data-theme="dark"] .stereo-check.is-poles:has(input:checked) .stereo-label {
+  color: #5eead4 !important;
+}
+html[data-theme="dark"] .stereo-check.is-labels.is-active,
+html[data-theme="dark"] .stereo-check.is-labels:has(input:checked) {
+  background: linear-gradient(135deg, #172554 0%, #1e40af 100%) !important;
+  border-color: #3b82f6 !important;
+}
+html[data-theme="dark"] .stereo-check.is-labels.is-active .stereo-label,
+html[data-theme="dark"] .stereo-check.is-labels:has(input:checked) .stereo-label {
+  color: #93c5fd !important;
+}
+html[data-theme="dark"] .stereo-check.is-zones.is-active,
+html[data-theme="dark"] .stereo-check.is-zones:has(input:checked) {
+  background: linear-gradient(135deg, #451a03 0%, #92400e 100%) !important;
+  border-color: #f59e0b !important;
+}
+html[data-theme="dark"] .stereo-check.is-zones.is-active .stereo-label,
+html[data-theme="dark"] .stereo-check.is-zones:has(input:checked) .stereo-label {
+  color: #fcd34d !important;
+}
+html[data-theme="dark"] .stereo-check.is-plane.is-active,
+html[data-theme="dark"] .stereo-check.is-plane:has(input:checked) {
+  background: linear-gradient(135deg, #3b0764 0%, #6b21a8 100%) !important;
+  border-color: #a855f7 !important;
+}
+html[data-theme="dark"] .stereo-check.is-plane.is-active .stereo-label,
+html[data-theme="dark"] .stereo-check.is-plane:has(input:checked) .stereo-label {
+  color: #d8b4fe !important;
+}
+
+/* Gray Theme Adjustments */
+html[data-theme="gray"] .stereo-check {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
 }

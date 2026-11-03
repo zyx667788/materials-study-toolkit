@@ -155,8 +155,10 @@ export function initStereographicProjectionModule() {
     });
 
     els.toggles.forEach((input) => {
+      input.closest(".stereo-check")?.classList.toggle("is-active", input.checked);
       input.addEventListener("change", () => {
         const key = input.dataset.stereoToggle;
+        input.closest(".stereo-check")?.classList.toggle("is-active", input.checked);
         if (!(key in state)) return;
         state[key] = input.checked;
         applyVisibility();

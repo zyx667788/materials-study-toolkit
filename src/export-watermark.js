@@ -1,4 +1,4 @@
-const WATERMARK_TEXT = "材料考研工具箱";
+const WATERMARK_TEXT = "研乐材料考研";
 
 export function downloadCanvasPngWithWatermark(sourceCanvas, filename) {
   const width = sourceCanvas.width;

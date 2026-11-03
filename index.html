@@ -15,7 +15,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="研乐材料研学" />
-    <link rel="icon" type="image/svg+xml" href="./assets/app-logo.svg" />
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
+    <link rel="apple-touch-icon" href="./assets/yanle-mark.png" />
     <link rel="stylesheet" href="./vendor/katex/katex.min.css" />
     <script src="./vendor/katex/katex.min.js"></script>
     <script>
@@ -34,7 +35,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261103-v15-stereo-switches" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261103-v16-official-yanle-logo" />
     <script type="importmap">
       {
         "imports": {
@@ -49,18 +50,12 @@
       <!-- 左侧固定侧边栏 -->
       <aside id="appSidebar" class="app-sidebar">
         <div class="sidebar-brand">
-          <div class="sidebar-logo">
-            <svg class="brand-poly-icon" viewBox="0 0 24 24" fill="none">
-              <polygon points="12 2 21 7.5 21 16.5 12 22 3 16.5 3 7.5" stroke="currentColor" stroke-width="1.8" fill="rgba(255,255,255,0.18)"/>
-              <line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="1.2"/>
-              <line x1="3" y1="7.5" x2="21" y2="16.5" stroke="currentColor" stroke-width="1"/>
-              <line x1="3" y1="16.5" x2="21" y2="7.5" stroke="currentColor" stroke-width="1"/>
-            </svg>
-            <span class="logo-text">研乐</span>
+          <div class="sidebar-logo" title="研乐材料">
+            <img class="sidebar-logo-img" src="./assets/yanle-mark.png" alt="研乐材料 Logo" />
           </div>
           <div class="sidebar-brand-text">
-            <strong>材料数字实验室 <span class="brand-live-dot" title="在线"></span></strong>
-            <span>YANLE · 考研研学空间</span>
+            <strong>研乐材料 <span class="brand-live-dot" title="在线"></span></strong>
+            <span>YANLE CAI LIAO · 考研“头等舱”</span>
           </div>
           <button id="sidebarCloseBtn" class="sidebar-close-btn" type="button" aria-label="关闭侧边栏">✕</button>
         </div>
@@ -151,15 +146,10 @@
       <!-- 首页导航模块 -->
       <section id="homeOverviewModule" class="module-view home-module" data-module-panel="home">
         <div class="home-hero">
-          <div class="home-brand-badge" style="display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:20px;background:rgba(99,102,241,0.1);margin-bottom:12px;">
-            <svg class="brand-poly-icon" viewBox="0 0 24 24" fill="none" style="width:20px;height:20px;color:var(--brand,#6366f1);">
-              <polygon points="12 2 21 7.5 21 16.5 12 22 3 16.5 3 7.5" stroke="currentColor" stroke-width="1.8" fill="rgba(99,102,241,0.18)"/>
-              <line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="1.2"/>
-              <line x1="3" y1="7.5" x2="21" y2="16.5" stroke="currentColor" stroke-width="1"/>
-              <line x1="3" y1="16.5" x2="21" y2="7.5" stroke="currentColor" stroke-width="1"/>
-            </svg>
-            <strong style="color:var(--brand,#6366f1);font-size:14px;letter-spacing:1px;">研乐考研</strong>
-            <span style="font-size:12px;color:var(--ink-soft);opacity:0.85;">YANLE · 领域“头等舱”</span>
+          <div class="home-brand-badge" style="display:inline-flex;align-items:center;gap:9px;padding:5px 14px;border-radius:20px;background:rgba(37,99,235,0.08);margin-bottom:12px;border:1px solid rgba(37,99,235,0.18);">
+            <img src="./assets/yanle-mark.png" alt="研乐材料" style="width:22px;height:22px;object-fit:contain;" />
+            <strong style="color:var(--brand,#2563eb);font-size:14px;letter-spacing:1px;">研乐材料</strong>
+            <span style="font-size:12px;color:var(--ink-soft);opacity:0.85;">YANLE CAI LIAO · 材料考研“头等舱”</span>
           </div>
           <h2 class="home-title">研乐 · 材料考研数字化交互学习平台</h2>
           <p class="home-desc">研乐材料考研——材料考研领域“头等舱”</p>
@@ -274,7 +264,7 @@
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -333,7 +323,7 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -481,7 +471,7 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -630,7 +620,7 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -836,7 +826,7 @@
         
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -941,7 +931,7 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -1027,7 +1017,7 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -1165,7 +1155,7 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -1245,7 +1235,7 @@
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>材料考研可视化学习平台</strong>
+            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
@@ -1258,6 +1248,6 @@
       </div>
     </div>
 
-    <script type="module" src="./src/app.js?v=20261103-v15-stereo-switches"></script>
+    <script type="module" src="./src/app.js?v=20261103-v16-official-yanle-logo"></script>
   </body>
 </html><!-- auto-deploy test -->

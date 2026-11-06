@@ -287,6 +287,9 @@ export async function initFlashcardsModule() {
     // Question body
     root.querySelector("#fcQuestionText").innerHTML = formatMath(currentQ.question);
 
+    // Figure: show the image when it loads, otherwise a clear placeholder note
+    renderQuestionFigure(root, currentQ);
+
     // Options (for choices)
     const optionsContainer = root.querySelector("#fcOptionsContainer");
     const isChoice = Array.isArray(currentQ.options) && currentQ.options.length > 0;
@@ -498,6 +501,41 @@ export async function initFlashcardsModule() {
       render();
     }
   };
+}
+
+const FIGURE_REF_RE = /(如图|下图|上图|见图|图示|图\s*\d+-\d+)/;
+
+function renderQuestionFigure(root, q) {
+  const textEl = root.querySelector("#fcQuestionText");
+  if (!textEl) return;
+  let fig = root.querySelector("#fcQuestionFigure");
+  if (!fig) {
+    fig = document.createElement("figure");
+    fig.id = "fcQuestionFigure";
+    fig.className = "fc-question-figure";
+    textEl.insertAdjacentElement("afterend", fig);
+  }
+  fig.replaceChildren();
+  const needsFigure = Boolean(q.image) || FIGURE_REF_RE.test(q.question || "");
+  fig.hidden = !needsFigure;
+  if (!needsFigure) return;
+
+  const showMissing = () => {
+    fig.replaceChildren();
+    const note = document.createElement("p");
+    note.className = "fc-figure-missing";
+    note.textContent = "本题配图整理中，可先参考教材对应插图作答。";
+    fig.appendChild(note);
+  };
+  if (!q.image) { showMissing(); return; }
+
+  const img = document.createElement("img");
+  img.alt = "题目配图";
+  img.loading = "lazy";
+  img.decoding = "async";
+  img.addEventListener("error", showMissing, { once: true });
+  img.src = encodeURI(String(q.image).replace(/^\.?\//, "./"));
+  fig.appendChild(img);
 }
 
 function escapeHtml(str) {

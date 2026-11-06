@@ -19,7 +19,7 @@ const PALETTE = {
 const EPS = 1e-7;
 const HEX_C_RATIO = 1.6;
 const ORTHO_FRUSTUM = 3.25;
-const APP_VERSION = "5.7.0";
+const APP_VERSION = "5.7.1";
 const VERSION_CHECK_URL = "./version.json";
 const VISIT_API_URL = "/api/visit";
 const THEME_STORAGE_KEY = "mstool.theme.v1";
@@ -142,7 +142,7 @@ const moduleLoaders = {
   'ternary-phase': () => import('./ternary-phase.js?v=20261008-phase-audit-motion').then(m => m.initTernaryPhaseModule()),
   home: () => Promise.resolve({ refresh() {} }),
   'binary-phase': () => import('./binary-phase.js').then(m => m.initBinaryPhaseModule()),
-  flashcards: () => import('./flashcards.js').then(m => m.initFlashcardsModule()),
+  flashcards: () => import('./flashcards.js?v=20261106-v18-bugfix').then(m => m.initFlashcardsModule()),
 };
 const moduleInstances = new Map();
 

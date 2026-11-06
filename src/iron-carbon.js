@@ -533,7 +533,7 @@ function renderChartSvg() {
             <text x="${CHART.left - 14}" y="${sy(tick) + 5}" text-anchor="end">${tick}</text>
           </g>
         `).join("")}
-        <text class="fe-axis-title" x="${CHART.left + CHART.plotWidth / 2}" y="${CHART.height - 20}" text-anchor="middle">碳含量 w<tspan baseline-shift="sub" font-size="70%">C</tspan> / %</text>
+        <text class="fe-axis-title" x="${CHART.left + CHART.plotWidth / 2}" y="${CHART.height - 20}" text-anchor="middle">含碳量 w<tspan baseline-shift="sub" font-size="70%">C</tspan> / %</text>
         <text class="fe-axis-title" x="28" y="${CHART.top + CHART.plotHeight / 2}" text-anchor="middle" transform="rotate(-90 28 ${CHART.top + CHART.plotHeight / 2})">温度 / ℃</text>
       </g>
 

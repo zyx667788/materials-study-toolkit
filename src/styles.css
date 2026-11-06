@@ -8377,11 +8377,6 @@ html[data-theme="dark"] .tool-icon { filter: invert(1); }
     padding: 4px 8px;
     font-size: 12px;
   }
-  /* In tool modules on small mobile screens, hide countdown badge so the module title has clean uncrowded space */
-  body[data-current-module]:not([data-current-module="home"]) .exam-countdown-badge,
-  .app-topbar:has(.topbar-back-btn.is-visible) .exam-countdown-badge {
-    display: none !important;
-  }
 }
 
 /* =========================================================
@@ -10570,4 +10565,121 @@ html[data-theme="dark"] .sidebar-logo {
   background: #1e293b !important;
   border-color: #334155 !important;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+
+/* =========================================================
+   v5.7 统一视觉 & 移动端适配（覆盖层，置于文件末尾）
+   ========================================================= */
+:root { --ui-radius: 12px; --ui-brand: #2563eb; --ui-brand-soft: rgba(37, 99, 235, 0.08); --ui-brand-line: rgba(37, 99, 235, 0.25); }
+
+/* 首页标题：Logo + 中文主标题 */
+.home-title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.home-title-logo { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; border-radius: 10px; background: #fff; padding: 3px; border: 1px solid var(--line); }
+.home-card-desc { display: none !important; }
+
+/* 统一卡片 */
+.home-card, .home-stat-card {
+  border-radius: var(--ui-radius) !important;
+  border: 1px solid var(--line) !important;
+  background: var(--panel) !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05) !important;
+}
+.home-card:hover { border-color: var(--ui-brand) !important; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.12) !important; }
+.home-card-header { gap: 10px; justify-content: flex-start !important; }
+.home-card-title { display: flex; align-items: center; gap: 8px; font-size: 18px; margin: 2px 0 0; }
+.home-card-idx { order: -1; font-size: 15px; color: var(--ui-brand); }
+.home-card-icon { background: var(--ui-brand-soft); color: var(--ui-brand); }
+
+/* 统一按钮 */
+.home-action-btn, .ghost-button, .primary-button {
+  border-radius: 8px !important;
+}
+.home-action-btn {
+  color: var(--ui-brand) !important;
+  background: var(--ui-brand-soft) !important;
+  border: 1px solid var(--ui-brand-line) !important;
+}
+.home-action-btn:hover, .home-action-btn.is-accent:hover { background: var(--ui-brand) !important; color: #fff !important; border-color: var(--ui-brand) !important; }
+.home-action-btn.is-accent { background: var(--ui-brand-soft) !important; }
+
+/* 导航选中：默认首页高亮灰底 */
+.nav-item.is-active {
+  background: var(--panel-soft, #eef2f7) !important;
+  background-color: rgba(100, 116, 139, 0.14) !important;
+  color: var(--ink) !important;
+  border-color: rgba(100, 116, 139, 0.28) !important;
+  font-weight: 700 !important;
+}
+.nav-item.is-active .nav-icon { color: var(--ui-brand); }
+
+/* 结构列表卡片：仅保留序号 + 名称 */
+.structure-column-list .structure-list-item {
+  min-height: 44px !important;
+  justify-content: center !important;
+}
+.structure-item-head { display: flex; align-items: center; gap: 8px; width: 100%; }
+.structure-item-index { font-family: monospace; font-weight: 700; color: var(--ui-brand); font-size: 13px; }
+.structure-item-title { font-size: 14px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 倒计时徽章始终可见 */
+.exam-countdown-badge { display: inline-flex !important; visibility: visible !important; flex-shrink: 0; }
+
+/* 右下角 QQ 群 */
+.qq-float-contact {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 999px;
+  background: var(--panel, #fff);
+  border: 1px solid var(--ui-brand-line);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+  font-size: 13px;
+  color: var(--ink);
+  user-select: all;
+}
+.qq-float-contact img { width: 24px; height: 24px; object-fit: contain; border-radius: 50%; background: #fff; }
+.qq-float-contact strong { color: var(--ui-brand); font-variant-numeric: tabular-nums; }
+html[data-theme="dark"] .qq-float-contact { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+
+@media (max-width: 960px) {
+  .page-container { padding: 12px 10px 72px !important; }
+  .home-title { font-size: 20px !important; gap: 8px; }
+  .home-title-logo { width: 30px; height: 30px; }
+  .home-desc { font-size: 13px !important; }
+  .home-card { padding: 14px !important; gap: 6px !important; }
+  .home-card-icon { width: 30px; height: 30px; }
+  .home-card-title { font-size: 16px; }
+  .home-actions-wrap { margin-top: 6px !important; }
+  .home-action-btn { flex: 1 1 calc(50% - 8px) !important; min-height: 40px; }
+  .home-stats-grid { grid-template-columns: 1fr 1fr !important; }
+  .module-footer { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+
+  /* 工具模块：单列堆叠，防止横向溢出 */
+  .module-view { max-width: 100%; overflow-x: hidden; }
+  .structure-workspace, .structure-three-col-layout, .ternary-workspace, .fe-workspace,
+  .stereo-workspace, .dislocation-workspace, .interstitial-workspace, .bp-main-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .structure-workspace > *, .ternary-workspace > *, .fe-workspace > *, .stereo-workspace > *,
+  .dislocation-workspace > *, .interstitial-workspace > * { width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
+  .structure-column-list { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; max-height: none !important; }
+  canvas, svg { max-width: 100%; }
+  .qq-float-contact { right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); padding: 6px 10px 6px 6px; font-size: 12px; }
+  .qq-float-contact img { width: 20px; height: 20px; }
+}
+
+@media (max-width: 480px) {
+  .app-topbar { gap: 6px !important; }
+  .topbar-breadcrumbs h1 { font-size: 14px !important; }
+  .theme-mode-btn { padding: 4px 6px !important; font-size: 11px !important; }
+  .exam-countdown-badge { padding: 2px 6px !important; font-size: 11px !important; }
+  .home-action-btn { flex: 1 1 100% !important; }
 }

@@ -6,10 +6,10 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta id="themeColorMeta" name="theme-color" content="#f0f6fc" />
-    <title>研乐 · 材料考研数字化交互学习平台</title>
+    <title>研乐材料考研·数字化交互学习平台</title>
     <meta name="description" content="研乐材料实验室：材料专业可视化教学系统。包含3D典型晶体结构、点阵间隙、密勒指数、二元相图、铁碳相图、三元相图、极射投影、记忆卡片与真题刷题系统。" />
     <meta name="keywords" content="材料科学基础,材料实验室,研乐,晶体结构,密勒指数,二元相图,铁碳相图,三元相图,极射投影,考研题库" />
-    <meta property="og:title" content="研乐 · 材料考研数字化交互学习平台" />
+    <meta property="og:title" content="研乐材料考研·数字化交互学习平台" />
     <meta property="og:description" content="四大板块、八个交互工具，全交互式3D三元相图、铁碳相图杠杆定律实时计算系统。" />
     <meta property="og:type" content="website" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -35,7 +35,7 @@
         }
       })();
     </script>
-    <link rel="stylesheet" href="./src/styles.css?v=20261103-v16-official-yanle-logo" />
+    <link rel="stylesheet" href="./src/styles.css?v=20261106-v17-ui-refresh" />
     <script type="importmap">
       {
         "imports": {
@@ -55,7 +55,7 @@
           </div>
           <div class="sidebar-brand-text">
             <strong>研乐材料 <span class="brand-live-dot" title="在线"></span></strong>
-            <span>YANLE CAI LIAO · 考研“头等舱”</span>
+            <span>材料考研交互学习平台</span>
           </div>
           <button id="sidebarCloseBtn" class="sidebar-close-btn" type="button" aria-label="关闭侧边栏">✕</button>
         </div>
@@ -131,7 +131,7 @@
           </div>
           <div class="topbar-right">
             <span id="examCountdownBadge" class="exam-countdown-badge"><span class="countdown-long-prefix">🎯 2027考研倒计时: </span><span class="countdown-short-prefix">🎯 </span><strong id="examCountdownDays">--</strong>天</span>
-            <span class="version-badge">v5.0 · Academic Edition</span>
+            <span class="version-badge">v5.7 版</span>
             <span id="visitOrdinalText" class="visit-ordinal-badge">第 20,000+ 位研友</span>
             <div id="themeToggle" class="theme-switcher" role="group" aria-label="切换页面颜色模式（白/灰/黑）">
               <button type="button" class="theme-mode-btn" data-theme-mode="light">白</button>
@@ -146,13 +146,8 @@
       <!-- 首页导航模块 -->
       <section id="homeOverviewModule" class="module-view home-module" data-module-panel="home">
         <div class="home-hero">
-          <div class="home-brand-badge" style="display:inline-flex;align-items:center;gap:9px;padding:5px 14px;border-radius:20px;background:rgba(37,99,235,0.08);margin-bottom:12px;border:1px solid rgba(37,99,235,0.18);">
-            <img src="./assets/yanle-mark.png" alt="研乐材料" style="width:22px;height:22px;object-fit:contain;" />
-            <strong style="color:var(--brand,#2563eb);font-size:14px;letter-spacing:1px;">研乐材料</strong>
-            <span style="font-size:12px;color:var(--ink-soft);opacity:0.85;">YANLE CAI LIAO · 材料考研“头等舱”</span>
-          </div>
-          <h2 class="home-title">研乐 · 材料考研数字化交互学习平台</h2>
-          <p class="home-desc">研乐材料考研——材料考研领域“头等舱”</p>
+          <h2 class="home-title"><img class="home-title-logo" src="./assets/yanle-mark.png" alt="研乐材料 Logo" /><span>研乐材料考研·数字化交互学习平台</span></h2>
+          <p class="home-desc">基于材料科学基础·金属学与热处理等教材数据制作而成</p>
         </div>
 
         <div class="home-grid">
@@ -164,8 +159,7 @@
               </div>
               <span class="home-card-idx">01</span>
             </div>
-            <h3 class="home-card-title">晶体结构与间隙</h3>
-            <p class="home-card-desc">体心/面心/密排等典型晶胞模型、八面体/四面体间隙与半径比计算</p>
+            <h3 class="home-card-title">晶体结构</h3>
             <div class="home-actions-wrap">
               <button class="home-action-btn" data-nav-target="typical-structures" type="button">晶体结构 →</button>
               <button class="home-action-btn" data-nav-target="interstitial" type="button">点阵 / 间隙 →</button>
@@ -180,8 +174,7 @@
               </div>
               <span class="home-card-idx">02</span>
             </div>
-            <h3 class="home-card-title">晶向 / 晶面（密勒指数）</h3>
-            <p class="home-card-desc">密勒指数实时三维截面绘制、空间位向演示与识图自测训练</p>
+            <h3 class="home-card-title">晶向晶面</h3>
             <div class="home-actions-wrap">
               <button class="home-action-btn" data-nav-target="crystal" type="button">密勒指数 →</button>
             </div>
@@ -195,8 +188,7 @@
               </div>
               <span class="home-card-idx">03</span>
             </div>
-            <h3 class="home-card-title">相图分析与平衡转变</h3>
-            <p class="home-card-desc">Cu-Ni 匀晶、Pb-Sn 共晶、Pt-Ag 包晶、铁碳平衡组织与三元投影</p>
+            <h3 class="home-card-title">相图分析</h3>
             <div class="home-actions-wrap">
               <button class="home-action-btn" data-nav-target="binary-phase" type="button">二元相图 →</button>
               <button class="home-action-btn" data-nav-target="iron-carbon" type="button">铁碳相图 →</button>
@@ -212,8 +204,7 @@
               </div>
               <span class="home-card-idx">04</span>
             </div>
-            <h3 class="home-card-title">晶体极射赤面投影</h3>
-            <p class="home-card-desc">立方晶系标准投影网、极射投影射线与晶带大圆动态旋转观察</p>
+            <h3 class="home-card-title">极射投影</h3>
             <div class="home-actions-wrap">
               <button class="home-action-btn" data-nav-target="stereographic" type="button">极射投影 →</button>
             </div>
@@ -227,8 +218,7 @@
               </div>
               <span class="home-card-idx">05</span>
             </div>
-            <h3 class="home-card-title">位错理论与交割</h3>
-            <p class="home-card-desc">刃型/螺型/混合位错三维交割过程，割阶与扭折形成及滑移判定</p>
+            <h3 class="home-card-title">位错交割</h3>
             <div class="home-actions-wrap">
               <button class="home-action-btn" data-nav-target="dislocation" type="button">位错交割 →</button>
             </div>
@@ -242,8 +232,7 @@
               </div>
               <span class="home-card-idx">06</span>
             </div>
-            <h3 class="home-card-title">材科基考研真题库</h3>
-            <p class="home-card-desc">材科基与金属学经典选择题在线自测，即时核对答案解析与错题巩固</p>
+            <h3 class="home-card-title">考研题库</h3>
             <div class="home-actions-wrap">
               <button class="home-action-btn is-accent" data-nav-target="flashcards" type="button">进入真题题库 →</button>
             </div>
@@ -264,12 +253,12 @@
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -323,12 +312,12 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img class="module-qr-image" src="./assets/qq-group-qr.png" alt="考研资料与交流答疑二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -471,12 +460,12 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -620,12 +609,12 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -695,11 +684,11 @@
         <footer class="module-footer">
           <div class="module-footer-copy">
             <strong>材料科学基础 · 二元系相图分析</strong>
-            <span>数据抽取自《材料科学基础》相关教材 · 本网页由研乐材料考研团队开发</span>
+            <span>基于《材料科学基础》相关教材 · 本网页由研乐材料考研团队开发</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -826,12 +815,12 @@
         
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -839,9 +828,7 @@
         <div class="ternary-workspace">
           <aside class="ternary-control-panel" aria-label="三元相图空间相区控制">
             <section class="ternary-card ternary-head-card">
-              <span class="fe-kicker">三元相图</span>
-              <h2>空间相区查看</h2>
-              <p>三元相图空间立体模型 · 等温截面与三相平衡反应路线三维解析</p>
+              <h2>三元相图模型</h2>
             </section>
 
             <section class="ternary-card ternary-diagram-card">
@@ -931,12 +918,12 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -1017,12 +1004,12 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -1155,12 +1142,12 @@
         </div>
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -1235,12 +1222,12 @@
 
         <footer class="module-footer">
           <div class="module-footer-copy">
-            <strong>研乐材料 · 材料考研数字化交互学习平台</strong>
+            <strong>研乐材料考研·数字化交互学习平台</strong>
             <span>《材料科学基础》 · 《金属学与热处理》</span>
           </div>
           <figure class="module-footer-qr">
             <img src="./assets/qq-group-qr.png" alt="考研交流二维码" />
-            <figcaption>QQ群：1022583995</figcaption>
+            <figcaption>考研QQ群：1022583995</figcaption>
           </figure>
         </footer>
       </section>
@@ -1248,6 +1235,10 @@
       </div>
     </div>
 
-    <script type="module" src="./src/app.js?v=20261103-v16-official-yanle-logo"></script>
+    <div class="qq-float-contact" role="note" title="加入考研QQ群交流">
+      <img src="./assets/yanle-mark.png" alt="" aria-hidden="true" />
+      <span>考研QQ群：<strong>1022583995</strong></span>
+    </div>
+    <script type="module" src="./src/app.js?v=20261106-v17-ui-refresh"></script>
   </body>
-</html><!-- auto-deploy test -->
+</html>

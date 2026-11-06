@@ -457,21 +457,21 @@ export function initTypicalStructuresModule() {
     });
   }
 
+  function shortStructureName(title) {
+    const raw = String(title || "");
+    const paren = raw.match(/^(.+?)\s*\((.+?)\)$/);
+    if (paren) return `${paren[1]} ${paren[2].replace(/结构$/, "")}`;
+    return raw.replace(/\s+(Diamond|C60|C)$/, "").trim();
+  }
+
   function renderStructureCardMarkup(structure, index) {
     const active = structure.id === state.selectedId;
     const indexCode = String(index + 1).padStart(2, "0");
-    const badgeText = structure.badge || structure.formula;
-    const systemTag = structure.crystalTag || structure.spaceGroup;
     return `
-      <button class="structure-list-item${active ? " is-active" : ""}" type="button" data-structure-id="${structure.id}" data-category="${structure.category}" aria-pressed="${active}">
+      <button class="structure-list-item${active ? " is-active" : ""}" type="button" data-structure-id="${structure.id}" data-category="${structure.category}" aria-pressed="${active}" title="${structure.title}">
         <div class="structure-item-head">
           <span class="structure-item-index">${indexCode}</span>
-          <strong class="structure-item-title">${structure.title}</strong>
-          <span class="structure-item-badge">${badgeText}</span>
-        </div>
-        <div class="structure-item-meta">
-          <span class="structure-item-tag">${systemTag}</span>
-          <span class="structure-item-coord">CN ${structure.coordination}</span>
+          <strong class="structure-item-title">${shortStructureName(structure.title)}</strong>
         </div>
       </button>
     `;

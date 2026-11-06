@@ -19,7 +19,7 @@ const PALETTE = {
 const EPS = 1e-7;
 const HEX_C_RATIO = 1.6;
 const ORTHO_FRUSTUM = 3.25;
-const APP_VERSION = "20261008-phase-audit-motion";
+const APP_VERSION = "5.7.0";
 const VERSION_CHECK_URL = "./version.json";
 const VISIT_API_URL = "/api/visit";
 const THEME_STORAGE_KEY = "mstool.theme.v1";
@@ -140,7 +140,7 @@ const moduleLoaders = {
   interstitial: () => import('./interstitial-lattice.js?v=20261008-phase-audit-motion').then(m => m.initInterstitialLatticeModule()),
   dislocation: () => import('./dislocation-intersection.js?v=20261008-phase-audit-motion').then(m => m.initDislocationIntersectionModule()),
   'ternary-phase': () => import('./ternary-phase.js?v=20261008-phase-audit-motion').then(m => m.initTernaryPhaseModule()),
-  home: () => import('./home-overview.js').then(m => m.initHomeOverviewModule((req, push) => selectModuleRef?.(req, push))),
+  home: () => Promise.resolve({ refresh() {} }),
   'binary-phase': () => import('./binary-phase.js').then(m => m.initBinaryPhaseModule()),
   flashcards: () => import('./flashcards.js').then(m => m.initFlashcardsModule()),
 };
@@ -201,6 +201,17 @@ function wireModuleNav() {
 
   sidebarBackdrop?.addEventListener('click', closeSidebar);
 
+  // 首页卡片与按钮跳转：在文档级委托，避免懒加载未完成时点击无响应
+  document.addEventListener('click', (event) => {
+    const navBtn = event.target.closest('[data-nav-target]');
+    const card = navBtn ? null : event.target.closest('.home-card');
+    const target = navBtn?.dataset.navTarget
+      || (card && !event.target.closest('button, a') ? card.querySelector('[data-nav-target]')?.dataset.navTarget : '');
+    if (!target) return;
+    event.preventDefault();
+    selectModule(target, true);
+  });
+
   backToHomeBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     selectModule('home', true);
@@ -251,7 +262,7 @@ function wireModuleNav() {
       crystal: { title: '密勒指数', desc: '晶体学 · 晶面、晶向、镜面绘制与识图训练' },
       'binary-phase': { title: '二元相图', desc: '相图 · 匀晶与共晶相图、杠杆定律计算' },
       'iron-carbon': { title: '铁碳相图', desc: '相图 · Fe-Fe3C 相图与组织计算' },
-      'ternary-phase': { title: '三元相图', desc: '相图 · 三元匀晶与三元共晶' },
+      'ternary-phase': { title: '三元相图', desc: '三元相图模型' },
       stereographic: { title: '极射投影', desc: '投影 · 立方晶系标准投影' },
       dislocation: { title: '位错理论', desc: '晶体缺陷 · 位错交割、割阶与扭折判定' },
       flashcards: { title: '考研题库', desc: '考研复习 · 材科基与金属学真题刷题' },
@@ -783,7 +794,12 @@ function initExamCountdown() {
   const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   daysEl.textContent = String(diffDays);
   if (prefixEl) {
-    prefixEl.textContent = `🎯 ${examYear}考研倒计时: `;
+    prefixEl.textContent = `🎯 ${examYear}考研倒计时：`;
+  }
+  const badge = document.querySelector("#examCountdownBadge");
+  if (badge) {
+    badge.title = `距离${examYear}考研初试还有 ${diffDays} 天`;
+    badge.hidden = false;
   }
 }
 
